@@ -2,10 +2,10 @@ package util
 
 import (
 	"bufio"
-	"errors"
 	"fmt"
 	"log"
 	"os"
+	"strconv"
 	"strings"
 
 	"github.com/oyvinddd/inf273/models"
@@ -16,9 +16,9 @@ type step int
 const (
 	step1 step = 0 // # of nodes
 	step2 step = 1 // # of vehicles
-	step3 step = 2 // # of calls
-	step4 step = 3 // vehicles
-	step5 step = 4 // calls
+	step3 step = 2 // vehicles
+	step4 step = 3 // # of calls
+	step5 step = 4 // vehicles that can transport calls
 	step6 step = 5 // travel times and cost
 	step7 step = 6 // node times and cost
 )
@@ -35,8 +35,8 @@ func ParseFile(filename string) {
 	defer file.Close()
 
 	// put all parsed vehicles and calls in these slices
-	// var vehicles []models.Vehicle
-	// var calls []models.Call
+	var vehicles []*models.Vehicle
+	var calls []*models.Call
 
 	// scan each line in the file
 	scanner := bufio.NewScanner(file)
@@ -52,14 +52,17 @@ func ParseFile(filename string) {
 		case step2:
 			// TODO: parse line
 		case step3:
-			// TODO: parse line
-			vehicleFromLine(line)
+			v := vehicleFromLine(line)
+			vehicles = append(vehicles, v)
+			fmt.Println(v)
 		case step4:
 			// TODO: parse line
 		case step5:
 			// TODO: parse line
 		case step6:
-			// TODO: parse line
+			c := callFromLine(line)
+			calls = append(calls, c)
+			fmt.Println(c)
 		case step7:
 			// TODO: parse line
 		default:
@@ -73,35 +76,42 @@ func ParseFile(filename string) {
 
 // Private API
 
-func vehicleFromLine(line string) (*models.Vehicle, error) {
+func vehicleFromLine(line string) *models.Vehicle {
 	parts := strings.Split(line, ",")
-	if len(parts) == 4 {
-		return &models.Vehicle{
-			Index:    0,
-			Home:     0,
-			Start:    0,
-			Capacity: 0,
-		}, nil
+	if len(parts) != 4 {
+		log.Fatal("Error parsing vehicle: wrong argument count")
 	}
-	return nil, errors.New("Error parsing vehicle")
+	index, err := strconv.Atoi(parts[0])
+	home, err := strconv.Atoi(parts[1])
+	start, err := strconv.Atoi(parts[2])
+	cap, err := strconv.Atoi(parts[3])
+	if err != nil {
+		log.Fatal("Error parsing vehicle: ", err)
+	}
+	return &models.Vehicle{
+		Index:    index,
+		Home:     home,
+		Start:    start,
+		Capacity: cap,
+	}
 }
 
-func callFromLine(line string) (*models.Call, error) {
+func callFromLine(line string) *models.Call {
 	parts := strings.Split(line, ",")
-	if len(parts) == 7 {
-		return &models.Call{
-			Index:       0,
-			Origin:      0,
-			Destination: 0,
-			Size:        0,
-			Penalty:     0,
-			LowerPW:     0,
-			UpperPW:     0,
-			LowerDW:     0,
-			UpperDW:     0,
-		}, nil
+	if len(parts) != 9 {
+		log.Fatal(line, len(parts), "Error parsing call")
 	}
-	return nil, errors.New("Error parsing call")
+	return &models.Call{
+		Index:       0,
+		Origin:      0,
+		Destination: 0,
+		Size:        0,
+		Penalty:     0,
+		LowerPW:     0,
+		UpperPW:     0,
+		LowerDW:     0,
+		UpperDW:     0,
+	}
 }
 
 func isComment(line string) bool {

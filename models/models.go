@@ -1,5 +1,7 @@
 package models
 
+import "fmt"
+
 // NewVehicle convenience constructor for vehicle struct
 func NewVehicle(index int, home int, start int, capacity int) *Vehicle {
 	return &Vehicle{
@@ -28,6 +30,14 @@ func NewCall(index int, origin int, destination int, size int, penalty int, lpw 
 		LowerDW:     ldw,
 		UpperDW:     udw,
 	}
+}
+
+func (v Vehicle) String() string {
+	return fmt.Sprintf("[vehicle %5v %5v %5v %5v]", v.Index, v.Home, v.Start, v.Capacity)
+}
+
+func (c Call) String() string {
+	return fmt.Sprintf("[call %v %v %v %v %v %v %v %v]", c.Index, c.Origin, c.Destination, c.Size, c.LowerPW, c.UpperPW, c.LowerDW, c.UpperDW)
 }
 
 // Vehicle struct
