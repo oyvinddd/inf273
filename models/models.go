@@ -3,11 +3,16 @@ package models
 // NewVehicle convenience constructor for vehicle struct
 func NewVehicle(index int, home int, start int, capacity int) *Vehicle {
 	return &Vehicle{
-		Index:     index,
-		Home:      home,
-		StartTime: start,
-		Capacity:  capacity,
+		Index:    index,
+		Home:     home,
+		Start:    start,
+		Capacity: capacity,
 	}
+}
+
+// NewDummyVehicle convenience constructor for dummy vehicle
+func NewDummyVehicle() *Vehicle {
+	return &Vehicle{}
 }
 
 // NewCall convenience constructor for call struct
@@ -27,10 +32,10 @@ func NewCall(index int, origin int, destination int, size int, penalty int, lpw 
 
 // Vehicle struct
 type Vehicle struct {
-	Index     int
-	Home      int
-	StartTime int
-	Capacity  int
+	Index    int
+	Home     int
+	Start    int
+	Capacity int
 }
 
 // Call struct
