@@ -1,4 +1,4 @@
-# Mandatory Assignment 1
+# Assignment 1
 
 ## 1a
 
@@ -7,3 +7,7 @@ As a solution representation to this problem, I’ve chosen to use an adjacency 
 ![Figure 1a](resources/figure_1a.png)
 
 ## 1b
+
+
+# Assignment 2
+
