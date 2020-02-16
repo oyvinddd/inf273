@@ -37,6 +37,7 @@ func ParseFile(filename string) {
 	// put all parsed vehicles and calls in these slices
 	var vehicles []*models.Vehicle
 	var calls []*models.Call
+	//var timeAndCost [0][0]map[int]interface
 
 	// scan each line in the file
 	scanner := bufio.NewScanner(file)
@@ -64,7 +65,9 @@ func ParseFile(filename string) {
 			calls = append(calls, c)
 			fmt.Println(c)
 		case step7:
-			// TODO: parse line
+			fmt.Println("here")
+			createMapFromTimeAndCost(scanner)
+			fmt.Println("HERE")
 		default:
 			// do nothing
 		}
@@ -74,7 +77,7 @@ func ParseFile(filename string) {
 	}
 }
 
-// Private API
+// Private functions
 
 func vehicleFromLine(line string) *models.Vehicle {
 	parts := strings.Split(line, ",")
@@ -101,16 +104,39 @@ func callFromLine(line string) *models.Call {
 	if len(parts) != 9 {
 		log.Fatal(line, len(parts), "Error parsing call")
 	}
+	index, err := strconv.Atoi(parts[0])
+	origin, err := strconv.Atoi(parts[1])
+	dest, err := strconv.Atoi(parts[2])
+	size, err := strconv.Atoi(parts[3])
+	penalty, err := strconv.Atoi(parts[4])
+	lpw, err := strconv.Atoi(parts[5])
+	upw, err := strconv.Atoi(parts[6])
+	ldw, err := strconv.Atoi(parts[7])
+	udw, err := strconv.Atoi(parts[8])
+	if err != nil {
+		log.Fatal("Error parsing call: ", err)
+	}
 	return &models.Call{
-		Index:       0,
-		Origin:      0,
-		Destination: 0,
-		Size:        0,
-		Penalty:     0,
-		LowerPW:     0,
-		UpperPW:     0,
-		LowerDW:     0,
-		UpperDW:     0,
+		Index:       index,
+		Origin:      origin,
+		Destination: dest,
+		Size:        size,
+		Penalty:     penalty,
+		LowerPW:     lpw,
+		UpperPW:     upw,
+		LowerDW:     ldw,
+		UpperDW:     udw,
+	}
+}
+
+func createMapFromTimeAndCost(scanner *bufio.Scanner) {
+	for scanner.Scan() {
+		line := scanner.Text()
+		if isComment(line) {
+			currentStep++
+			return
+		}
+		fmt.Println(line)
 	}
 }
 

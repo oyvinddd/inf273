@@ -33,11 +33,11 @@ func NewCall(index int, origin int, destination int, size int, penalty int, lpw 
 }
 
 func (v Vehicle) String() string {
-	return fmt.Sprintf("[vehicle %5v %5v %5v %5v]", v.Index, v.Home, v.Start, v.Capacity)
+	return fmt.Sprintf("[ vehicle | %-5v | %-5v | %5v | %-5v ]", v.Index, v.Home, v.Start, v.Capacity)
 }
 
 func (c Call) String() string {
-	return fmt.Sprintf("[call %v %v %v %v %v %v %v %v]", c.Index, c.Origin, c.Destination, c.Size, c.LowerPW, c.UpperPW, c.LowerDW, c.UpperDW)
+	return fmt.Sprintf("[ call | %-5v | %-5v | %-5v | %-5v | %-5v | %-5v | %-5v | %-5v ]", c.Index, c.Origin, c.Destination, c.Size, c.LowerPW, c.UpperPW, c.LowerDW, c.UpperDW)
 }
 
 // Vehicle struct
@@ -59,4 +59,10 @@ type Call struct {
 	UpperPW     int
 	LowerDW     int
 	UpperDW     int
+}
+
+// TimeAndCost struct
+type TimeAndCost struct {
+	Time int
+	Cost int
 }
