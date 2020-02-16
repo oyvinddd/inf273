@@ -13,6 +13,8 @@ import (
 
 type step int
 
+var currentStep step = -1
+
 const (
 	step1 step = 0 // # of nodes
 	step2 step = 1 // # of vehicles
@@ -22,8 +24,6 @@ const (
 	step6 step = 5 // travel times and cost
 	step7 step = 6 // node times and cost
 )
-
-var currentStep step = -1
 
 // ParseFile parses all lines of a data file
 func ParseFile(filename string) {
