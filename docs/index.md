@@ -14,7 +14,7 @@ Further, each index in tthe main array contains a linked list of ports that are 
 
 An even simpler (and possibly a bit better) representation to the problem would be to only use a one dimensional array and have predefined separators for each child tour. For instance, say that we decide upon the value of 0 to be the separator. Now, whenever we visit a node which has a child tour, we insert a separator, and then insert each node in the child tour in order. Whenever we visist a node that has previously been visisted (cycle), we are done with the child tour. See example below.
 
-![Figure 1c](resources/figure_1b.png)
+![Figure 1b](resources/figure_1b.png)
 
 ## Assignment 1b
 
@@ -22,7 +22,7 @@ One possible solution representation for this problem would be to use a matrix. 
 
 Two rows are dedicated to each drone, where the first one contains positions where the drone is outgoing (to serve the customer), and the second row contains positions where the drone is incoming (from the customer). See below matrix for how this looks for the instance in the lecture slide.
 
-![Figure 1b](resources/figure_1c.png)
+![Figure 1c](resources/figure_1c.png)
 
 Note that if we specify that a given drone only can visit one customer before returning to the truck, we could simplify the matrix to only contain one row for each drone (the row containing the outgoing drones).
 
