@@ -1,12 +1,14 @@
 # Mandatory Assignments
 
+The below sections contains my answers to the mandatory assignments in the course INF273 for the spring 2020 semester.
+
 ## Assignment 1a
 
 ### Alternative 1
 
 As a solution representation to this problem, I’ve chosen to use an adjacency list data structure. This involves an array of size N + 1, where N is the number of ports to visit plus one for the starting/home position.
 
-Further, each index in tthe main array contains a linked list of ports that are visited explicitly from the node at a given index (see graphical representation below for better understanding). If there is no linked list in a given index in the main array, this means that no port was visited explicitly by a child here (i.e. no subtours were started from here).
+Further, each index in the main array contains a linked list of ports that are visited explicitly from the node at a given index (see graphical representation below for better understanding). If there is no linked list in a given index in the main array, this means that no port was visited explicitly by a child here (i.e. no subtours were started from here). Note that the example below uses the problem instance from the lecture slides.
 
 ![Figure 1a](resources/figure_1a.png)
 
