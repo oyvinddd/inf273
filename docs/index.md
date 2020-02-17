@@ -28,7 +28,7 @@ Two rows are dedicated to each drone, where the first one contains positions whe
 
 ![Figure 1c](resources/figure_1c.png)
 
-Note that if we specify that a given drone only can visit one customer before returning to the truck, we could simplify the matrix to only contain one row for each drone (the row containing the outgoing drones).
+Note that if we specify that a given drone only can visit one customer before returning to the truck, we could simplify the matrix to only contain one row for each drone (the row containing the outgoing drones), and have the next node in the main array implicitly be the incoming node.
 
 ## Assignment 2
 
