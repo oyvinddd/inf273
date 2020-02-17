@@ -14,7 +14,9 @@ Further, each index in the main array contains a linked list of ports that are v
 
 ### Alternative 2
 
-An even simpler (and possibly a bit better) representation to the problem would be to only use a one dimensional array and have predefined separators for each child tour. For instance, say that we decide upon the value of 0 to be the separator. Now, whenever we visit a node which has a child tour, we insert a separator, and then insert each node in the child tour in order. Whenever we visist a node that has previously been visisted (cycle), we are done with the child tour. See example below.
+An even simpler (and possibly a bit better) representation to the problem would be to only use a one dimensional array and have predefined separators for each child tour. For instance, say that we decide upon the value of 0 to be the separator. Now, whenever we visit a node which has a child tour, we insert a separator, and then insert each node in the child tour in order.
+
+Whenever we visist a node that has previously been visisted (cycle), we are done with the child tour. See example below, which uses the problem instance from the lecture slides. All subtours are color coded for readability (main/mother tour is blue).
 
 ![Figure 1b](resources/figure_1b.png)
 
