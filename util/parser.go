@@ -26,11 +26,11 @@ const (
 )
 
 // ParseFile parses all lines of a data file
-func ParseFile(filename string) {
+func ParseFile(filename string) (*models.INF273Data, error) {
 
 	file, err := os.Open(fmt.Sprintf("data/%s", filename))
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal(err) // TODO: return error + data instead
 	}
 	defer file.Close()
 
@@ -65,9 +65,9 @@ func ParseFile(filename string) {
 			calls = append(calls, c)
 			fmt.Println(c)
 		case step7:
-			fmt.Println("here")
-			createMapFromTimeAndCost(scanner)
-			fmt.Println("HERE")
+			// fmt.Println("here")
+			// createMapFromTimeAndCost(scanner)
+			// fmt.Println("HERE")
 		default:
 			// do nothing
 		}
@@ -75,6 +75,11 @@ func ParseFile(filename string) {
 	if err := scanner.Err(); err != nil {
 		log.Fatal(err)
 	}
+
+	return &models.INF273Data{
+		Vehicles: vehicles,
+		Calls:    calls,
+	}, nil
 }
 
 // Private functions
@@ -126,17 +131,6 @@ func callFromLine(line string) *models.Call {
 		UpperPW:     upw,
 		LowerDW:     ldw,
 		UpperDW:     udw,
-	}
-}
-
-func createMapFromTimeAndCost(scanner *bufio.Scanner) {
-	for scanner.Scan() {
-		line := scanner.Text()
-		if isComment(line) {
-			currentStep++
-			return
-		}
-		fmt.Println(line)
 	}
 }
 

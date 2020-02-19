@@ -2,18 +2,37 @@ package main
 
 import (
 	"fmt"
-	"time"
+	"log"
 
+	"github.com/oyvinddd/inf273/models"
 	"github.com/oyvinddd/inf273/util"
 )
 
 func main() {
 
-	start := time.Now()
+	// 1. Parse input file
 
-	util.ParseFile("Call_7_Vehicle_3.txt")
+	data, err := util.ParseFile("Call_7_Vehicle_3.txt")
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	elapsed := time.Now().Sub(start)
+	// 2. Generate a random solution
+	solution := generateSolution(data)
+	fmt.Println(solution)
 
-	fmt.Printf("Finished execution in %v", elapsed)
+	// 3. Check feasibility of solution
+}
+
+func generateSolution(data *models.INF273Data) [][]*models.Call {
+	var solution [][]*models.Call
+	return solution
+}
+
+func checkFeasability() {
+	// TODO:
+}
+
+func calculateObjectiveFunction() {
+	// TODO:
 }
