@@ -6,19 +6,19 @@ import "fmt"
 
 // Vehicle struct
 type Vehicle struct {
-	Index    int
-	Home     int
-	Start    int
-	Capacity int
+	Index     int
+	Home      int
+	StartTime int
+	Capacity  int
 }
 
 // NewVehicle convenience constructor for vehicle struct
 func NewVehicle(index int, home int, start int, capacity int) *Vehicle {
 	return &Vehicle{
-		Index:    index,
-		Home:     home,
-		Start:    start,
-		Capacity: capacity,
+		Index:     index,
+		Home:      home,
+		StartTime: start,
+		Capacity:  capacity,
 	}
 }
 
@@ -35,7 +35,7 @@ func (v Vehicle) IsDummy() bool {
 }
 
 func (v Vehicle) String() string {
-	return fmt.Sprintf("[ vehicle | %-5v | %-5v | %5v | %-5v ]", v.Index, v.Home, v.Start, v.Capacity)
+	return fmt.Sprintf("[ vehicle | %-5v | %-5v | %5v | %-5v ]", v.Index, v.Home, v.StartTime, v.Capacity)
 }
 
 // --------------- CALL ---------------
@@ -84,6 +84,8 @@ type TimeAndCost struct {
 
 // INF273Data is a container for all data from file
 type INF273Data struct {
-	Vehicles []*Vehicle
-	Calls    []*Call
+	NoOfNodes    int
+	NoOfVehicles int
+	Vehicles     []Vehicle
+	Calls        []Call
 }

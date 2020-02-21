@@ -26,7 +26,7 @@ const (
 )
 
 // ParseFile parses all lines of a data file
-func ParseFile(filename string) (*models.INF273Data, error) {
+func ParseFile(filename string) (models.INF273Data, error) {
 
 	file, err := os.Open(fmt.Sprintf("data/%s", filename))
 	if err != nil {
@@ -34,10 +34,11 @@ func ParseFile(filename string) (*models.INF273Data, error) {
 	}
 	defer file.Close()
 
-	// put all parsed vehicles and calls in these slices
-	var vehicles []*models.Vehicle
-	var calls []*models.Call
-	//var timeAndCost [0][0]map[int]interface
+	var noOfNodes int
+	var noOfVehicles int
+	var vehicles []models.Vehicle
+	var calls []models.Call
+	// var tac [][][]models.TimeAndCost
 
 	// scan each line in the file
 	scanner := bufio.NewScanner(file)
@@ -49,25 +50,27 @@ func ParseFile(filename string) (*models.INF273Data, error) {
 		}
 		switch currentStep {
 		case step1:
-			// TODO: parse line
+			noOfNodes, _ = strconv.Atoi(line)
+			if err != nil {
+				// TODO:
+			}
 		case step2:
-			// TODO: parse line
+			noOfVehicles, err = strconv.Atoi(line)
+			if err != nil {
+				// TODO:
+			}
 		case step3:
 			v := vehicleFromLine(line)
-			vehicles = append(vehicles, v)
-			fmt.Println(v)
+			vehicles = append(vehicles, *v)
 		case step4:
 			// TODO: parse line
 		case step5:
 			// TODO: parse line
 		case step6:
 			c := callFromLine(line)
-			calls = append(calls, c)
-			fmt.Println(c)
+			calls = append(calls, *c)
 		case step7:
-			// fmt.Println("here")
-			// createMapFromTimeAndCost(scanner)
-			// fmt.Println("HERE")
+
 		default:
 			// do nothing
 		}
@@ -76,9 +79,11 @@ func ParseFile(filename string) (*models.INF273Data, error) {
 		log.Fatal(err)
 	}
 
-	return &models.INF273Data{
-		Vehicles: vehicles,
-		Calls:    calls,
+	return models.INF273Data{
+		NoOfNodes:    noOfNodes,
+		NoOfVehicles: noOfVehicles,
+		Vehicles:     vehicles,
+		Calls:        calls,
 	}, nil
 }
 
@@ -96,12 +101,7 @@ func vehicleFromLine(line string) *models.Vehicle {
 	if err != nil {
 		log.Fatal("Error parsing vehicle: ", err)
 	}
-	return &models.Vehicle{
-		Index:    index,
-		Home:     home,
-		Start:    start,
-		Capacity: cap,
-	}
+	return models.NewVehicle(index, home, start, cap)
 }
 
 func callFromLine(line string) *models.Call {

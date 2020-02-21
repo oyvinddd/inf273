@@ -1,24 +1,27 @@
 package util
 
-import "time"
+import (
+	"fmt"
+	"time"
+)
 
 type Timer struct {
-	start int64
-	end   int64
+	start time.Time
+	end   time.Time
 }
 
-func NewTimer() *Timer {
-	return &Timer{}
+func NewTimer() Timer {
+	return Timer{}
 }
 
 func (t *Timer) Start() {
-	t.start = time.Now().UnixNano()
+	t.start = time.Now() //.UnixNano()
 }
 
 func (t *Timer) Stop() {
-	t.end = time.Now().UnixNano()
+	t.end = time.Now() //.UnixNano()
 }
 
-func (t *Timer) PrintElapsed(message string) {
-	// elapsed := time.Now().Sub(start)
+func (t *Timer) PrintElapsed() {
+	fmt.Printf("\nProgram execution took %v", time.Since(t.start))
 }
