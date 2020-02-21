@@ -26,12 +26,12 @@ func main() {
 		log.Fatal(err)
 	}
 
-	// initialize solution matrix
-	solution = make([][]int, data.NoOfVehicles)
+	solution = make([][]int, data.NoOfVehicles) // empty solution matrix
 
 	// 2. Generate a random solution
 
-	solution := generateSolution(data)
+	generateSolution(data, &solution)
+
 	printSolution(solution)
 
 	// 3. Check feasibility of solution
@@ -39,7 +39,7 @@ func main() {
 
 // ---------------- ASSIGNMENT #2 ----------------
 
-func generateSolution(data models.INF273Data) [][]int {
+func generateSolution(data models.INF273Data, matrix *[][]int) {
 
 	// Solution representation:
 	//
@@ -51,11 +51,12 @@ func generateSolution(data models.INF273Data) [][]int {
 	// fill rows with calls (every call appears two times)
 	for _, call := range data.Calls {
 		i := randomNumber(0, data.NoOfVehicles)
-		solution[i] = append(solution[i], call.Index, call.Index)
+		(*matrix)[i] = append((*matrix)[i], call.Index, call.Index)
 	}
 	// for each row, randomize the order of the calls
-
-	return solution
+	for _, calls := range *matrix {
+		shuffleSlice(calls)
+	}
 }
 
 func checkFeasability() {
@@ -71,6 +72,13 @@ func calculateObj() {
 func randomNumber(min int, max int) int {
 	rand.Seed(time.Now().UnixNano())
 	return rand.Intn(max - min)
+}
+
+func shuffleSlice(a []int) {
+	rand.Seed(time.Now().UnixNano())
+	rand.Shuffle(len(a), func(i int, j int) {
+		a[i], a[j] = a[j], a[i]
+	})
 }
 
 func printSolution(solution [][]int) {

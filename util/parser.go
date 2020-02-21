@@ -50,7 +50,7 @@ func ParseFile(filename string) (models.INF273Data, error) {
 		}
 		switch currentStep {
 		case step1:
-			noOfNodes, _ = strconv.Atoi(line)
+			noOfNodes, err = strconv.Atoi(line)
 			if err != nil {
 				// TODO:
 			}
