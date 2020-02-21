@@ -135,9 +135,5 @@ func callFromLine(line string) *models.Call {
 }
 
 func isComment(line string) bool {
-	if len(line) > 0 {
-		return line[0] == []byte("%")[0] ||
-			line[0] == []byte("#")[0]
-	}
-	return false
+	return len(line) > 0 && (line[0] == []byte("%")[0] || line[0] == []byte("#")[0])
 }
