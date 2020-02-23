@@ -40,7 +40,7 @@ func ParseFile(filename string) (models.INF273Data, error) {
 	var vehicles []models.Vehicle
 	var calls []models.Call
 	var compatibility [][]bool
-	//var tac [][][]models.TravelTimeAndCost
+	var travelTAC [][]map[int]models.TravelTimeAndCost
 
 	// scan each line in the file
 	scanner := bufio.NewScanner(file)
@@ -56,6 +56,7 @@ func ParseFile(filename string) (models.INF273Data, error) {
 			if err != nil {
 				return models.INF273Data{}, err
 			}
+			initTravelMatrix(&travelTAC, noOfNodes)
 		case step2:
 			noOfVehicles, err = strconv.Atoi(line)
 			if err != nil {
@@ -82,7 +83,7 @@ func ParseFile(filename string) (models.INF273Data, error) {
 			}
 			calls = append(calls, *call)
 		case step7:
-			// TODO:
+			updateTravelMatrix(&travelTAC, line)
 		default:
 			// do nothing
 		}
@@ -98,6 +99,7 @@ func ParseFile(filename string) (models.INF273Data, error) {
 		Vehicles:      vehicles,
 		Calls:         calls,
 		Compatibility: compatibility,
+		TravelTAC:     travelTAC,
 	}, nil
 }
 
@@ -136,6 +138,28 @@ func callFromLine(line string) (*models.Call, error) {
 		return nil, err
 	}
 	return models.NewCall(index, origin, dest, size, penalty, lpw, upw, ldw, udw), nil
+}
+
+func initTravelMatrix(ttac *[][]map[int]models.TravelTimeAndCost, noOfNodes int) {
+	*ttac = make([][]map[int]models.TravelTimeAndCost, noOfNodes)
+	for i := range *ttac {
+		(*ttac)[i] = make([]map[int]models.TravelTimeAndCost, noOfNodes)
+	}
+}
+
+func updateTravelMatrix(ttac *[][]map[int]models.TravelTimeAndCost, line string) {
+
+	parts := strings.Split(line, ",")
+	vehicle, _ := strconv.Atoi(parts[0])
+	origin, _ := strconv.Atoi(parts[1])
+	destination, _ := strconv.Atoi(parts[2])
+	time, _ := strconv.Atoi(parts[3])
+	cost, _ := strconv.Atoi(parts[4])
+
+	if (*ttac)[origin-1][destination-1] == nil {
+		(*ttac)[origin-1][destination-1] = make(map[int]models.TravelTimeAndCost)
+	}
+	(*ttac)[origin-1][destination-1][vehicle] = *models.NewTravelTimeAndCost(time, cost)
 }
 
 func initCompMatrix(comp *[][]bool, noOfVehicles int, noOfCalls int) {

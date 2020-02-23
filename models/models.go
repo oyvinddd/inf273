@@ -82,6 +82,14 @@ type TravelTimeAndCost struct {
 	Cost int
 }
 
+// NewTravelTimeAndCost convenience constructor
+func NewTravelTimeAndCost(time int, cost int) *TravelTimeAndCost {
+	return &TravelTimeAndCost{
+		Time: time,
+		Cost: cost,
+	}
+}
+
 // --------------- DATA ---------------
 
 // INF273Data is a container for all data parsed from file
@@ -92,4 +100,5 @@ type INF273Data struct {
 	Vehicles      []Vehicle
 	Calls         []Call
 	Compatibility [][]bool
+	TravelTAC     [][]map[int]TravelTimeAndCost
 }

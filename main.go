@@ -39,12 +39,18 @@ func runProgram() {
 		log.Fatal(err)
 	}
 
-	for i := range data.Compatibility {
-		for _, e := range data.Compatibility[i] {
-			fmt.Printf("[%v]", e)
-		}
-		fmt.Println()
-	}
+	// for i := range data.Compatibility {
+	// 	for _, e := range data.Compatibility[i] {
+	// 		fmt.Printf("[%v]", e)
+	// 	}
+	// 	fmt.Println()
+	// }
+	// for i := range data.TravelTAC {
+	// 	for _, e := range data.TravelTAC[i] {
+	// 		fmt.Printf("[%v]", e)
+	// 	}
+	// 	fmt.Println()
+	// }
 }
 
 // ---------------- ASSIGNMENT #2 ----------------
@@ -53,7 +59,6 @@ func generateSolution(data models.INF273Data, matrix [][]*models.Call) {
 
 	// fill rows with calls (every call appears two times)
 	for _, call := range data.Calls {
-		//fmt.Printf("Call %p: %v\n", &call, call)
 		i := randomNumber(0, data.NoOfVehicles)
 		ptr := new(models.Call)
 		*ptr = call
@@ -78,7 +83,9 @@ func checkFeasibility(data models.INF273Data, solution [][]*models.Call) error {
 			}
 			if call.PickedUp {
 				load -= call.Size
+				fmt.Println("PICKUP!!!")
 			} else {
+				fmt.Println("!!!")
 				call.PickedUp = true
 				load += call.Size
 			}
