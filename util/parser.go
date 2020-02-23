@@ -87,7 +87,7 @@ func ParseFile(filename string) (models.INF273Data, error) {
 	}, nil
 }
 
-// Private functions
+// --------------- HELPER FUNCTIONS ---------------
 
 func vehicleFromLine(line string) *models.Vehicle {
 	parts := strings.Split(line, ",")

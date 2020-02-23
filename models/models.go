@@ -51,6 +51,7 @@ type Call struct {
 	UpperPW     int
 	LowerDW     int
 	UpperDW     int
+	PickedUp    bool
 }
 
 // NewCall convenience constructor for call struct
@@ -65,11 +66,12 @@ func NewCall(index int, origin int, destination int, size int, penalty int, lpw 
 		UpperPW:     upw,
 		LowerDW:     ldw,
 		UpperDW:     udw,
+		PickedUp:    false,
 	}
 }
 
 func (c Call) String() string {
-	return fmt.Sprintf("[ call | %-5v | %-5v | %-5v | %-5v | %-5v | %-5v | %-5v | %-5v ]", c.Index, c.Origin, c.Destination, c.Size, c.LowerPW, c.UpperPW, c.LowerDW, c.UpperDW)
+	return fmt.Sprintf("[ call | %-5v | %-5v | %-5v | %-5v | %-5v | %-5v | %-5v | %-5v | %-5v ]", c.Index, c.Origin, c.Destination, c.Size, c.LowerPW, c.UpperPW, c.LowerDW, c.UpperDW, c.PickedUp)
 }
 
 // --------------- TIME AND COST ---------------
@@ -82,7 +84,7 @@ type TimeAndCost struct {
 
 // --------------- DATA ---------------
 
-// INF273Data is a container for all data from file
+// INF273Data is a container for all data parsed from file
 type INF273Data struct {
 	NoOfNodes    int
 	NoOfVehicles int

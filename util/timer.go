@@ -5,23 +5,25 @@ import (
 	"time"
 )
 
+// Timer struct for timing program execution
 type Timer struct {
 	start time.Time
 	end   time.Time
 }
 
-func NewTimer() Timer {
-	return Timer{}
+// NewTimer convenience constructor
+func NewTimer() *Timer {
+	return &Timer{
+		start: time.Now(),
+	}
 }
 
+// Start the timer
 func (t *Timer) Start() {
-	t.start = time.Now() //.UnixNano()
+	t.start = time.Now()
 }
 
-func (t *Timer) Stop() {
-	t.end = time.Now() //.UnixNano()
-}
-
+// PrintElapsed time to the console
 func (t *Timer) PrintElapsed() {
-	fmt.Printf("\nProgram execution took %v", time.Since(t.start))
+	fmt.Printf("\n### Program execution took %v\n", time.Since(t.start))
 }
