@@ -68,6 +68,7 @@ func checkFeasability(data models.INF273Data, solution [][]*models.Call) error {
 			if call.PickedUp {
 				load -= call.Size
 			} else {
+				call.PickedUp = true
 				load += call.Size
 			}
 		}

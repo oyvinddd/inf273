@@ -2,8 +2,8 @@ package util
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
-	"log"
 	"os"
 	"strconv"
 	"strings"
@@ -30,7 +30,7 @@ func ParseFile(filename string) (models.INF273Data, error) {
 
 	file, err := os.Open(fmt.Sprintf("data/%s", filename))
 	if err != nil {
-		log.Fatal(err) // TODO: return error + data instead
+		return models.INF273Data{}, err
 	}
 	defer file.Close()
 
@@ -52,23 +52,29 @@ func ParseFile(filename string) (models.INF273Data, error) {
 		case step1:
 			noOfNodes, err = strconv.Atoi(line)
 			if err != nil {
-				// TODO:
+				return models.INF273Data{}, err
 			}
 		case step2:
 			noOfVehicles, err = strconv.Atoi(line)
 			if err != nil {
-				// TODO:
+				return models.INF273Data{}, err
 			}
 		case step3:
-			v := vehicleFromLine(line)
-			vehicles = append(vehicles, *v)
+			vehicle, err := vehicleFromLine(line)
+			if err != nil {
+				return models.INF273Data{}, err
+			}
+			vehicles = append(vehicles, *vehicle)
 		case step4:
 			// TODO: parse line
 		case step5:
 			// TODO: parse line
 		case step6:
-			c := callFromLine(line)
-			calls = append(calls, *c)
+			call, err := callFromLine(line)
+			if err != nil {
+				return models.INF273Data{}, err
+			}
+			calls = append(calls, *call)
 		case step7:
 
 		default:
@@ -76,7 +82,7 @@ func ParseFile(filename string) (models.INF273Data, error) {
 		}
 	}
 	if err := scanner.Err(); err != nil {
-		log.Fatal(err)
+		return models.INF273Data{}, err
 	}
 
 	return models.INF273Data{
@@ -89,25 +95,25 @@ func ParseFile(filename string) (models.INF273Data, error) {
 
 // --------------- HELPER FUNCTIONS ---------------
 
-func vehicleFromLine(line string) *models.Vehicle {
+func vehicleFromLine(line string) (*models.Vehicle, error) {
 	parts := strings.Split(line, ",")
 	if len(parts) != 4 {
-		log.Fatal("Error parsing vehicle: wrong argument count")
+		return nil, errors.New("Error parsing vehicle: wrong argument count")
 	}
 	index, err := strconv.Atoi(parts[0])
 	home, err := strconv.Atoi(parts[1])
 	start, err := strconv.Atoi(parts[2])
 	cap, err := strconv.Atoi(parts[3])
 	if err != nil {
-		log.Fatal("Error parsing vehicle: ", err)
+		return nil, err
 	}
-	return models.NewVehicle(index, home, start, cap)
+	return models.NewVehicle(index, home, start, cap), nil
 }
 
-func callFromLine(line string) *models.Call {
+func callFromLine(line string) (*models.Call, error) {
 	parts := strings.Split(line, ",")
 	if len(parts) != 9 {
-		log.Fatal(line, len(parts), "Error parsing call")
+		return nil, errors.New("Error parsing call: wrong argument count")
 	}
 	index, err := strconv.Atoi(parts[0])
 	origin, err := strconv.Atoi(parts[1])
@@ -119,19 +125,9 @@ func callFromLine(line string) *models.Call {
 	ldw, err := strconv.Atoi(parts[7])
 	udw, err := strconv.Atoi(parts[8])
 	if err != nil {
-		log.Fatal("Error parsing call: ", err)
+		return nil, err
 	}
-	return &models.Call{
-		Index:       index,
-		Origin:      origin,
-		Destination: dest,
-		Size:        size,
-		Penalty:     penalty,
-		LowerPW:     lpw,
-		UpperPW:     upw,
-		LowerDW:     ldw,
-		UpperDW:     udw,
-	}
+	return models.NewCall(index, origin, dest, size, penalty, lpw, upw, ldw, udw), nil
 }
 
 func isComment(line string) bool {
