@@ -76,8 +76,8 @@ func (c Call) String() string {
 
 // --------------- TIME AND COST ---------------
 
-// TimeAndCost struct
-type TimeAndCost struct {
+// TravelTimeAndCost struct
+type TravelTimeAndCost struct {
 	Time int
 	Cost int
 }
@@ -86,8 +86,10 @@ type TimeAndCost struct {
 
 // INF273Data is a container for all data parsed from file
 type INF273Data struct {
-	NoOfNodes    int
-	NoOfVehicles int
-	Vehicles     []Vehicle
-	Calls        []Call
+	NoOfNodes     int
+	NoOfVehicles  int
+	NoOfCalls     int
+	Vehicles      []Vehicle
+	Calls         []Call
+	Compatibility [][]bool
 }

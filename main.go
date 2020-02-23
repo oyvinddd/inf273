@@ -35,7 +35,16 @@ func runProgram() {
 	printSolution(solution)
 
 	// 3. Check feasibility of solution
-	checkFeasability(data, solution)
+	if err := checkFeasibility(data, solution); err != nil {
+		log.Fatal(err)
+	}
+
+	for i := range data.Compatibility {
+		for _, e := range data.Compatibility[i] {
+			fmt.Printf("[%v]", e)
+		}
+		fmt.Println()
+	}
 }
 
 // ---------------- ASSIGNMENT #2 ----------------
@@ -56,12 +65,14 @@ func generateSolution(data models.INF273Data, matrix [][]*models.Call) {
 	}
 }
 
-func checkFeasability(data models.INF273Data, solution [][]*models.Call) error {
+func checkFeasibility(data models.INF273Data, solution [][]*models.Call) error {
 
-	// vehicle capacity
 	for row := range solution {
 		vehicle, load := data.Vehicles[row], 0
 		for _, call := range solution[row] {
+			if data.Compatibility[row][call.Index-1] {
+				return errors.New("Infeasible solution: compatibility")
+			}
 			if load > vehicle.Capacity {
 				return errors.New("Infeasible solution: vehicle capacity")
 			}
@@ -80,7 +91,7 @@ func calculateObj() {
 	// TODO:
 }
 
-// ---------------- UTILITIES ----------------
+// ---------------- HELPER FUNCTIONS ----------------
 
 func randomNumber(min int, max int) int {
 	rand.Seed(time.Now().UnixNano())

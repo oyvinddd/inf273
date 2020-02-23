@@ -36,9 +36,11 @@ func ParseFile(filename string) (models.INF273Data, error) {
 
 	var noOfNodes int
 	var noOfVehicles int
+	var noOfCalls int
 	var vehicles []models.Vehicle
 	var calls []models.Call
-	// var tac [][][]models.TimeAndCost
+	var compatibility [][]bool
+	//var tac [][][]models.TravelTimeAndCost
 
 	// scan each line in the file
 	scanner := bufio.NewScanner(file)
@@ -66,9 +68,13 @@ func ParseFile(filename string) (models.INF273Data, error) {
 			}
 			vehicles = append(vehicles, *vehicle)
 		case step4:
-			// TODO: parse line
+			noOfCalls, err = strconv.Atoi(line)
+			if err != nil {
+				return models.INF273Data{}, err
+			}
+			initCompMatrix(&compatibility, noOfVehicles, noOfCalls)
 		case step5:
-			// TODO: parse line
+			updateCompMatrix(&compatibility, line)
 		case step6:
 			call, err := callFromLine(line)
 			if err != nil {
@@ -76,7 +82,7 @@ func ParseFile(filename string) (models.INF273Data, error) {
 			}
 			calls = append(calls, *call)
 		case step7:
-
+			// TODO:
 		default:
 			// do nothing
 		}
@@ -86,10 +92,12 @@ func ParseFile(filename string) (models.INF273Data, error) {
 	}
 
 	return models.INF273Data{
-		NoOfNodes:    noOfNodes,
-		NoOfVehicles: noOfVehicles,
-		Vehicles:     vehicles,
-		Calls:        calls,
+		NoOfNodes:     noOfNodes,
+		NoOfVehicles:  noOfVehicles,
+		NoOfCalls:     noOfCalls,
+		Vehicles:      vehicles,
+		Calls:         calls,
+		Compatibility: compatibility,
 	}, nil
 }
 
@@ -128,6 +136,24 @@ func callFromLine(line string) (*models.Call, error) {
 		return nil, err
 	}
 	return models.NewCall(index, origin, dest, size, penalty, lpw, upw, ldw, udw), nil
+}
+
+func initCompMatrix(comp *[][]bool, noOfVehicles int, noOfCalls int) {
+	*comp = make([][]bool, noOfVehicles)
+	for i := range *comp {
+		(*comp)[i] = make([]bool, noOfCalls)
+	}
+}
+
+func updateCompMatrix(comp *[][]bool, line string) {
+	parts := strings.Split(line, ",")
+	for i, c := range parts {
+		if i > 0 {
+			vehicleIndex, _ := strconv.Atoi(parts[0])
+			callIndex, _ := strconv.Atoi(c)
+			(*comp)[vehicleIndex-1][callIndex-1] = true
+		}
+	}
 }
 
 func isComment(line string) bool {
