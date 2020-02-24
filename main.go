@@ -36,8 +36,14 @@ func runProgram() {
 
 	// 3. Check feasibility of solution
 	if err := checkFeasibility(data, solution); err != nil {
-		log.Fatal(err)
+		fmt.Println(err)
+		//log.Fatal(err)
 	}
+
+	obj := calculateObj(data, solution)
+	fmt.Printf("Objective function: %v\n", obj)
+
+	// printSolution(solution)
 
 	// for i := range data.Compatibility {
 	// 	for _, e := range data.Compatibility[i] {
@@ -82,10 +88,9 @@ func checkFeasibility(data models.INF273Data, solution [][]*models.Call) error {
 				return errors.New("Infeasible solution: vehicle capacity")
 			}
 			if call.PickedUp {
+				call.PickedUp = false
 				load -= call.Size
-				fmt.Println("PICKUP!!!")
 			} else {
-				fmt.Println("!!!")
 				call.PickedUp = true
 				load += call.Size
 			}
@@ -94,8 +99,37 @@ func checkFeasibility(data models.INF273Data, solution [][]*models.Call) error {
 	return nil
 }
 
-func calculateObj() {
-	// TODO:
+func calculateObj(data models.INF273Data, solution [][]*models.Call) int {
+	var obj int = 0
+	for row := range solution {
+		vehicle := data.Vehicles[row]
+		for col, call := range solution[row] {
+			if col == 0 {
+				// cost of reaching the first customer from the home node
+				tac := data.GetTravelTimeAndCost(vehicle.Home, call.Origin, vehicle.Index)
+				obj += tac.Cost
+			}
+			if col < len(solution[row])-1 {
+				// cost of transportation
+				from, to := 0, 0
+				call2 := solution[row][col+1]
+				if !call.PickedUp {
+					call.PickedUp = true
+					from = call.Origin
+				} else {
+					from = call.Destination
+				}
+				if !call2.PickedUp {
+					to = call2.Origin
+				} else {
+					to = call2.Destination
+				}
+				tac := data.GetTravelTimeAndCost(from, to, vehicle.Index)
+				obj += tac.Cost
+			}
+		}
+	}
+	return obj
 }
 
 // ---------------- HELPER FUNCTIONS ----------------

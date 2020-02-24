@@ -13,16 +13,17 @@ import (
 
 type step int
 
-var currentStep step = -1
+var currentStep step = 0
 
 const (
-	step1 step = 0 // # of nodes
-	step2 step = 1 // # of vehicles
-	step3 step = 2 // vehicles
-	step4 step = 3 // # of calls
-	step5 step = 4 // vehicles that can transport calls
-	step6 step = 5 // travel times and cost
-	step7 step = 6 // node times and cost
+	step1 step = 1 // # of nodes
+	step2 step = 2 // # of vehicles
+	step3 step = 3 // vehicles
+	step4 step = 4 // # of calls
+	step5 step = 5 // vehicles that can transport calls
+	step6 step = 6 // calls
+	step7 step = 7 // travel times and cost
+	step8 step = 8 // node times and cost
 )
 
 // ParseFile parses all lines of a data file
@@ -41,6 +42,7 @@ func ParseFile(filename string) (models.INF273Data, error) {
 	var calls []models.Call
 	var compatibility [][]bool
 	var travelTAC [][]map[int]models.TravelTimeAndCost
+	var nodeTAC [][]models.NodeTimeAndCost
 
 	// scan each line in the file
 	scanner := bufio.NewScanner(file)
@@ -74,6 +76,7 @@ func ParseFile(filename string) (models.INF273Data, error) {
 				return models.INF273Data{}, err
 			}
 			initCompMatrix(&compatibility, noOfVehicles, noOfCalls)
+			initNodeMatrix(&nodeTAC, noOfVehicles, noOfCalls)
 		case step5:
 			updateCompMatrix(&compatibility, line)
 		case step6:
@@ -84,6 +87,8 @@ func ParseFile(filename string) (models.INF273Data, error) {
 			calls = append(calls, *call)
 		case step7:
 			updateTravelMatrix(&travelTAC, line)
+		case step8:
+			updateNodeMatrix(&nodeTAC, line)
 		default:
 			// do nothing
 		}
@@ -100,6 +105,7 @@ func ParseFile(filename string) (models.INF273Data, error) {
 		Calls:         calls,
 		Compatibility: compatibility,
 		TravelTAC:     travelTAC,
+		NodeTAC:       nodeTAC,
 	}, nil
 }
 
@@ -148,8 +154,8 @@ func initTravelMatrix(ttac *[][]map[int]models.TravelTimeAndCost, noOfNodes int)
 }
 
 func updateTravelMatrix(ttac *[][]map[int]models.TravelTimeAndCost, line string) {
-
 	parts := strings.Split(line, ",")
+
 	vehicle, _ := strconv.Atoi(parts[0])
 	origin, _ := strconv.Atoi(parts[1])
 	destination, _ := strconv.Atoi(parts[2])
@@ -178,6 +184,27 @@ func updateCompMatrix(comp *[][]bool, line string) {
 			(*comp)[vehicleIndex-1][callIndex-1] = true
 		}
 	}
+}
+
+func initNodeMatrix(ntac *[][]models.NodeTimeAndCost, noOfVehicles int, noOfCalls int) {
+	*ntac = make([][]models.NodeTimeAndCost, noOfVehicles)
+	for i := range *ntac {
+		(*ntac)[i] = make([]models.NodeTimeAndCost, noOfCalls)
+	}
+}
+
+func updateNodeMatrix(ntac *[][]models.NodeTimeAndCost, line string) {
+	parts := strings.Split(line, ",")
+
+	vehicleIndex, _ := strconv.Atoi(parts[0])
+	callIndex, _ := strconv.Atoi(parts[1])
+	originTime, _ := strconv.Atoi(parts[2])
+	originCost, _ := strconv.Atoi(parts[3])
+	destTime, _ := strconv.Atoi(parts[4])
+	destCost, _ := strconv.Atoi(parts[5])
+
+	nodeTimeAndCost := *models.NewNodeTimeAndCost(originTime, originCost, destTime, destCost)
+	(*ntac)[vehicleIndex-1][callIndex-1] = nodeTimeAndCost
 }
 
 func isComment(line string) bool {

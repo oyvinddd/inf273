@@ -82,11 +82,29 @@ type TravelTimeAndCost struct {
 	Cost int
 }
 
+// NodeTimeAndCost struct
+type NodeTimeAndCost struct {
+	OriginTime      int
+	OriginCost      int
+	DestinationTime int
+	DestinationCost int
+}
+
 // NewTravelTimeAndCost convenience constructor
 func NewTravelTimeAndCost(time int, cost int) *TravelTimeAndCost {
 	return &TravelTimeAndCost{
 		Time: time,
 		Cost: cost,
+	}
+}
+
+// NewNodeTimeAndCost convenience constructor
+func NewNodeTimeAndCost(originTime int, originCost int, destTime int, destCost int) *NodeTimeAndCost {
+	return &NodeTimeAndCost{
+		OriginTime:      originTime,
+		OriginCost:      originCost,
+		DestinationTime: destTime,
+		DestinationCost: destCost,
 	}
 }
 
@@ -101,4 +119,14 @@ type INF273Data struct {
 	Calls         []Call
 	Compatibility [][]bool
 	TravelTAC     [][]map[int]TravelTimeAndCost
+	NodeTAC       [][]NodeTimeAndCost
+}
+
+// --------- HELPER FUNCTIONS ---------
+
+// GetTravelTimeAndCost returns a struct from the matrix of travel times and cost
+func (data *INF273Data) GetTravelTimeAndCost(origin int, destination int, vehicleIndex int) TravelTimeAndCost {
+	dictionary := data.TravelTAC[origin-1][destination-1]
+	timeAndCost := dictionary[vehicleIndex]
+	return timeAndCost
 }
