@@ -130,3 +130,13 @@ func (data *INF273Data) GetTravelTimeAndCost(origin int, destination int, vehicl
 	timeAndCost := dictionary[vehicleIndex]
 	return timeAndCost
 }
+
+// GetNodeTimeAndCost returns a struct from the matrix of node times and cost
+func (data *INF273Data) GetNodeTimeAndCost(vehicleIndex int, callIndex int) NodeTimeAndCost {
+	return data.NodeTAC[vehicleIndex-1][callIndex-1]
+}
+
+// VehicleAndCallIsCompatible returns true if vehicle can transport call, else false
+func (data *INF273Data) VehicleAndCallIsCompatible(vehicleIndex int, callIndex int) bool {
+	return data.Compatibility[vehicleIndex-1][callIndex-1]
+}
