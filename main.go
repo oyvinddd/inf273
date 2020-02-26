@@ -53,6 +53,6 @@ func getFeasibleSolution() [][]*models.Call {
 		{c3, c3},
 		{c7, c1, c7, c1},
 		{c5, c5},
-		{c2, c2, c4, c4, c6, c6}, // not transported
+		{c2, c4, c6}, // not transported
 	}
 }

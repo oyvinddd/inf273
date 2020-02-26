@@ -58,10 +58,8 @@ type Call struct {
 
 func (c *Call) Location() int {
 	if c.PickedUp {
-		c.PickedUp = false
 		return c.Destination
 	}
-	c.PickedUp = true
 	return c.Origin
 }
 

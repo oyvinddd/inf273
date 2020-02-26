@@ -19,6 +19,7 @@ func GenerateSolution(data models.INF273Data) [][]*models.Call {
 		i := randomNumber(0, data.NoOfVehicles)
 		ptr := new(models.Call)
 		*ptr = call
+		// add dummy vehicle to the last index in the array
 		if i == len(solution)-1 {
 			solution[i] = append(solution[i], ptr)
 		} else {
@@ -69,20 +70,35 @@ func CalculateObjective(data models.INF273Data, solution [][]*models.Call) int {
 
 			// handle cost of not transporting
 			if vehicle.IsDummy() && !call.PickedUp {
-				fmt.Println("here")
 				obj += call.Penalty
 				call.PickedUp = true
+				continue
 			}
+			// handle the cost of reaching the first customer from the home node
 			if col == 0 {
-
-				// cost of reaching the first customer from the home node
-				tac := data.GetTravelTimeAndCost(vehicle.Home, call.Origin, vehicle.Index)
-				obj += tac.Cost
+				ttac := data.GetTravelTimeAndCost(vehicle.Home, call.Origin, vehicle.Index)
+				obj += ttac.Cost
 			}
+			// handle travel costs and node costs
 			if col > 0 {
 
 				previousCall := solution[row][col-1]
-				fmt.Printf("\nGoing from %d (%d) to %d (%d)\n", previousCall.Location(), previousCall.Index, call.Location(), call.Index)
+
+				from := previousCall.Location()
+				if !previousCall.PickedUp {
+					call.PickedUp = true
+				}
+				to := call.Location()
+				if !call.PickedUp {
+					previousCall.PickedUp = true
+				}
+
+				ttac := data.GetTravelTimeAndCost(from, to, vehicle.Index)
+				obj += ttac.Cost
+
+				//ntac := data.GetNodeTimeAndCost(vehicle.Index, call.Index)
+
+				fmt.Printf("\nGoing from %d (%d) to %d (%d)\n", from, previousCall.Index, to, call.Index)
 
 				// if !previousCall.PickedUp {
 				// 	previousCall.PickedUp = true
