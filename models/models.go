@@ -54,10 +54,11 @@ type Call struct {
 	LowerDW     int
 	UpperDW     int
 	PickedUp    bool
+	Delivered   bool
 }
 
 func (c *Call) Location() int {
-	if c.PickedUp {
+	if c.Delivered {
 		return c.Destination
 	}
 	return c.Origin
@@ -76,6 +77,7 @@ func NewCall(index int, origin int, destination int, size int, penalty int, lpw 
 		LowerDW:     ldw,
 		UpperDW:     udw,
 		PickedUp:    false,
+		Delivered:   false,
 	}
 }
 
@@ -142,7 +144,6 @@ func (data *INF273Data) GetTravelTimeAndCost(origin int, destination int, vehicl
 
 // GetNodeTimeAndCost returns a struct from the matrix of node times and cost
 func (data *INF273Data) GetNodeTimeAndCost(vehicleIndex int, callIndex int) NodeTimeAndCost {
-	//fmt.Printf("SIZE: %v %v %v", len(data.NodeTAC), vehicleIndex, callIndex)
 	return data.NodeTAC[vehicleIndex-1][callIndex-1]
 }
 

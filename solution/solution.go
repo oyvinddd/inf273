@@ -1,4 +1,4 @@
-package main
+package solution
 
 import (
 	"errors"
@@ -60,6 +60,12 @@ func CheckFeasibility(data models.INF273Data, solution [][]*models.Call) error {
 	return err
 }
 
+// TODO: remove
+var fromHome = 0
+var notTrans = 0
+var travelCost = 0
+var nodeCost = 0
+
 // CalculateObjective takes a solution as input and returns an objective value
 func CalculateObjective(data models.INF273Data, solution [][]*models.Call) int {
 
@@ -71,6 +77,7 @@ func CalculateObjective(data models.INF273Data, solution [][]*models.Call) int {
 			// handle cost of not transporting
 			if vehicle.IsDummy() && !call.PickedUp {
 				obj += call.Penalty
+				notTrans += call.Penalty
 				call.PickedUp = true
 				continue
 			}
@@ -78,58 +85,50 @@ func CalculateObjective(data models.INF273Data, solution [][]*models.Call) int {
 			if col == 0 {
 				ttac := data.GetTravelTimeAndCost(vehicle.Home, call.Origin, vehicle.Index)
 				obj += ttac.Cost
+				fromHome = ttac.Cost
+				//fmt.Printf("REACHING FIRST NODE FROM HOME: %d\n", ttac.Cost)
 			}
 			// handle travel costs and node costs
 			if col > 0 {
 
+				//ntac := data.GetNodeTimeAndCost(vehicle.Index, call.Index)
+				from, to, prevNodeCost, currNodeCost := 0, 0, 0, 0
 				previousCall := solution[row][col-1]
 
-				from := previousCall.Location()
-				if !previousCall.PickedUp {
-					call.PickedUp = true
+				if previousCall.Delivered {
+					from = previousCall.Destination
+				} else {
+					from = previousCall.Origin
 				}
-				to := call.Location()
-				if !call.PickedUp {
-					previousCall.PickedUp = true
+
+				if call == previousCall {
+					call.PickedUp = true
+					call.Delivered = true
+					to = call.Destination
+				} else if !call.PickedUp {
+					call.PickedUp = true
+					to = call.Origin
+				} else {
+					call.Delivered = true
+					to = call.Destination
 				}
 
 				ttac := data.GetTravelTimeAndCost(from, to, vehicle.Index)
-				obj += ttac.Cost
+				obj += (prevNodeCost + currNodeCost + ttac.Cost)
 
-				//ntac := data.GetNodeTimeAndCost(vehicle.Index, call.Index)
+				fmt.Printf("\nVehicle #%d: Going from %d (%d) to %d (%d) costs %v\n", vehicle.Index, from, previousCall.Index, to, call.Index, ttac.Cost)
 
-				fmt.Printf("\nGoing from %d (%d) to %d (%d)\n", from, previousCall.Index, to, call.Index)
-
-				// if !previousCall.PickedUp {
-				// 	previousCall.PickedUp = true
-				// }
-				// if !call.PickedUp {
-				// 	call.PickedUp = true
-				// }
-
-				// cost of transportation
-
-				// from, to := 0, 0
-				// ntac := data.GetNodeTimeAndCost(vehicle.Index, call.Index)
-				// call2 := solution[row][col+1]
-				// if !call.PickedUp {
-				// 	call.PickedUp = true
-				// 	from = call.Origin
-				// 	obj += ntac.OriginCost
-				// } else {
-				// 	from = call.Destination
-				// 	obj += ntac.DestinationCost
-				// }
-				// if !call2.PickedUp {
-				// 	to = call2.Origin
-				// } else {
-				// 	to = call2.Destination
-				// }
-				// ttac := data.GetTravelTimeAndCost(from, to, vehicle.Index)
-				// obj += ttac.Cost
+				if !previousCall.PickedUp {
+					previousCall.PickedUp = true
+				}
+				if !call.PickedUp {
+					call.PickedUp = true
+				}
 			}
 		}
 	}
+	fmt.Printf("## COST OF REACHING FIRST NODE FROM HOME: %v ##\n", fromHome)
+	fmt.Printf("## COST OF NOT TRANSPORTING: %v ##\n", notTrans)
 	return obj
 }
 

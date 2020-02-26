@@ -1,21 +1,21 @@
-package main
+package tests
 
 import (
 	"testing"
 
 	"github.com/oyvinddd/inf273/models"
+	. "github.com/oyvinddd/inf273/solution"
 	"github.com/oyvinddd/inf273/util"
 )
 
 func TestGenerateSolution(t *testing.T) {
-
 	solution := GenerateSolution(getData())
 
 	if solution == nil {
 		t.Errorf("Solution is nil")
 	}
 
-	validCallNum, callNum := 14, 0
+	validCallNum, callNum := 11, 0
 	for i := range solution {
 		callNum += len(solution[i])
 	}
@@ -66,6 +66,6 @@ func getFeasibleSolution() [][]*models.Call {
 		{c3, c3},
 		{c7, c1, c7, c1},
 		{c5, c5},
-		{c2, c2, c4, c4, c6, c6}, // not transported
+		{c2, c4, c6}, // not transported
 	}
 }
