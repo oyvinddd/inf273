@@ -13,14 +13,17 @@ import (
 
 // GenerateSolution generates a random solution
 func GenerateSolution(data models.INF273Data) [][]*models.Call {
-	// initialize empty solution matrix
 	solution := make([][]*models.Call, data.NoOfVehicles)
 	// fill rows with calls (every call appears two times; pickup/delivery)
 	for _, call := range data.Calls {
 		i := randomNumber(0, data.NoOfVehicles)
 		ptr := new(models.Call)
 		*ptr = call
-		solution[i] = append(solution[i], ptr, ptr)
+		if i == len(solution)-1 {
+			solution[i] = append(solution[i], ptr)
+		} else {
+			solution[i] = append(solution[i], ptr, ptr)
+		}
 	}
 	// for each row, randomize the order of the calls
 	for _, calls := range solution {
@@ -66,9 +69,9 @@ func CalculateObjective(data models.INF273Data, solution [][]*models.Call) int {
 
 			// handle cost of not transporting
 			if vehicle.IsDummy() && !call.PickedUp {
+				fmt.Println("here")
 				obj += call.Penalty
 				call.PickedUp = true
-				continue
 			}
 			if col == 0 {
 
@@ -76,33 +79,39 @@ func CalculateObjective(data models.INF273Data, solution [][]*models.Call) int {
 				tac := data.GetTravelTimeAndCost(vehicle.Home, call.Origin, vehicle.Index)
 				obj += tac.Cost
 			}
-			if col < len(solution[row])-1 {
+			if col > 0 {
+
+				previousCall := solution[row][col-1]
+				fmt.Printf("\nGoing from %d (%d) to %d (%d)\n", previousCall.Location(), previousCall.Index, call.Location(), call.Index)
+
+				// if !previousCall.PickedUp {
+				// 	previousCall.PickedUp = true
+				// }
+				// if !call.PickedUp {
+				// 	call.PickedUp = true
+				// }
 
 				// cost of transportation
-				//ntac := 0
-				from, to := 0, 0
-				call2 := solution[row][col+1]
-				if !call.PickedUp {
-					call.PickedUp = true
-					from = call.Origin
-					ntac := data.GetNodeTimeAndCost(vehicle.Index, call.Index)
-					fmt.Printf("Node cost (%v %v): O: %v D: %v\n", vehicle.Index, call.Index, ntac.OriginCost, ntac.DestinationCost)
-				} else {
-					from = call.Destination
-				}
-				if !call2.PickedUp {
-					to = call2.Origin
-				} else {
-					to = call2.Destination
-				}
-				ttac := data.GetTravelTimeAndCost(from, to, vehicle.Index)
-				obj += ttac.Cost
 
-				// cost at origin and destination node
-				// models.NodeTimeAndCost()
-				// fmt.Printf("Origin node %v cost: %v", )
+				// from, to := 0, 0
+				// ntac := data.GetNodeTimeAndCost(vehicle.Index, call.Index)
+				// call2 := solution[row][col+1]
+				// if !call.PickedUp {
+				// 	call.PickedUp = true
+				// 	from = call.Origin
+				// 	obj += ntac.OriginCost
+				// } else {
+				// 	from = call.Destination
+				// 	obj += ntac.DestinationCost
+				// }
+				// if !call2.PickedUp {
+				// 	to = call2.Origin
+				// } else {
+				// 	to = call2.Destination
+				// }
+				// ttac := data.GetTravelTimeAndCost(from, to, vehicle.Index)
+				// obj += ttac.Cost
 			}
-
 		}
 	}
 	return obj

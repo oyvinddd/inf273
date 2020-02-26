@@ -1,6 +1,8 @@
 package models
 
-import "fmt"
+import (
+	"fmt"
+)
 
 // --------------- VEHICLE ---------------
 
@@ -52,6 +54,15 @@ type Call struct {
 	LowerDW     int
 	UpperDW     int
 	PickedUp    bool
+}
+
+func (c *Call) Location() int {
+	if c.PickedUp {
+		c.PickedUp = false
+		return c.Destination
+	}
+	c.PickedUp = true
+	return c.Origin
 }
 
 // NewCall convenience constructor for call struct
@@ -133,6 +144,7 @@ func (data *INF273Data) GetTravelTimeAndCost(origin int, destination int, vehicl
 
 // GetNodeTimeAndCost returns a struct from the matrix of node times and cost
 func (data *INF273Data) GetNodeTimeAndCost(vehicleIndex int, callIndex int) NodeTimeAndCost {
+	//fmt.Printf("SIZE: %v %v %v", len(data.NodeTAC), vehicleIndex, callIndex)
 	return data.NodeTAC[vehicleIndex-1][callIndex-1]
 }
 
