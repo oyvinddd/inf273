@@ -9,39 +9,23 @@ import (
 )
 
 func TestGenerateSolution(t *testing.T) {
-	solution := GenerateSolution(getData())
-
-	if solution == nil {
-		t.Errorf("Solution is nil")
-	}
-
-	validCallNum, callNum := 11, 0
-	for i := range solution {
-		callNum += len(solution[i])
-	}
-
-	if callNum != validCallNum {
-		t.Errorf("Number of calls is incorrect: %d (should be %d)", callNum, validCallNum)
-	}
+	// solution := GenerateSolution(getData())
+	// TODO: implement
 }
 
 func TestCheckFeasibility(t *testing.T) {
-	// TODO:
+	// TODO: implement
 }
 
 func TestCalculateObjective(t *testing.T) {
 
 	data := getData()
 	solution := getFeasibleSolution()
-
-	solutionLength := len(solution)
-	if solutionLength != 4 {
-		t.Errorf("Length of solution is incorrect: %d", solutionLength)
-	}
+	targetObjective := 1940470
 
 	objective := CalculateObjective(data, solution)
-	if objective != 1940470 {
-		t.Errorf("Objective function is wrong: %v (should be %v)", objective, 1940470)
+	if objective != targetObjective {
+		t.Errorf("Objective function is wrong: %v (should be %v)", objective, targetObjective)
 	}
 }
 

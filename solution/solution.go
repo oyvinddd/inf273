@@ -81,20 +81,23 @@ func CalculateObjective(data models.INF273Data, solution [][]*models.Call) int {
 				call.PickedUp = true
 				continue
 			}
-			// handle the cost of reaching the first customer from the home node
 			if col == 0 {
+				// handle the cost of reaching the first customer from the home node
 				ttac := data.GetTravelTimeAndCost(vehicle.Home, call.Origin, vehicle.Index)
 				obj += ttac.Cost
 				fromHome = ttac.Cost
 				//fmt.Printf("REACHING FIRST NODE FROM HOME: %d\n", ttac.Cost)
-			}
-			// handle travel costs and node costs
-			if col > 0 {
+			} else if col > 0 {
+
+				// handle travel costs and node costs
 
 				//ntac := data.GetNodeTimeAndCost(vehicle.Index, call.Index)
 				from, to, prevNodeCost, currNodeCost := 0, 0, 0, 0
 				previousCall := solution[row][col-1]
 
+				if !previousCall.PickedUp {
+					previousCall.PickedUp = true
+				}
 				if previousCall.Delivered {
 					from = previousCall.Destination
 				} else {
@@ -117,13 +120,6 @@ func CalculateObjective(data models.INF273Data, solution [][]*models.Call) int {
 				obj += (prevNodeCost + currNodeCost + ttac.Cost)
 
 				fmt.Printf("\nVehicle #%d: Going from %d (%d) to %d (%d) costs %v\n", vehicle.Index, from, previousCall.Index, to, call.Index, ttac.Cost)
-
-				if !previousCall.PickedUp {
-					previousCall.PickedUp = true
-				}
-				if !call.PickedUp {
-					call.PickedUp = true
-				}
 			}
 		}
 	}
