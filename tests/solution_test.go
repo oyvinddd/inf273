@@ -95,11 +95,6 @@ func TestDataSet(t *testing.T) {
 	}
 }
 
-func TestGenerateSolution(t *testing.T) {
-	// solution := GenerateSolution(getData())
-	// TODO: implement
-}
-
 func TestCheckFeasibility(t *testing.T) {
 	// TODO: implement
 }

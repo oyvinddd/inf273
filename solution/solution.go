@@ -2,7 +2,6 @@ package solution
 
 import (
 	"errors"
-	"fmt"
 	"math/rand"
 	"time"
 
@@ -61,9 +60,6 @@ func CheckFeasibility(data models.INF273Data, solution [][]*models.Call) error {
 }
 
 // TODO: remove
-var fromHome = 0
-var notTrans = 0
-var travelCost = 0
 var nodeCost = 0
 
 // CalculateObjective takes a solution as input and returns an objective value
@@ -77,59 +73,45 @@ func CalculateObjective(data models.INF273Data, solution [][]*models.Call) int {
 			// handle cost of not transporting
 			if vehicle.IsDummy() && !call.PickedUp {
 				obj += call.Penalty
-				notTrans += call.Penalty
 				call.PickedUp = true
 				continue
 			}
 			if col == 0 {
 				// handle the cost of reaching the first customer from the home node
-				ttac := data.GetTravelTimeAndCost(vehicle.Home, call.Origin, vehicle.Index)
-				obj += ttac.Cost
-				fromHome = ttac.Cost
-				//fmt.Printf("REACHING FIRST NODE FROM HOME: %d\n", ttac.Cost)
+				obj += data.GetTravelTimeAndCost(vehicle.Home, call.Origin, vehicle.Index).Cost
+				nodeCost += data.GetNodeTimeAndCost(vehicle.Index, call.Index).OriginCost
+				nodeCost += data.GetNodeTimeAndCost(vehicle.Index, call.Index).DestinationCost
 			} else if col > 0 {
 
-				// handle travel and node costs
-
 				ntac := data.GetNodeTimeAndCost(vehicle.Index, call.Index)
-				from, to, prevNodeCost, currNodeCost := 0, 0, 0, 0
+				from, to := 0, 0
 				previousCall := solution[row][col-1]
 
 				previousCall.PickedUp = true
 				if previousCall.Delivered {
 					from = previousCall.Destination
-					prevNodeCost = ntac.DestinationCost
 				} else {
 					from = previousCall.Origin
-					prevNodeCost = ntac.OriginCost
 				}
 
 				if call == previousCall {
 					call.PickedUp = true
 					call.Delivered = true
 					to = call.Destination
-					currNodeCost = ntac.DestinationCost
+					obj += ntac.OriginCost + ntac.DestinationCost
 				} else if !call.PickedUp {
 					call.PickedUp = true
 					to = call.Origin
-					currNodeCost = ntac.OriginCost
 				} else {
-					// TODO: add origin and dest cost for node blindly to the obj
 					call.Delivered = true
 					to = call.Destination
-					currNodeCost = ntac.DestinationCost
+					obj += ntac.OriginCost + ntac.DestinationCost
 				}
 
-				ttac := data.GetTravelTimeAndCost(from, to, vehicle.Index)
-				obj += (prevNodeCost + currNodeCost + ttac.Cost)
-
-				fmt.Printf("\n%d %d %d\n", prevNodeCost, currNodeCost, ttac.Cost)
-				fmt.Printf("\nVehicle #%d: Going from %d (%d) to %d (%d) costs %v\n", vehicle.Index, from, previousCall.Index, to, call.Index, ttac.Cost)
+				obj += data.GetTravelTimeAndCost(from, to, vehicle.Index).Cost
 			}
 		}
 	}
-	fmt.Printf("## COST OF REACHING FIRST NODE FROM HOME: %v ##\n", fromHome)
-	fmt.Printf("## COST OF NOT TRANSPORTING: %v ##\n", notTrans)
 	return obj
 }
 
@@ -145,18 +127,4 @@ func shuffleSlice(a []*models.Call) {
 	rand.Shuffle(len(a), func(i int, j int) {
 		a[i], a[j] = a[j], a[i]
 	})
-}
-
-func printSolution(solution [][]*models.Call) {
-	for i := range solution {
-		row := solution[i]
-		if len(row) == 0 {
-			fmt.Println("[-]")
-			continue
-		}
-		for _, e := range solution[i] {
-			fmt.Printf("[%v]", e.Index)
-		}
-		fmt.Println()
-	}
 }

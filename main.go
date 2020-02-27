@@ -28,6 +28,7 @@ func main() {
 
 	// generate a random solution
 	solution := GenerateSolution(data)
+	printSolution(solution)
 
 	// check feasibility of solution
 	if err := CheckFeasibility(data, solution); err != nil {
@@ -37,4 +38,25 @@ func main() {
 	// calculate objective
 	objective := CalculateObjective(data, solution)
 	fmt.Printf("Objective function: %v\n", objective)
+}
+
+// --------------- HELPER FUNCTIONS ---------------
+
+func printSolution(solution [][]*models.Call) {
+	fmt.Println("-------- SOLUTION REPRESENTATION --------")
+	for i := range solution {
+		row := solution[i]
+		if len(row) == 0 {
+			fmt.Println("[-]")
+			continue
+		}
+		for _, e := range solution[i] {
+			fmt.Printf("[%v]", e.Index)
+		}
+		if i == len(solution)-1 {
+			fmt.Print(" <-- Dummy vehicles")
+		}
+		fmt.Println()
+	}
+	fmt.Println()
 }

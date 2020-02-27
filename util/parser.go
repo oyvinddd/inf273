@@ -29,7 +29,6 @@ const (
 // ParseFile parses all lines of a data file
 func ParseFile(filePath string) (models.INF273Data, error) {
 
-	// path, err := filepath.Abs(fmt.Sprintf("data/%s", filename))
 	file, err := os.Open(fmt.Sprintf("%s", filePath))
 	if err != nil {
 		return models.INF273Data{}, err
