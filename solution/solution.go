@@ -89,31 +89,34 @@ func CalculateObjective(data models.INF273Data, solution [][]*models.Call) int {
 				//fmt.Printf("REACHING FIRST NODE FROM HOME: %d\n", ttac.Cost)
 			} else if col > 0 {
 
-				// handle travel costs and node costs
+				// handle travel and node costs
 
-				//ntac := data.GetNodeTimeAndCost(vehicle.Index, call.Index)
+				ntac := data.GetNodeTimeAndCost(vehicle.Index, call.Index)
 				from, to, prevNodeCost, currNodeCost := 0, 0, 0, 0
 				previousCall := solution[row][col-1]
 
-				if !previousCall.PickedUp {
-					previousCall.PickedUp = true
-				}
+				previousCall.PickedUp = true
 				if previousCall.Delivered {
 					from = previousCall.Destination
+					prevNodeCost = ntac.DestinationCost
 				} else {
 					from = previousCall.Origin
+					prevNodeCost = ntac.OriginCost
 				}
 
 				if call == previousCall {
 					call.PickedUp = true
 					call.Delivered = true
 					to = call.Destination
+					currNodeCost = ntac.DestinationCost
 				} else if !call.PickedUp {
 					call.PickedUp = true
 					to = call.Origin
+					currNodeCost = ntac.OriginCost
 				} else {
 					call.Delivered = true
 					to = call.Destination
+					currNodeCost = ntac.DestinationCost
 				}
 
 				ttac := data.GetTravelTimeAndCost(from, to, vehicle.Index)

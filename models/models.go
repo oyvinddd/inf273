@@ -57,13 +57,6 @@ type Call struct {
 	Delivered   bool
 }
 
-func (c *Call) Location() int {
-	if c.Delivered {
-		return c.Destination
-	}
-	return c.Origin
-}
-
 // NewCall convenience constructor for call struct
 func NewCall(index int, origin int, destination int, size int, penalty int, lpw int, upw int, ldw int, udw int) *Call {
 	return &Call{
