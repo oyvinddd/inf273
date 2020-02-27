@@ -2,6 +2,7 @@ package solution
 
 import (
 	"errors"
+	"fmt"
 	"math/rand"
 	"time"
 
@@ -18,10 +19,11 @@ func GenerateSolution(data models.INF273Data) [][]*models.Call {
 		i := randomNumber(0, data.NoOfVehicles)
 		ptr := new(models.Call)
 		*ptr = call
-		// add dummy vehicle to the last index in the array
 		if i == len(solution)-1 {
+			// dummy vehicles
 			solution[i] = append(solution[i], ptr)
 		} else {
+			// regular vehicles (one for pickup and one for delivery)
 			solution[i] = append(solution[i], ptr, ptr)
 		}
 	}
@@ -37,15 +39,18 @@ func CheckFeasibility(data models.INF273Data, solution [][]*models.Call) error {
 	var err error = nil
 	for row := range solution {
 		vehicle, load := data.Vehicles[row], 0
-		// skip feasibility checks if vehicle is dummy
+		// skip feasibility checks for all dummy vehicles
 		if vehicle.IsDummy() {
 			continue
 		}
 		for _, call := range solution[row] {
+			// vehicle capacity
+			if load > vehicle.Capacity {
+				err = errors.New("Infeasible solution: vehicle capacity")
+			}
+			// calls and vehicle compatibility
 			if !data.VehicleAndCallIsCompatible(vehicle.Index, call.Index) {
 				err = errors.New("Infeasible solution: compatibility")
-			} else if load > vehicle.Capacity {
-				err = errors.New("Infeasible solution: vehicle capacity")
 			}
 			if call.PickedUp {
 				call.PickedUp = false
@@ -58,9 +63,6 @@ func CheckFeasibility(data models.INF273Data, solution [][]*models.Call) error {
 	}
 	return err
 }
-
-// TODO: remove
-var nodeCost = 0
 
 // CalculateObjective takes a solution as input and returns an objective value
 func CalculateObjective(data models.INF273Data, solution [][]*models.Call) int {
@@ -79,33 +81,28 @@ func CalculateObjective(data models.INF273Data, solution [][]*models.Call) int {
 			if col == 0 {
 				// handle the cost of reaching the first customer from the home node
 				obj += data.GetTravelTimeAndCost(vehicle.Home, call.Origin, vehicle.Index).Cost
-				nodeCost += data.GetNodeTimeAndCost(vehicle.Index, call.Index).OriginCost
-				nodeCost += data.GetNodeTimeAndCost(vehicle.Index, call.Index).DestinationCost
 			} else if col > 0 {
 
 				ntac := data.GetNodeTimeAndCost(vehicle.Index, call.Index)
 				from, to := 0, 0
 				previousCall := solution[row][col-1]
 
-				previousCall.PickedUp = true
 				if previousCall.Delivered {
 					from = previousCall.Destination
 				} else {
+					previousCall.PickedUp = true
 					from = previousCall.Origin
 				}
 
-				if call == previousCall {
+				if call.PickedUp || call == previousCall {
 					call.PickedUp = true
 					call.Delivered = true
 					to = call.Destination
 					obj += ntac.OriginCost + ntac.DestinationCost
-				} else if !call.PickedUp {
+					fmt.Printf("CALL: %d\n", call.Index)
+				} else {
 					call.PickedUp = true
 					to = call.Origin
-				} else {
-					call.Delivered = true
-					to = call.Destination
-					obj += ntac.OriginCost + ntac.DestinationCost
 				}
 
 				obj += data.GetTravelTimeAndCost(from, to, vehicle.Index).Cost
