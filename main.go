@@ -17,7 +17,7 @@ func main() {
 	defer util.NewTimer().PrintElapsed()
 
 	// parse input file
-	data, err := util.ParseFile("Call_7_Vehicle_3.txt")
+	data, err := util.ParseFile("data/Call_7_Vehicle_3.txt")
 	if err != nil {
 		log.Fatal(err)
 	}

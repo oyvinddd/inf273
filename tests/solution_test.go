@@ -1,6 +1,7 @@
 package tests
 
 import (
+	"log"
 	"testing"
 
 	"github.com/oyvinddd/inf273/models"
@@ -107,16 +108,19 @@ func TestCalculateObjective(t *testing.T) {
 
 	data := getData()
 	solution := getFeasibleSolution()
-	targetObjective := 1940470
+	expObj := 1940470
 
 	objective := CalculateObjective(data, solution)
-	if objective != targetObjective {
-		t.Errorf("Objective function is wrong: %v (should be %v)", objective, targetObjective)
+	if objective != expObj {
+		t.Errorf("Objective function is wrong: %v (should be %v)", objective, expObj)
 	}
 }
 
 func getData() models.INF273Data {
-	data, _ := util.ParseFile("Call_7_Vehicle_3.txt")
+	data, err := util.ParseFile("../data/Call_7_Vehicle_3.txt")
+	if err != nil {
+		log.Fatal(err)
+	}
 	data.Vehicles = append(data.Vehicles, *models.NewDummyVehicle())
 	data.NoOfVehicles++
 	return data

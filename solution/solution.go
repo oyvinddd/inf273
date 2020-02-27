@@ -114,6 +114,7 @@ func CalculateObjective(data models.INF273Data, solution [][]*models.Call) int {
 					to = call.Origin
 					currNodeCost = ntac.OriginCost
 				} else {
+					// TODO: add origin and dest cost for node blindly to the obj
 					call.Delivered = true
 					to = call.Destination
 					currNodeCost = ntac.DestinationCost
@@ -122,6 +123,7 @@ func CalculateObjective(data models.INF273Data, solution [][]*models.Call) int {
 				ttac := data.GetTravelTimeAndCost(from, to, vehicle.Index)
 				obj += (prevNodeCost + currNodeCost + ttac.Cost)
 
+				fmt.Printf("\n%d %d %d\n", prevNodeCost, currNodeCost, ttac.Cost)
 				fmt.Printf("\nVehicle #%d: Going from %d (%d) to %d (%d) costs %v\n", vehicle.Index, from, previousCall.Index, to, call.Index, ttac.Cost)
 			}
 		}
