@@ -27,7 +27,7 @@ func main() {
 	data.NoOfVehicles++
 
 	// generate a random solution
-	solution := sol() //GenerateSolution(data)
+	solution := GenerateSolution(data)
 	printSolution(solution)
 
 	// check feasibility of solution

@@ -54,7 +54,6 @@ type Call struct {
 	LowerDW     int
 	UpperDW     int
 	PickedUp    bool
-	Delivered   bool
 }
 
 // NewCall convenience constructor for call struct
@@ -70,7 +69,6 @@ func NewCall(index int, origin int, destination int, size int, penalty int, lpw 
 		LowerDW:     ldw,
 		UpperDW:     udw,
 		PickedUp:    false,
-		Delivered:   false,
 	}
 }
 

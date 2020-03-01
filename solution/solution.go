@@ -38,12 +38,30 @@ func GenerateSolution(data models.INF273Data) [][]*models.Call {
 func CheckFeasibility(data models.INF273Data, solution [][]*models.Call) error {
 	var err error = nil
 	for row := range solution {
-		vehicle, vehicleLoad := data.Vehicles[row], 0
+		vehicle, vehicleLoad, currentTime := data.Vehicles[row], 0, 0
 		// skip feasibility checks for all dummy vehicles
 		if vehicle.IsDummy() {
 			continue
 		}
 		for col, call := range solution[row] {
+
+			if col == 0 {
+				// make sure to add travel time from home node to first call
+				currentTime += data.GetTravelTimeAndCost(vehicle.Home, call.Origin, vehicle.Index).Time
+			}
+
+			ntac := data.GetNodeTimeAndCost(vehicle.Index, call.Index)
+			// add loading (or unloading) time to current time
+			time, err2 := calculateLoadingOrUnloadingTime(currentTime, vehicle.Index, ntac, call)
+			if err2 != nil {
+				err = err2
+			}
+			currentTime += time
+
+			// calls and vehicle compatibility
+			if !data.VehicleAndCallIsCompatible(vehicle.Index, call.Index) {
+				err = errors.New("Infeasible solution: compatibility")
+			}
 
 			if col < len(solution[row])-1 {
 
@@ -51,11 +69,11 @@ func CheckFeasibility(data models.INF273Data, solution [][]*models.Call) error {
 				from, to := 0, 0
 
 				if !call.PickedUp {
-					fmt.Printf("Pickup %d\n", call.Index)
 					call.PickedUp = true
 					from = call.Origin
 					vehicleLoad += call.Size
-					fmt.Println("Checking capacity...")
+					fmt.Printf("%d - Loading at %d\n", vehicle.Index, call.Origin)
+					// vehicle capacity
 					if vehicleLoad > vehicle.Capacity {
 						err = errors.New("Infeasible solution: vehicle capacity")
 					}
@@ -66,16 +84,13 @@ func CheckFeasibility(data models.INF273Data, solution [][]*models.Call) error {
 				if !nextCall.PickedUp {
 					to = nextCall.Origin
 				} else {
-					fmt.Printf("Deliver %d\n", call.Index)
 					to = nextCall.Destination
 					vehicleLoad -= call.Size
+					fmt.Printf("%d - Unloading at %d\n", vehicle.Index, call.Destination)
 				}
-				fmt.Println(from, to)
-			}
 
-			// calls and vehicle compatibility
-			if !data.VehicleAndCallIsCompatible(vehicle.Index, call.Index) {
-				err = errors.New("Infeasible solution: compatibility")
+				// add travel time from current node to next node
+				currentTime += data.GetTravelTimeAndCost(from, to, vehicle.Index).Time
 			}
 		}
 	}
@@ -148,4 +163,37 @@ func shuffleSlice(a []*models.Call) {
 	rand.Shuffle(len(a), func(i int, j int) {
 		a[i], a[j] = a[j], a[i]
 	})
+}
+
+func calculateLoadingOrUnloadingTime(currentTime int, vehicleIndex int, ntac models.NodeTimeAndCost, call *models.Call) (int, error) {
+
+	var time int = 0
+	var err error = nil
+
+	if !call.PickedUp {
+		if currentTime < call.LowerPW {
+			fmt.Printf("%d - arrived at pickup early, waiting for %d time\n", vehicleIndex, call.LowerPW-currentTime)
+			// vehicle arrived early at pickup, add waiting time
+			time += call.LowerPW - currentTime
+		} else if currentTime > call.UpperPW {
+			// vehicle arrived too late at pickup, infeasible
+			fmt.Printf("%d - Infeasible: arrived at destination too late\n", vehicleIndex)
+			err = errors.New("Infeasible solution: arrived at pickup too late")
+		}
+		fmt.Printf("%d - Loading at %d. Current time: %d (waiting %d)\n", vehicleIndex, call.Origin, currentTime, ntac.OriginTime)
+		time += ntac.OriginTime
+	} else {
+		if currentTime < call.LowerDW {
+			fmt.Printf("%d - arrived at destination early, waiting for %d time\n", vehicleIndex, call.LowerDW-currentTime)
+			// vehicle arrived early at destination, add waiting time
+			time += call.LowerDW - currentTime
+		} else if currentTime > call.UpperDW {
+			// vehicle arrived too late at destination, infeasible
+			fmt.Printf("%d - Infeasible: arrived at destination too late\n", vehicleIndex)
+			err = errors.New("Infeasible solution: arrived at destination too late")
+		}
+		fmt.Printf("%d - Unloading at %d. Current time: %d (waiting %d)\n", vehicleIndex, call.Destination, currentTime, ntac.DestinationTime)
+		time += ntac.DestinationTime
+	}
+	return time, err
 }
