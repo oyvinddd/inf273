@@ -23,7 +23,7 @@ func (t *Timer) Start() {
 	t.start = time.Now()
 }
 
-// PrintElapsed time to the console
+// PrintElapsed time to the terminal
 func (t *Timer) PrintElapsed() {
-	fmt.Printf("\n### Program execution took %v\n", time.Since(t.start))
+	fmt.Printf("\n(Program execution took %v)\n", time.Since(t.start))
 }

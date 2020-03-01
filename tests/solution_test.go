@@ -9,6 +9,8 @@ import (
 	"github.com/oyvinddd/inf273/util"
 )
 
+// --------- UNIT TESTS FOR SOME OF THE FUNCTIONS USED IN THE PROGRAM ---------
+
 func TestDataSet(t *testing.T) {
 
 	data := getData()
@@ -96,7 +98,10 @@ func TestDataSet(t *testing.T) {
 }
 
 func TestCheckFeasibility(t *testing.T) {
-	// TODO: implement
+	err := CheckFeasibility(getData(), getFeasibleSolution())
+	if err != nil {
+		t.Errorf("Infeasible solution: %v", err)
+	}
 }
 
 func TestCalculateObjective(t *testing.T) {
