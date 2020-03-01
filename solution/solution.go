@@ -34,7 +34,7 @@ func GenerateSolution(data models.INF273Data) [][]*models.Call {
 	return solution
 }
 
-// CheckFeasibility checks the feasability of a given solution
+// CheckFeasibility checks the feasibility of a given solution
 func CheckFeasibility(data models.INF273Data, solution [][]*models.Call) error {
 	var err error = nil
 	for row := range solution {

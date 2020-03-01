@@ -2,6 +2,7 @@ package tests
 
 import (
 	"log"
+	"os"
 	"testing"
 
 	"github.com/oyvinddd/inf273/models"
@@ -9,11 +10,17 @@ import (
 	"github.com/oyvinddd/inf273/util"
 )
 
+var data models.INF273Data
+
+func TestMain(m *testing.M) {
+	data = getData()
+	os.Exit(m.Run())
+}
+
 // --------- UNIT TESTS FOR SOME OF THE FUNCTIONS USED IN THE PROGRAM ---------
 
 func TestDataSet(t *testing.T) {
 
-	data := getData()
 	v1 := data.Vehicles[0]
 	v2 := data.Vehicles[1]
 	v3 := data.Vehicles[2]
@@ -98,7 +105,7 @@ func TestDataSet(t *testing.T) {
 }
 
 func TestCheckFeasibility(t *testing.T) {
-	err := CheckFeasibility(getData(), getFeasibleSolution())
+	err := CheckFeasibility(data, getFeasibleSolution())
 	if err != nil {
 		t.Errorf("Infeasible solution: %v", err)
 	}
@@ -106,7 +113,6 @@ func TestCheckFeasibility(t *testing.T) {
 
 func TestCalculateObjective(t *testing.T) {
 
-	data := getData()
 	solution := getFeasibleSolution()
 	expObj := 1940470
 
