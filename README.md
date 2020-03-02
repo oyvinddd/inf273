@@ -8,4 +8,4 @@ See my answers [here](https://oyvinddd.github.io/inf273/).
 
 Implementation relevant to assignemnt 2 can be found [here](https://github.com/oyvinddd/inf273/blob/master/util/parser.go) (parser) and [here](https://github.com/oyvinddd/inf273/blob/master/solution/solution.go) (functions for generating a random solution, checking feasibility and calculating the objective function).
 
-The code for the assignment was written in [Go](https://golang.org/). Use the command ``go run *.go`` inside the project directory to run the program.
+The code for the assignment was written in [Go](https://golang.org/). After installing Go, use the command ``go get github.com/oyvinddd/inf273`` to download the program (by doing this, the files will be downloaded directly to your $GOPATH/src directory).To run the program simply type the command ``go run *.go`` inside the project directory.
