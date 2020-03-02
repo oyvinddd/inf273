@@ -1,7 +1,6 @@
 package solution
 
 import (
-	"errors"
 	"fmt"
 	"math/rand"
 	"time"
@@ -51,16 +50,24 @@ func CheckFeasibility(data models.INF273Data, solution [][]*models.Call) error {
 			}
 
 			ntac := data.GetNodeTimeAndCost(vehicle.Index, call.Index)
+			time := 0
 			// add loading (or unloading) time to current time
-			time, err2 := calculateLoadingOrUnloadingTime(currentTime, vehicle.Index, ntac, call)
-			if err2 != nil {
-				err = err2
-			}
+			time, err = calculateLoadingOrUnloadingTime(currentTime, vehicle.Index, ntac, call)
 			currentTime += time
+
+			// vehicle capacity
+			if !call.PickedUp {
+				vehicleLoad += call.Size
+				if vehicleLoad > vehicle.Capacity {
+					err = fmt.Errorf("Infeasible: vehicle capacity is %d, load is %d", vehicle.Capacity, vehicleLoad)
+				}
+			} else {
+				vehicleLoad -= call.Size
+			}
 
 			// calls and vehicle compatibility
 			if !data.VehicleAndCallIsCompatible(vehicle.Index, call.Index) {
-				err = errors.New("Infeasible solution: compatibility")
+				err = fmt.Errorf("Infeasible: vehicle %d not compatible with call %d", vehicle.Index, call.Index)
 			}
 
 			if col < len(solution[row])-1 {
@@ -71,12 +78,6 @@ func CheckFeasibility(data models.INF273Data, solution [][]*models.Call) error {
 				if !call.PickedUp {
 					call.PickedUp = true
 					from = call.Origin
-					vehicleLoad += call.Size
-					fmt.Printf("%d - Loading at %d\n", vehicle.Index, call.Origin)
-					// vehicle capacity
-					if vehicleLoad > vehicle.Capacity {
-						err = errors.New("Infeasible solution: vehicle capacity")
-					}
 				} else {
 					from = call.Destination
 				}
@@ -85,8 +86,6 @@ func CheckFeasibility(data models.INF273Data, solution [][]*models.Call) error {
 					to = nextCall.Origin
 				} else {
 					to = nextCall.Destination
-					vehicleLoad -= call.Size
-					fmt.Printf("%d - Unloading at %d\n", vehicle.Index, call.Destination)
 				}
 
 				// add travel time from current node to next node
@@ -94,14 +93,12 @@ func CheckFeasibility(data models.INF273Data, solution [][]*models.Call) error {
 			}
 		}
 	}
-
 	// TODO: find a better solution here
 	for i := range solution {
 		for j := range solution[i] {
 			solution[i][j].PickedUp = false
 		}
 	}
-
 	return err
 }
 
@@ -172,27 +169,21 @@ func calculateLoadingOrUnloadingTime(currentTime int, vehicleIndex int, ntac mod
 
 	if !call.PickedUp {
 		if currentTime < call.LowerPW {
-			fmt.Printf("%d - arrived at pickup early, waiting for %d time\n", vehicleIndex, call.LowerPW-currentTime)
 			// vehicle arrived early at pickup, add waiting time
 			time += call.LowerPW - currentTime
 		} else if currentTime > call.UpperPW {
 			// vehicle arrived too late at pickup, infeasible
-			fmt.Printf("%d - Infeasible: arrived at destination too late\n", vehicleIndex)
-			err = errors.New("Infeasible solution: arrived at pickup too late")
+			err = fmt.Errorf("Infeasible: vehicle %d arrived at pickup node %d too late", vehicleIndex, call.Origin)
 		}
-		fmt.Printf("%d - Loading at %d. Current time: %d (waiting %d)\n", vehicleIndex, call.Origin, currentTime, ntac.OriginTime)
 		time += ntac.OriginTime
 	} else {
 		if currentTime < call.LowerDW {
-			fmt.Printf("%d - arrived at destination early, waiting for %d time\n", vehicleIndex, call.LowerDW-currentTime)
 			// vehicle arrived early at destination, add waiting time
 			time += call.LowerDW - currentTime
 		} else if currentTime > call.UpperDW {
 			// vehicle arrived too late at destination, infeasible
-			fmt.Printf("%d - Infeasible: arrived at destination too late\n", vehicleIndex)
-			err = errors.New("Infeasible solution: arrived at destination too late")
+			err = fmt.Errorf("Infeasible: vehicle %d arrived at destination node %d too late", vehicleIndex, call.Destination)
 		}
-		fmt.Printf("%d - Unloading at %d. Current time: %d (waiting %d)\n", vehicleIndex, call.Destination, currentTime, ntac.DestinationTime)
 		time += ntac.DestinationTime
 	}
 	return time, err
