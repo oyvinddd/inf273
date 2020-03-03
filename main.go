@@ -54,7 +54,7 @@ func printSolution(solution [][]*models.Call) {
 			fmt.Printf("[%v]", e.Index)
 		}
 		if i == len(solution)-1 {
-			fmt.Print(" <-- Dummy vehicles")
+			fmt.Print(" <-- Dummy vehicle (unhandled calls)")
 		}
 		fmt.Println()
 	}
