@@ -19,10 +19,10 @@ func GenerateSolution(data models.INF273Data) [][]*models.Call {
 		ptr := new(models.Call)
 		*ptr = call
 		if i == len(solution)-1 {
-			// dummy vehicles
+			// call is added to dummy vehicle
 			solution[i] = append(solution[i], ptr)
 		} else {
-			// regular vehicles (one for pickup and one for delivery)
+			// call is added to a regular vehicle (one call for pickup and one for delivery)
 			solution[i] = append(solution[i], ptr, ptr)
 		}
 	}
