@@ -37,7 +37,7 @@ func GenerateSolution(data models.INF273Data) [][]*models.Call {
 func CheckFeasibility(data models.INF273Data, solution [][]*models.Call) error {
 	for row := range solution {
 		vehicle, vehicleLoad, currentTime := data.Vehicles[row], 0, 0
-		// skip feasibility checks for all dummy vehicles
+		// skip feasibility checks for dummy vehicle
 		if vehicle.IsDummy() {
 			continue
 		}
@@ -133,6 +133,7 @@ func CalculateObjective(data models.INF273Data, solution [][]*models.Call) int {
 					call.PickedUp = true
 					from = call.Origin
 				} else {
+					call.PickedUp = false
 					from = call.Destination
 				}
 
@@ -144,6 +145,10 @@ func CalculateObjective(data models.INF273Data, solution [][]*models.Call) int {
 
 				obj += data.GetTravelTimeAndCost(from, to, vehicle.Index).Cost
 			}
+		}
+		// reset the picked up flag for each call
+		for col := range solution[row] {
+			solution[row][col].PickedUp = false
 		}
 	}
 	return obj
@@ -166,7 +171,6 @@ func shuffleSlice(a []*models.Call) {
 func calculateLoadingOrUnloadingTime(currentTime int, vehicleIndex int, ntac models.NodeTimeAndCost, call *models.Call) (int, error) {
 
 	var time int = 0
-	var err error = nil
 
 	if !call.PickedUp {
 		if currentTime < call.LowerPW {
@@ -174,7 +178,7 @@ func calculateLoadingOrUnloadingTime(currentTime int, vehicleIndex int, ntac mod
 			time += call.LowerPW - currentTime
 		} else if currentTime > call.UpperPW {
 			// vehicle arrived too late at pickup, infeasible
-			err = fmt.Errorf("Infeasible: vehicle %d arrived at pickup node %d too late", vehicleIndex, call.Origin)
+			return 0, fmt.Errorf("Infeasible: vehicle %d arrived at pickup node %d too late", vehicleIndex, call.Origin)
 		}
 		time += ntac.OriginTime
 	} else {
@@ -183,9 +187,9 @@ func calculateLoadingOrUnloadingTime(currentTime int, vehicleIndex int, ntac mod
 			time += call.LowerDW - currentTime
 		} else if currentTime > call.UpperDW {
 			// vehicle arrived too late at destination, infeasible
-			err = fmt.Errorf("Infeasible: vehicle %d arrived at destination node %d too late", vehicleIndex, call.Destination)
+			return 0, fmt.Errorf("Infeasible: vehicle %d arrived at destination node %d too late", vehicleIndex, call.Destination)
 		}
 		time += ntac.DestinationTime
 	}
-	return time, err
+	return time, nil
 }

@@ -1,8 +1,6 @@
 package heuristics
 
 import (
-	"fmt"
-
 	"github.com/oyvinddd/inf273/models"
 	. "github.com/oyvinddd/inf273/solution"
 	"github.com/oyvinddd/inf273/util"
@@ -15,17 +13,19 @@ func init() {
 	data, _ = util.ParseFile("data/Call_7_Vehicle_3.txt", true)
 }
 
-// RandomSearch ....
-func RandomSearch(solution [][]*models.Call) {
-	bestObjective := CalculateObjective(&data, solution)
+// RandomSearch randomly searches for a better solution
+func RandomSearch(solution [][]*models.Call) ([][]*models.Call, int) {
+	bestObjective := CalculateObjective(data, solution)
+	bestSolution := solution
 	for i := 0; i < 10000; i++ {
 		currentSolution := GenerateSolution(data)
 		currentObjective := CalculateObjective(data, currentSolution)
 		if isFeasible(currentSolution) && currentObjective < bestObjective {
 			bestObjective = currentObjective
-			fmt.Printf("CURRENT BEST OBJ: %v\n", currentObjective)
+			bestSolution = currentSolution
 		}
 	}
+	return bestSolution, bestObjective
 }
 
 // ----------- HELPER FUNCTIONS -----------
@@ -35,9 +35,4 @@ func isFeasible(solution [][]*models.Call) bool {
 		return false
 	}
 	return true
-}
-
-// evaluation function: Improvement (%) = 100 * (Objective of Initial solution - Best objective) / Objective of Initial solution
-func f(solution [][]*models.Call) int {
-	return CalculateObjective(data, solution)
 }
