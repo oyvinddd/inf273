@@ -35,7 +35,6 @@ func GenerateSolution(data models.INF273Data) [][]*models.Call {
 
 // CheckFeasibility checks the feasibility of a given solution
 func CheckFeasibility(data models.INF273Data, solution [][]*models.Call) error {
-	var err error = nil
 	for row := range solution {
 		vehicle, vehicleLoad, currentTime := data.Vehicles[row], 0, 0
 		// skip feasibility checks for all dummy vehicles
@@ -50,16 +49,18 @@ func CheckFeasibility(data models.INF273Data, solution [][]*models.Call) error {
 			}
 
 			ntac := data.GetNodeTimeAndCost(vehicle.Index, call.Index)
-			time := 0
 			// add loading (or unloading) time to current time
-			time, err = calculateLoadingOrUnloadingTime(currentTime, vehicle.Index, ntac, call)
+			time, err := calculateLoadingOrUnloadingTime(currentTime, vehicle.Index, ntac, call)
+			if err != nil {
+				return err
+			}
 			currentTime += time
 
 			// vehicle capacity
 			if !call.PickedUp {
 				vehicleLoad += call.Size
 				if vehicleLoad > vehicle.Capacity {
-					err = fmt.Errorf("Infeasible: vehicle capacity is %d, load is %d", vehicle.Capacity, vehicleLoad)
+					return fmt.Errorf("Infeasible: vehicle capacity is %d, load is %d", vehicle.Capacity, vehicleLoad)
 				}
 			} else {
 				vehicleLoad -= call.Size
@@ -67,7 +68,7 @@ func CheckFeasibility(data models.INF273Data, solution [][]*models.Call) error {
 
 			// calls and vehicle compatibility
 			if !data.VehicleAndCallIsCompatible(vehicle.Index, call.Index) {
-				err = fmt.Errorf("Infeasible: vehicle %d not compatible with call %d", vehicle.Index, call.Index)
+				return fmt.Errorf("Infeasible: vehicle %d not compatible with call %d", vehicle.Index, call.Index)
 			}
 
 			if col < len(solution[row])-1 {
@@ -99,7 +100,7 @@ func CheckFeasibility(data models.INF273Data, solution [][]*models.Call) error {
 			solution[i][j].PickedUp = false
 		}
 	}
-	return err
+	return nil
 }
 
 // CalculateObjective takes a solution as input and returns an objective value

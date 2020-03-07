@@ -27,7 +27,7 @@ const (
 )
 
 // ParseFile parses all lines of a data file
-func ParseFile(filePath string) (models.INF273Data, error) {
+func ParseFile(filePath string, addDummyVehicle bool) (models.INF273Data, error) {
 
 	file, err := os.Open(fmt.Sprintf("%s", filePath))
 	if err != nil {
@@ -95,6 +95,12 @@ func ParseFile(filePath string) (models.INF273Data, error) {
 	}
 	if err := scanner.Err(); err != nil {
 		return models.INF273Data{}, err
+	}
+
+	if addDummyVehicle {
+		// add dummy vehicle to the end of vehicle list
+		vehicles = append(vehicles, *models.NewDummyVehicle())
+		noOfVehicles++
 	}
 
 	return models.INF273Data{
