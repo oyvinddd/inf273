@@ -8,6 +8,10 @@ import (
 	"github.com/oyvinddd/inf273/models"
 )
 
+func init() {
+	rand.Seed(time.Now().UnixNano())
+}
+
 // ---------------- ASSIGNMENT #2 ----------------
 
 // GenerateSolution generates a random solution
@@ -15,7 +19,7 @@ func GenerateSolution(data models.INF273Data) [][]*models.Call {
 	solution := make([][]*models.Call, data.NoOfVehicles)
 	// fill rows with pointers to calls (every call appears two times; pickup/delivery)
 	for _, call := range data.Calls {
-		i := randomNumber(0, data.NoOfVehicles)
+		i := rand.Intn(data.NoOfVehicles)
 		ptr := new(models.Call)
 		*ptr = call
 		if i == len(solution)-1 {
@@ -156,13 +160,7 @@ func CalculateObjective(data models.INF273Data, solution [][]*models.Call) int {
 
 // ---------------- HELPER FUNCTIONS ----------------
 
-func randomNumber(min int, max int) int {
-	rand.Seed(time.Now().UnixNano())
-	return rand.Intn(max - min)
-}
-
 func shuffleSlice(a []*models.Call) {
-	rand.Seed(time.Now().UnixNano())
 	rand.Shuffle(len(a), func(i int, j int) {
 		a[i], a[j] = a[j], a[i]
 	})
