@@ -123,12 +123,10 @@ func TestCalculateObjective(t *testing.T) {
 }
 
 func getData() models.INF273Data {
-	data, err := util.ParseFile("../data/Call_7_Vehicle_3.txt")
+	data, err := util.ParseFile("../data/Call_7_Vehicle_3.txt", true)
 	if err != nil {
 		log.Fatal(err)
 	}
-	data.Vehicles = append(data.Vehicles, *models.NewDummyVehicle())
-	data.NoOfVehicles++
 	return data
 }
 

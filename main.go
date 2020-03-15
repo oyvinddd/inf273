@@ -1,8 +1,6 @@
 package main
 
 import (
-	"fmt"
-
 	"github.com/oyvinddd/inf273/heuristics"
 	"github.com/oyvinddd/inf273/models"
 	"github.com/oyvinddd/inf273/util"
@@ -15,9 +13,16 @@ func main() {
 	// time program exection
 	defer util.NewTimer().PrintElapsed()
 
-	solution, objective := heuristics.RandomSearch(initialSolution())
-	fmt.Printf("OBJECTIVE: %d\n", objective)
-	printSolution(solution)
+	// load data from file
+	data, _ := util.ParseFile("data/Call_7_Vehicle_3.txt", true)
+
+	solution, _ := heuristics.RandomSearch(data, initialSolution())
+
+	t1 := solution[1][0]
+	t2 := solution[1][1]
+	*t1, *t2 = *t2, *t1
+
+	util.PrintSolution(solution)
 }
 
 func initialSolution() [][]*models.Call {
@@ -35,25 +40,4 @@ func initialSolution() [][]*models.Call {
 		{c5, c5},
 		{c2, c4, c6}, // not transported
 	}
-}
-
-// --------------- HELPER FUNCTIONS ---------------
-
-func printSolution(solution [][]*models.Call) {
-	fmt.Println("-------- SOLUTION REPRESENTATION --------")
-	for i := range solution {
-		row := solution[i]
-		if len(row) == 0 {
-			fmt.Println("[-]")
-			continue
-		}
-		for _, e := range solution[i] {
-			fmt.Printf("[%v]", e.Index)
-		}
-		if i == len(solution)-1 {
-			fmt.Print(" <-- Dummy vehicle (unhandled calls)")
-		}
-		fmt.Println()
-	}
-	fmt.Println()
 }

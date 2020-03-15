@@ -9,6 +9,7 @@ import (
 )
 
 func init() {
+	// we only want to run this once for every program execution
 	rand.Seed(time.Now().UnixNano())
 }
 
@@ -96,12 +97,10 @@ func CheckFeasibility(data models.INF273Data, solution [][]*models.Call) error {
 				// add travel time from current node to next node
 				currentTime += data.GetTravelTimeAndCost(from, to, vehicle.Index).Time
 			}
-		}
-	}
-	// TODO: find a better solution here
-	for i := range solution {
-		for j := range solution[i] {
-			solution[i][j].PickedUp = false
+			// reset the picked up flag for each call
+			for col := range solution[row] {
+				solution[row][col].PickedUp = false
+			}
 		}
 	}
 	return nil
