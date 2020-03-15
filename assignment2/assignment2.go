@@ -1,4 +1,4 @@
-package solution
+package assignment2
 
 import (
 	"fmt"
@@ -157,6 +157,19 @@ func CalculateObjective(data models.INF273Data, solution [][]*models.Call) int {
 	return obj
 }
 
+// CreateOutsourcedSolution creates a solution where all calls are handled by the dummy vehicle
+func CreateOutsourcedSolution(data models.INF273Data) [][]*models.Call {
+	solution := make([][]*models.Call, data.NoOfVehicles)
+	dummyVehicle := solution[data.NoOfVehicles-1]
+	for _, call := range data.Calls {
+		ptr := new(models.Call)
+		*ptr = call
+		dummyVehicle = append(dummyVehicle, ptr, ptr)
+	}
+	solution[data.NoOfVehicles-1] = dummyVehicle
+	return solution
+}
+
 // ---------------- HELPER FUNCTIONS ----------------
 
 func shuffleSlice(a []*models.Call) {
@@ -190,3 +203,7 @@ func calculateLoadingOrUnloadingTime(currentTime int, vehicleIndex int, ntac mod
 	}
 	return time, nil
 }
+
+// t1 := solution[1][0]
+// t2 := solution[1][1]
+// *t1, *t2 = *t2, *t1
