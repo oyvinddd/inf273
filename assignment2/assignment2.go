@@ -23,13 +23,7 @@ func GenerateSolution(data models.INF273Data) [][]*models.Call {
 		i := rand.Intn(data.NoOfVehicles)
 		ptr := new(models.Call)
 		*ptr = call
-		if i == len(solution)-1 {
-			// call is added to dummy vehicle
-			solution[i] = append(solution[i], ptr)
-		} else {
-			// call is added to a regular vehicle (one call for pickup and one for delivery)
-			solution[i] = append(solution[i], ptr, ptr)
-		}
+		solution[i] = append(solution[i], ptr, ptr)
 	}
 	// for each vehicle, randomize the order of the calls
 	for _, calls := range solution {
@@ -97,18 +91,14 @@ func CheckFeasibility(data models.INF273Data, solution [][]*models.Call) error {
 				// add travel time from current node to next node
 				currentTime += data.GetTravelTimeAndCost(from, to, vehicle.Index).Time
 			}
-			// reset the picked up flag for each call
-			for col := range solution[row] {
-				solution[row][col].PickedUp = false
-			}
 		}
 	}
+	resetPickedUpState(solution)
 	return nil
 }
 
 // CalculateObjective takes a solution as input and returns an objective value
 func CalculateObjective(data models.INF273Data, solution [][]*models.Call) int {
-
 	var obj int = 0
 	for row := range solution {
 		vehicle := data.Vehicles[row]
@@ -116,7 +106,10 @@ func CalculateObjective(data models.INF273Data, solution [][]*models.Call) int {
 
 			// handle cost of not transporting
 			if vehicle.IsDummy() {
-				obj += call.Penalty
+				if !call.PickedUp {
+					call.PickedUp = true
+					obj += call.Penalty
+				}
 				continue
 			}
 			// handle the cost of reaching the first customer from the home node
@@ -149,11 +142,8 @@ func CalculateObjective(data models.INF273Data, solution [][]*models.Call) int {
 				obj += data.GetTravelTimeAndCost(from, to, vehicle.Index).Cost
 			}
 		}
-		// reset the picked up flag for each call
-		for col := range solution[row] {
-			solution[row][col].PickedUp = false
-		}
 	}
+	resetPickedUpState(solution)
 	return obj
 }
 
@@ -202,6 +192,14 @@ func calculateLoadingOrUnloadingTime(currentTime int, vehicleIndex int, ntac mod
 		time += ntac.DestinationTime
 	}
 	return time, nil
+}
+
+func resetPickedUpState(solution [][]*models.Call) {
+	for row := range solution {
+		for col := range solution[row] {
+			solution[row][col].PickedUp = false
+		}
+	}
 }
 
 // t1 := solution[1][0]

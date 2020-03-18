@@ -5,8 +5,8 @@ import (
 	"os"
 	"testing"
 
+	a2 "github.com/oyvinddd/inf273/assignment2"
 	"github.com/oyvinddd/inf273/models"
-	. "github.com/oyvinddd/inf273/solution"
 	"github.com/oyvinddd/inf273/util"
 )
 
@@ -105,7 +105,7 @@ func TestDataSet(t *testing.T) {
 }
 
 func TestCheckFeasibility(t *testing.T) {
-	err := CheckFeasibility(data, getFeasibleSolution())
+	err := a2.CheckFeasibility(data, getFeasibleSolution())
 	if err != nil {
 		t.Errorf("Infeasible solution: %v", err)
 	}
@@ -116,11 +116,22 @@ func TestCalculateObjective(t *testing.T) {
 	solution := getFeasibleSolution()
 	expObj := 1940470
 
-	objective := CalculateObjective(data, solution)
+	objective := a2.CalculateObjective(data, solution)
 	if objective != expObj {
 		t.Errorf("Objective function is wrong: %v (should be %v)", objective, expObj)
 	}
 }
+
+func TestOutsourcedSolution(t *testing.T) {
+	solution := a2.CreateOutsourcedSolution(data)
+	obj := a2.CalculateObjective(data, solution)
+	expObj := 3286422
+	if obj != expObj {
+		t.Errorf("Objective function is wrong: %v (should be %v)", obj, expObj)
+	}
+}
+
+// ----------- HELPER FUNCTIONS -----------
 
 func getData() models.INF273Data {
 	data, err := util.ParseFile("../data/Call_7_Vehicle_3.txt", true)
