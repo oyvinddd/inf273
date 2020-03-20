@@ -116,7 +116,7 @@ func TestCalculateObjective(t *testing.T) {
 	solution := getFeasibleSolution()
 	expObj := 1940470
 
-	objective := a2.CalculateObjective(data, solution)
+	objective := a2.CalcTotalObjective(data, solution)
 	if objective != expObj {
 		t.Errorf("Objective function is wrong: %v (should be %v)", objective, expObj)
 	}
@@ -124,7 +124,7 @@ func TestCalculateObjective(t *testing.T) {
 
 func TestOutsourcedSolution(t *testing.T) {
 	solution := a2.CreateOutsourcedSolution(data)
-	obj := a2.CalculateObjective(data, solution)
+	obj := a2.CalcTotalObjective(data, solution)
 	expObj := 3286422
 	if obj != expObj {
 		t.Errorf("Objective function is wrong: %v (should be %v)", obj, expObj)

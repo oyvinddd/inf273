@@ -97,53 +97,61 @@ func CheckFeasibility(data models.INF273Data, solution [][]*models.Call) error {
 	return nil
 }
 
-// CalculateObjective takes a solution as input and returns an objective value
-func CalculateObjective(data models.INF273Data, solution [][]*models.Call) int {
+// CalcTotalObjective takes a solution as input and returns an objective value
+func CalcTotalObjective(data models.INF273Data, solution [][]*models.Call) int {
 	var obj int = 0
 	for row := range solution {
-		vehicle := data.Vehicles[row]
-		for col, call := range solution[row] {
+		obj += CalcVehicleObjective(data, data.Vehicles[row], solution[row])
+	}
+	return obj
+}
 
-			// handle cost of not transporting
-			if vehicle.IsDummy() {
-				if !call.PickedUp {
-					call.PickedUp = true
-					obj += call.Penalty
-				}
-				continue
+// CalcVehicleObjective calculates objective function for a specific vehicle
+func CalcVehicleObjective(data models.INF273Data, vehicle models.Vehicle, calls []*models.Call) int {
+	var obj = 0
+	for col, call := range calls {
+
+		// handle cost of not transporting
+		if vehicle.IsDummy() {
+			if !call.PickedUp {
+				call.PickedUp = true
+				obj += call.Penalty
 			}
-			// handle the cost of reaching the first customer from the home node
-			if col == 0 {
-				obj += data.GetTravelTimeAndCost(vehicle.Home, call.Origin, vehicle.Index).Cost
+			continue
+		}
+		// handle the cost of reaching the first customer from the home node
+		if col == 0 {
+			obj += data.GetTravelTimeAndCost(vehicle.Home, call.Origin, vehicle.Index).Cost
+		}
+		// handle transportation cost
+		if col < len(calls)-1 {
+
+			ntac := data.GetNodeTimeAndCost(vehicle.Index, call.Index)
+
+			nextCall := calls[col+1]
+			from, to := 0, 0
+
+			if !call.PickedUp {
+				obj += ntac.OriginCost + ntac.DestinationCost
+				call.PickedUp = true
+				from = call.Origin
+			} else {
+				call.PickedUp = false
+				from = call.Destination
 			}
-			// handle transportation cost
-			if col < len(solution[row])-1 {
 
-				ntac := data.GetNodeTimeAndCost(vehicle.Index, call.Index)
-
-				nextCall := solution[row][col+1]
-				from, to := 0, 0
-
-				if !call.PickedUp {
-					obj += ntac.OriginCost + ntac.DestinationCost
-					call.PickedUp = true
-					from = call.Origin
-				} else {
-					call.PickedUp = false
-					from = call.Destination
-				}
-
-				if !nextCall.PickedUp {
-					to = nextCall.Origin
-				} else {
-					to = nextCall.Destination
-				}
-
-				obj += data.GetTravelTimeAndCost(from, to, vehicle.Index).Cost
+			if !nextCall.PickedUp {
+				to = nextCall.Origin
+			} else {
+				to = nextCall.Destination
 			}
+
+			obj += data.GetTravelTimeAndCost(from, to, vehicle.Index).Cost
 		}
 	}
-	resetPickedUpState(solution)
+	for col := range calls {
+		calls[col].PickedUp = false
+	}
 	return obj
 }
 

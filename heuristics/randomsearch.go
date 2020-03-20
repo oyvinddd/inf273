@@ -9,18 +9,22 @@ import (
 const maxIterations int = 10000
 
 var noOfSolutions int = 0
+var noOfImprovements int = 0
 
 // RandomSearch randomly searches for a better solution
-func RandomSearch(data models.INF273Data, solution [][]*models.Call) (int, int) {
-	obj := a2.CalculateObjective(data, solution)
+func RandomSearch(data models.INF273Data, solution [][]*models.Call) (int, int, int) {
+	obj := a2.CalcTotalObjective(data, solution)
 	for i := 0; i < maxIterations; i++ {
 		if newSolution := a2.GenerateSolution(data); isFeasible(data, newSolution) {
 			util.PrintSolution(newSolution)
-			obj = a2.CalculateObjective(data, newSolution)
+			if newObj := a2.CalcTotalObjective(data, newSolution); newObj < obj {
+				obj = newObj
+				noOfImprovements++
+			}
 			noOfSolutions++
 		}
 	}
-	return obj, noOfSolutions
+	return obj, noOfSolutions, noOfImprovements
 }
 
 func isFeasible(data models.INF273Data, solution [][]*models.Call) bool {
