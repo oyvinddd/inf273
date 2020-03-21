@@ -4,6 +4,7 @@ import (
 	"math/rand"
 
 	a2 "github.com/oyvinddd/inf273/assignment2"
+	"github.com/oyvinddd/inf273/heuristics/operators"
 	"github.com/oyvinddd/inf273/models"
 )
 
@@ -15,9 +16,9 @@ func LocalSearch(data models.INF273Data, solution [][]*models.Call) [][]*models.
 	for i := 0; i < maxIterations; i++ {
 		r := rand.Float32()
 		if r < p1 {
-			current = TwoExchange(best)
+			current = operators.TwoExchange(data, best)
 		} else if r < p1+p2 {
-			current = ThreeExchange(best)
+			current = operators.ThreeExchange(data, best)
 		} else {
 			current = OneReinsert(data, best)
 		}

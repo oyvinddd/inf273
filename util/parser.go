@@ -5,6 +5,8 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"path/filepath"
+	"runtime"
 	"strconv"
 	"strings"
 
@@ -26,10 +28,14 @@ const (
 	step8 step = 8 // node times and cost
 )
 
-// ParseFile parses all lines of a data file
-func ParseFile(filePath string, addDummyVehicle bool) (models.INF273Data, error) {
+var (
+	_, b, _, _ = runtime.Caller(0)
+	basepath   = filepath.Dir(b)
+)
 
-	file, err := os.Open(fmt.Sprintf("%s", filePath))
+// ParseFile parses all lines of a data file
+func ParseFile(filename string, addDummyVehicle bool) (models.INF273Data, error) {
+	file, err := os.Open(fmt.Sprintf("%s/../data/%s", basepath, filename))
 	if err != nil {
 		return models.INF273Data{}, err
 	}

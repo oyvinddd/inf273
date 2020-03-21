@@ -48,13 +48,13 @@ func FeasibleSolution() [][]*models.Call {
 		{c3, c3},
 		{c7, c1, c7, c1},
 		{c5, c5},
-		{c2, c4, c6}, // not transported
+		{c2, c2, c4, c4, c6, c6}, // not transported
 	}
 }
 
 // TestData returns a test data set from file
 func TestData() models.INF273Data {
-	data, err := ParseFile("../data/Call_7_Vehicle_3.txt", true)
+	data, err := ParseFile("Call_7_Vehicle_3.txt", true)
 	if err != nil {
 		log.Fatal(err)
 	}

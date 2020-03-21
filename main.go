@@ -1,46 +1,30 @@
 package main
 
 import (
-	"fmt"
+	"log"
+	"math/rand"
+	"time"
 
-	"github.com/oyvinddd/inf273/assignment2"
-
-	"github.com/oyvinddd/inf273/models"
+	"github.com/oyvinddd/inf273/heuristics/operators"
 	"github.com/oyvinddd/inf273/util"
 )
 
 // ------------- RUN THE PROGRAM -------------
 
 func main() {
+	rand.Seed(time.Now().UnixNano())
 
 	// time program exection
 	defer util.NewTimer().PrintElapsed()
 
 	// load data from file and create initial outsourced solution
-	data, _ := util.ParseFile("data/Call_7_Vehicle_3.txt", true)
-	solution := assignment2.CreateOutsourcedSolution(data)
-
-}
-
-func printSlice(s []*models.Call) {
-	for i := range s {
-		if s[i] != nil {
-			fmt.Printf("[ %v ]", s[i].Index)
-		} else {
-			fmt.Println("[ X ]")
-		}
+	data, err := util.ParseFile("Call_7_Vehicle_3.txt", true)
+	if err != nil {
+		log.Fatal(err)
 	}
-	fmt.Println()
-}
-
-var testSol []*models.Call = []*models.Call{
-	&models.Call{Index: 1},
-	&models.Call{Index: 2},
-	&models.Call{Index: 3},
-	&models.Call{Index: 4},
-	&models.Call{Index: 5},
-	&models.Call{Index: 6},
-	&models.Call{Index: 7},
-	&models.Call{Index: 8},
-	&models.Call{Index: 9},
+	solution := util.FeasibleSolution()
+	// solution := assignment2.CreateOutsourcedSolution(data)
+	util.PrintSolution(solution)
+	newSol := operators.TwoExchange(data, solution)
+	util.PrintSolution(newSol)
 }
