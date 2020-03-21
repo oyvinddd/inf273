@@ -19,7 +19,7 @@ func LocalSearch(data models.INF273Data, solution [][]*models.Call) [][]*models.
 		} else if r < p1+p2 {
 			current = ThreeExchange(best)
 		} else {
-			current = OneReinsert(best)
+			current = OneReinsert(data, best)
 		}
 		if isFeasible(data, current) && a2.CalcTotalObjective(data, current) < a2.CalcTotalObjective(data, best) {
 			best = current

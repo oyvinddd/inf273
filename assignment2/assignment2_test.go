@@ -1,11 +1,9 @@
-package tests
+package assignment2
 
 import (
-	"log"
 	"os"
 	"testing"
 
-	a2 "github.com/oyvinddd/inf273/assignment2"
 	"github.com/oyvinddd/inf273/models"
 	"github.com/oyvinddd/inf273/util"
 )
@@ -13,7 +11,7 @@ import (
 var data models.INF273Data
 
 func TestMain(m *testing.M) {
-	data = getData()
+	data = util.TestData()
 	os.Exit(m.Run())
 }
 
@@ -105,7 +103,7 @@ func TestDataSet(t *testing.T) {
 }
 
 func TestCheckFeasibility(t *testing.T) {
-	err := a2.CheckFeasibility(data, getFeasibleSolution())
+	err := CheckFeasibility(data, util.FeasibleSolution())
 	if err != nil {
 		t.Errorf("Infeasible solution: %v", err)
 	}
@@ -113,48 +111,20 @@ func TestCheckFeasibility(t *testing.T) {
 
 func TestCalculateObjective(t *testing.T) {
 
-	solution := getFeasibleSolution()
+	solution := util.FeasibleSolution()
 	expObj := 1940470
 
-	objective := a2.CalcTotalObjective(data, solution)
+	objective := CalcTotalObjective(data, solution)
 	if objective != expObj {
 		t.Errorf("Objective function is wrong: %v (should be %v)", objective, expObj)
 	}
 }
 
 func TestOutsourcedSolution(t *testing.T) {
-	solution := a2.CreateOutsourcedSolution(data)
-	obj := a2.CalcTotalObjective(data, solution)
+	solution := CreateOutsourcedSolution(data)
+	obj := CalcTotalObjective(data, solution)
 	expObj := 3286422
 	if obj != expObj {
 		t.Errorf("Objective function is wrong: %v (should be %v)", obj, expObj)
-	}
-}
-
-// ----------- HELPER FUNCTIONS -----------
-
-func getData() models.INF273Data {
-	data, err := util.ParseFile("../data/Call_7_Vehicle_3.txt", true)
-	if err != nil {
-		log.Fatal(err)
-	}
-	return data
-}
-
-func getFeasibleSolution() [][]*models.Call {
-
-	c1 := models.NewCall(1, 17, 37, 4601, 790000, 345, 417, 345, 1006)
-	c2 := models.NewCall(2, 33, 36, 13444, 430790, 96, 168, 96, 529)
-	c3 := models.NewCall(3, 17, 27, 6596, 200354, 715, 787, 715, 1089)
-	c4 := models.NewCall(4, 6, 1, 11052, 275455, 0, 72, 0, 435)
-	c5 := models.NewCall(5, 38, 33, 6643, 642740, 107, 179, 107, 593)
-	c6 := models.NewCall(6, 10, 38, 14139, 587198, 300, 372, 300, 801)
-	c7 := models.NewCall(7, 26, 6, 5310, 359885, 178, 250, 178, 567)
-
-	return [][]*models.Call{
-		{c3, c3},
-		{c7, c1, c7, c1},
-		{c5, c5},
-		{c2, c4, c6}, // not transported
 	}
 }

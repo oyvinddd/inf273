@@ -209,7 +209,3 @@ func resetPickedUpState(solution [][]*models.Call) {
 		}
 	}
 }
-
-// t1 := solution[1][0]
-// t2 := solution[1][1]
-// *t1, *t2 = *t2, *t1
