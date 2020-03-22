@@ -8,20 +8,25 @@ import (
 	"github.com/oyvinddd/inf273/util"
 )
 
+func init() {
+	rand.Seed(time.Now().UnixNano())
+}
+
 // ------------- RUN THE PROGRAM -------------
 
 func main() {
-	rand.Seed(time.Now().UnixNano())
+
+	// load data from file
 	data := util.LoadDataFile(util.Call7Vehicle3)
 
-	// time program exection
+	// benchmark program exection
 	defer util.NewTimer().PrintElapsed()
 
-	solution := util.FeasibleSolution()
+	solution := util.FeasibleTestSolution()
 	util.PrintSolution(solution)
 
-	for i := 0; i < 10000; i++ {
-		operators.TwoExchange(data, solution)
-	}
-	// util.PrintSolution(newSol)
+	// s1 := solution[1]
+	newSolution := operators.TwoExchange(data, solution)
+
+	util.PrintSolution(newSolution)
 }

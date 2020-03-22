@@ -3,6 +3,7 @@ package operators
 import (
 	"math/rand"
 
+	"github.com/oyvinddd/inf273/assignment2"
 	"github.com/oyvinddd/inf273/models"
 )
 
@@ -25,8 +26,8 @@ func TwoExchange(data models.INF273Data, solution [][]*models.Call) [][]*models.
 	*newSolution[r1][r3], *newSolution[r2][r4] = *newSolution[r2][r4], *newSolution[r1][r3]
 
 	// 4. align delivery alongside pickup
-	alignPickupAndDelivery(&newSolution[r1], newSolution[r1][r3])
-	alignPickupAndDelivery(&newSolution[r2], newSolution[r2][r4])
+	alignPickupAndDelivery(newSolution[r1], newSolution[r1][r3])
+	alignPickupAndDelivery(newSolution[r2], newSolution[r2][r4])
 
 	// 5. find optimal placement of delivery
 	return newSolution
@@ -41,16 +42,16 @@ func randomIndices(max int) (int, int) {
 	return r1, r2
 }
 
-func alignPickupAndDelivery(calls *[]*models.Call, call *models.Call) (int, int) {
-	ca, cb := 0, len(*calls)-1
+func alignPickupAndDelivery(calls []*models.Call, call *models.Call) (int, int) {
+	ca, cb := 0, len(calls)-1
 	ia, ib := -1, -1
 	for ca < cb {
 		// pickup call
-		if (*calls)[ca] == call {
+		if calls[ca] == call {
 			ia = ca
 		}
 		// delivery call
-		if (*calls)[cb] == call {
+		if calls[cb] == call {
 			ib = cb
 		}
 		if ia < 0 {
@@ -63,10 +64,34 @@ func alignPickupAndDelivery(calls *[]*models.Call, call *models.Call) (int, int)
 			break
 		}
 	}
-	(*calls)[ia+1], (*calls)[ib] = (*calls)[ib], (*calls)[ia+1]
+	calls[ia+1], calls[ib] = calls[ib], calls[ia+1]
 	return ia, ib
 }
 
-func swapAndCalculate(calls *[]*models.Call) {
+func indexOfOptimalDelivery(data models.INF273Data, vehicle models.Vehicle, calls []*models.Call, startingIndex int) int {
+	var obj = assignment2.CalcVehicleObjective(data, vehicle, calls)
+	var index = startingIndex + 1
+	var optimalIndex = index
+	if len(calls) > 2 {
+		// find the optimal index
+		for i := index; i < len(calls); i++ {
+			calls[i-1], calls[i] = calls[i], calls[i-1]
+			if newObj := assignment2.CalcVehicleObjective(data, vehicle, calls); newObj < obj {
+				optimalIndex = i
+				obj = newObj
+			}
+		}
+	} else {
+		return 1
+	}
+	return optimalIndex
+}
 
+func rightShiftAndInsert(s []*models.Call, index int) {
+	length := len(s)
+	if length > 0 && index > -1 && index < length {
+		call := s[len(s)-1]
+		copy(s[index+1:], s[index:])
+		s[index] = call
+	}
 }

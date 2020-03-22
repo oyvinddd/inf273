@@ -3,15 +3,9 @@ package assignment2
 import (
 	"fmt"
 	"math/rand"
-	"time"
 
 	"github.com/oyvinddd/inf273/models"
 )
-
-func init() {
-	// we only want to run this once for every program execution
-	rand.Seed(time.Now().UnixNano())
-}
 
 // ---------------- ASSIGNMENT #2 ----------------
 

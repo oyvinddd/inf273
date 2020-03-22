@@ -2,7 +2,6 @@ package util
 
 import (
 	"fmt"
-	"log"
 
 	"github.com/oyvinddd/inf273/models"
 )
@@ -11,6 +10,7 @@ import (
 
 // PrintSolution prints a given solution to standard output
 func PrintSolution(solution [][]*models.Call) {
+	fmt.Println()
 	fmt.Println("-------- SOLUTION REPRESENTATION --------")
 	for i := range solution {
 		row := solution[i]
@@ -33,8 +33,16 @@ func PrintSolution(solution [][]*models.Call) {
 	fmt.Println()
 }
 
-// FeasibleSolution returns a feasible (but not optimal) solution (used for testing only)
-func FeasibleSolution() [][]*models.Call {
+// PrintRowInSolution prints a given row in the solution
+func PrintRowInSolution(solution [][]*models.Call, row int) {
+	for _, call := range solution[row] {
+		fmt.Printf("[%v]", call.Index)
+	}
+	fmt.Println()
+}
+
+// FeasibleTestSolution returns a feasible (but not optimal) solution (used for testing only)
+func FeasibleTestSolution() [][]*models.Call {
 
 	c1 := models.NewCall(1, 17, 37, 4601, 790000, 345, 417, 345, 1006)
 	c2 := models.NewCall(2, 33, 36, 13444, 430790, 96, 168, 96, 529)
@@ -54,9 +62,5 @@ func FeasibleSolution() [][]*models.Call {
 
 // TestData returns a test data set from file
 func TestData() models.INF273Data {
-	data, err := ParseFile("Call_7_Vehicle_3.txt", true)
-	if err != nil {
-		log.Fatal(err)
-	}
-	return data
+	return LoadDataFile(Call7Vehicle3)
 }
