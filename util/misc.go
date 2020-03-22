@@ -41,20 +41,6 @@ func PrintRowInSolution(solution [][]*models.Call, row int) {
 	fmt.Println()
 }
 
-// DeepCopy is used if we want to make a separate copy of the solution
-func DeepCopy(solution [][]*models.Call) [][]*models.Call {
-	cp := make([][]*models.Call, len(solution))
-	for i := range solution {
-		cp[i] = make([]*models.Call, len(solution[i]))
-		for j := range solution[i] {
-			ptr := new(models.Call)
-			*ptr = *solution[i][j]
-			cp[i][j] = ptr
-		}
-	}
-	return cp
-}
-
 // CopySolution copies a given solution (new pointers to calls are also created)
 // not the prettiest solution but required for keeping the order of pointers
 func CopySolution(solution [][]*models.Call) [][]*models.Call {

@@ -12,27 +12,27 @@ import (
 // TwoExchange operator performs a 2-exchange on the given solution
 func TwoExchange(data models.INF273Data, solution [][]*models.Call) [][]*models.Call {
 	// 1. copy existing solution
-	newSolution := util.DeepCopy(solution)
+	copiedSolution := util.CopySolution(solution)
 
 	// 2. swap two random calls in different vehicles
-	r1, r2 := randomIndices(len(newSolution))
+	r1, r2 := randomIndices(len(copiedSolution))
 
-	if len(newSolution[r1]) == 0 || len(newSolution[r2]) == 0 {
+	if len(copiedSolution[r1]) == 0 || len(copiedSolution[r2]) == 0 {
 		return nil
 	}
 
-	r3 := rand.Intn(len(newSolution[r1]))
-	r4 := rand.Intn(len(newSolution[r2]))
+	r3 := rand.Intn(len(copiedSolution[r1]))
+	r4 := rand.Intn(len(copiedSolution[r2]))
 
 	// 3. swap calls
-	*newSolution[r1][r3], *newSolution[r2][r4] = *newSolution[r2][r4], *newSolution[r1][r3]
+	*copiedSolution[r1][r3], *copiedSolution[r2][r4] = *copiedSolution[r2][r4], *copiedSolution[r1][r3]
 
 	// 4. align delivery alongside pickup
 	// alignPickupAndDelivery(&newSolution[r1], newSolution[r1][r3])
 	// alignPickupAndDelivery(&newSolution[r2], newSolution[r2][r4])
 
 	// 5. find optimal placement of delivery
-	return newSolution
+	return copiedSolution
 }
 
 func randomIndices(max int) (int, int) {
