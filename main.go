@@ -24,7 +24,7 @@ func main() {
 	data := util.LoadDataFile(util.Call7Vehicle3)
 	solution := util.FeasibleTestSolution()
 
-	newSolution := operators.TwoExchange(data, solution)
+	ns := operators.TwoExchange(data, solution)
 
-	util.PrintSolution(newSolution)
+	util.PrintSolution(ns)
 }

@@ -22,7 +22,7 @@ func LocalSearch(data models.INF273Data, solution [][]*models.Call) [][]*models.
 		} else {
 			current = operators.OneReinsert(data, best)
 		}
-		if isFeasible(data, current) && a2.CalcTotalObjective(data, current) < a2.CalcTotalObjective(data, best) {
+		if current != nil && isFeasible(data, current) && a2.CalcTotalObjective(data, current) < a2.CalcTotalObjective(data, best) {
 			best = current
 		}
 	}

@@ -1,7 +1,6 @@
 package operators
 
 import (
-	"fmt"
 	"math/rand"
 
 	"github.com/oyvinddd/inf273/assignment2"
@@ -14,7 +13,7 @@ func TwoExchange(data models.INF273Data, solution [][]*models.Call) [][]*models.
 	// 1. copy existing solution
 	copiedSolution := util.CopySolution(solution)
 
-	// 2. swap two random calls in different vehicles
+	// 2. chose two random vehicle routes
 	r1, r2 := randomIndices(len(copiedSolution))
 
 	if len(copiedSolution[r1]) == 0 || len(copiedSolution[r2]) == 0 {
@@ -28,12 +27,21 @@ func TwoExchange(data models.INF273Data, solution [][]*models.Call) [][]*models.
 	*copiedSolution[r1][r3], *copiedSolution[r2][r4] = *copiedSolution[r2][r4], *copiedSolution[r1][r3]
 
 	// 4. align delivery alongside pickup
-	// alignPickupAndDelivery(&newSolution[r1], newSolution[r1][r3])
-	// alignPickupAndDelivery(&newSolution[r2], newSolution[r2][r4])
+	p1, _ := alignPickupAndDelivery(copiedSolution[r1], copiedSolution[r1][r3])
+	p2, _ := alignPickupAndDelivery(copiedSolution[r2], copiedSolution[r2][r4])
 
-	// 5. find optimal placement of delivery
+	// 5. find optimal position of delivery
+	v1 := data.Vehicles[r1]
+	v2 := data.Vehicles[r2]
+	i1 := indexOfOptimalDelivery(data, v1, copiedSolution[r1], p1)
+	i2 := indexOfOptimalDelivery(data, v2, copiedSolution[r2], p2)
+	rightShiftAndInsert(copiedSolution[r1], i1)
+	rightShiftAndInsert(copiedSolution[r2], i2)
+
 	return copiedSolution
 }
+
+// -------- PRIVATE HELPERS FUNCTIONS --------
 
 func randomIndices(max int) (int, int) {
 	r1 := rand.Intn(max - 1)
@@ -44,16 +52,16 @@ func randomIndices(max int) (int, int) {
 	return r1, r2
 }
 
-func alignPickupAndDelivery(calls *[]*models.Call, call *models.Call) (int, int) {
-	ca, cb := 0, len(*calls)-1
+func alignPickupAndDelivery(calls []*models.Call, call *models.Call) (int, int) {
+	ca, cb := 0, len(calls)-1
 	ia, ib := -1, -1
 	for ca < cb {
 		// pickup call
-		if (*calls)[ca] == call {
+		if calls[ca] == call {
 			ia = ca
 		}
 		// delivery call
-		if (*calls)[cb] == call {
+		if calls[cb] == call {
 			ib = cb
 		}
 		if ia < 0 {
@@ -66,8 +74,7 @@ func alignPickupAndDelivery(calls *[]*models.Call, call *models.Call) (int, int)
 			break
 		}
 	}
-	fmt.Println(ia, ib)
-	(*calls)[ia+1], (*calls)[ib] = (*calls)[ib], (*calls)[ia+1]
+	calls[ia+1], calls[ib] = calls[ib], calls[ia+1]
 	return ia, ib
 }
 

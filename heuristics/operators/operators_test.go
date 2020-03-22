@@ -90,10 +90,21 @@ func TestIndexOfOptimalDelivery(t *testing.T) {
 		t.Errorf("Wrong optimal index for 7 7 1 1: %v (should be 3)", index)
 	}
 
+	vehicle = data.Vehicles[0]
 	calls = solution[0] // 3 3
 	index = indexOfOptimalDelivery(data, vehicle, calls, 1)
 	if index != 1 {
 		t.Errorf("Wrong optimal index for 3 3: %v (should be 1)", index)
+	}
+
+	solution = util.FeasibleTestSolution()
+	vehicle = data.Vehicles[1]
+	s1 := solution[1]
+	s1[2], s1[3] = s1[3], s1[2] // 7 1 1 7
+
+	index = indexOfOptimalDelivery(data, vehicle, s1, 1)
+	if index != 3 {
+		t.Errorf("Wrong optimal index for 7 1 1 7: %v (should be 3)", index)
 	}
 }
 
