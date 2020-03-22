@@ -30,3 +30,27 @@ func TestRandomIndices(t *testing.T) {
 		}
 	}
 }
+
+func TestAlignPickupAndDelivery(t *testing.T) {
+
+	solution := util.FeasibleSolution()
+	calls := solution[1]
+	call := calls[1]
+	alignPickupAndDelivery(&calls, call)
+	if calls[1] != call || calls[2] != call {
+		t.Errorf("Calls are not aligned")
+	}
+
+	calls = solution[3]
+	call = calls[2]
+	alignPickupAndDelivery(&calls, call)
+	if calls[2] != call || calls[3] != call {
+		t.Errorf("Calls are not aligned")
+	}
+
+	call = calls[5] // call #6
+	alignPickupAndDelivery(&calls, call)
+	if calls[4] != call || calls[5] != call {
+		t.Errorf("Calls are not aligned")
+	}
+}

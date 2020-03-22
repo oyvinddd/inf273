@@ -1,7 +1,6 @@
 package operators
 
 import (
-	"fmt"
 	"math/rand"
 
 	"github.com/oyvinddd/inf273/models"
@@ -22,14 +21,14 @@ func TwoExchange(data models.INF273Data, solution [][]*models.Call) [][]*models.
 	r3 := rand.Intn(len(newSolution[r1]))
 	r4 := rand.Intn(len(newSolution[r2]))
 
-	fmt.Printf("Swapping (%v, %v) and (%v, %v)\n", r1, r3, r2, r4)
-
 	// 3. swap calls
 	*newSolution[r1][r3], *newSolution[r2][r4] = *newSolution[r2][r4], *newSolution[r1][r3]
 
 	// 4. align delivery alongside pickup
 	alignPickupAndDelivery(&newSolution[r1], newSolution[r1][r3])
 	alignPickupAndDelivery(&newSolution[r2], newSolution[r2][r4])
+
+	// 5. find optimal placement of delivery
 	return newSolution
 }
 
@@ -42,9 +41,9 @@ func randomIndices(max int) (int, int) {
 	return r1, r2
 }
 
-func alignPickupAndDelivery(calls *[]*models.Call, call *models.Call) {
+func alignPickupAndDelivery(calls *[]*models.Call, call *models.Call) (int, int) {
 	ca, cb := 0, len(*calls)-1
-	ia, ib := 0, 0
+	ia, ib := -1, -1
 	for ca < cb {
 		// pickup call
 		if (*calls)[ca] == call {
@@ -54,8 +53,20 @@ func alignPickupAndDelivery(calls *[]*models.Call, call *models.Call) {
 		if (*calls)[cb] == call {
 			ib = cb
 		}
-		ca++
-		cb--
+		if ia < 0 {
+			ca++
+		}
+		if ib < 0 {
+			cb--
+		}
+		if ia >= 0 && ib >= 0 {
+			break
+		}
 	}
 	(*calls)[ia+1], (*calls)[ib] = (*calls)[ib], (*calls)[ia+1]
+	return ia, ib
+}
+
+func swapAndCalculate(calls *[]*models.Call) {
+
 }

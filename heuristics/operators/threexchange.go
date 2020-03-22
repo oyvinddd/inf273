@@ -10,12 +10,3 @@ func ThreeExchange(data models.INF273Data, solution [][]*models.Call) [][]*model
 	util.TestData()
 	return nil
 }
-
-func copySolution(s [][]*models.Call) [][]*models.Call {
-	duplicate := make([][]*models.Call, len(s))
-	for i := range s {
-		duplicate[i] = make([]*models.Call, len(s[i]))
-		copy(duplicate[i], s[i])
-	}
-	return duplicate
-}

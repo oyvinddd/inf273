@@ -23,8 +23,10 @@ func main() {
 		log.Fatal(err)
 	}
 	solution := util.FeasibleSolution()
-	// solution := assignment2.CreateOutsourcedSolution(data)
 	util.PrintSolution(solution)
-	newSol := operators.TwoExchange(data, solution)
-	util.PrintSolution(newSol)
+
+	for i := 0; i < 10000; i++ {
+		operators.TwoExchange(data, solution)
+	}
+	// util.PrintSolution(newSol)
 }

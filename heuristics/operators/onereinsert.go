@@ -1,10 +1,10 @@
-package heuristics
+package operators
 
 import (
 	"fmt"
 	"math/rand"
 
-	a2 "github.com/oyvinddd/inf273/assignment2"
+	"github.com/oyvinddd/inf273/assignment2"
 	"github.com/oyvinddd/inf273/models"
 	"github.com/oyvinddd/inf273/util"
 )
@@ -63,7 +63,7 @@ func findOptimalDelivery(data models.INF273Data, vehicle models.Vehicle, vehicle
 	// advance call one step forward and calculate objective
 	for i := index; i < noOfCalls; i++ {
 		swapCalls(vehicleCalls, index, index-1)
-		if newObj := a2.CalcVehicleObjective(data, vehicle, *vehicleCalls); newObj > obj {
+		if newObj := assignment2.CalcVehicleObjective(data, vehicle, *vehicleCalls); newObj > obj {
 			optIndex = i
 			obj = newObj
 		}
