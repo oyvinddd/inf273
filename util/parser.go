@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"errors"
 	"fmt"
+	"log"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -14,8 +15,15 @@ import (
 )
 
 type step int
+type dataFile string
 
-var currentStep step = 0
+const (
+	Call7Vehicle3    dataFile = "Call_7_Vehicle_3.txt"
+	Call18Vehicle5   dataFile = "Call_18_Vehicle_5.txt"
+	Call35Vehicle7   dataFile = "Call_035_Vehicle_07.txt"
+	Call80Vehicle20  dataFile = "Call_080_Vehicle_20.txt"
+	Call130Vehicle40 dataFile = "Call_130_Vehicle_40.txt"
+)
 
 const (
 	step1 step = 1 // # of nodes
@@ -29,9 +37,19 @@ const (
 )
 
 var (
-	_, b, _, _ = runtime.Caller(0)
-	basepath   = filepath.Dir(b)
+	_, b, _, _       = runtime.Caller(0)
+	basepath         = filepath.Dir(b)
+	currentStep step = 0
 )
+
+// LoadDataFile loads a given data file in the data directory
+func LoadDataFile(instance dataFile) models.INF273Data {
+	data, err := ParseFile(string(instance), true)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return data
+}
 
 // ParseFile parses all lines of a data file
 func ParseFile(filename string, addDummyVehicle bool) (models.INF273Data, error) {

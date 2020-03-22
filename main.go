@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	"math/rand"
 	"time"
 
@@ -13,15 +12,11 @@ import (
 
 func main() {
 	rand.Seed(time.Now().UnixNano())
+	data := util.LoadDataFile(util.Call7Vehicle3)
 
 	// time program exection
 	defer util.NewTimer().PrintElapsed()
 
-	// load data from file and create initial outsourced solution
-	data, err := util.ParseFile("Call_7_Vehicle_3.txt", true)
-	if err != nil {
-		log.Fatal(err)
-	}
 	solution := util.FeasibleSolution()
 	util.PrintSolution(solution)
 

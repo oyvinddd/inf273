@@ -14,10 +14,10 @@ func LocalSearch(data models.INF273Data, solution [][]*models.Call) [][]*models.
 	var p1 float32 = 1 / 3
 	var p2 float32 = 1 / 3
 	for i := 0; i < maxIterations; i++ {
-		r := rand.Float32()
-		if r < p1 {
+		random := rand.Float32()
+		if random < p1 {
 			current = operators.TwoExchange(data, best)
-		} else if r < p1+p2 {
+		} else if random < p1+p2 {
 			current = operators.ThreeExchange(data, best)
 		} else {
 			current = operators.OneReinsert(data, best)
