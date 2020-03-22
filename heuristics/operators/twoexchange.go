@@ -1,16 +1,18 @@
 package operators
 
 import (
+	"fmt"
 	"math/rand"
 
 	"github.com/oyvinddd/inf273/assignment2"
 	"github.com/oyvinddd/inf273/models"
+	"github.com/oyvinddd/inf273/util"
 )
 
 // TwoExchange operator performs a 2-exchange on the given solution
 func TwoExchange(data models.INF273Data, solution [][]*models.Call) [][]*models.Call {
 	// 1. copy existing solution
-	newSolution := copySolution(solution)
+	newSolution := util.DeepCopy(solution)
 
 	// 2. swap two random calls in different vehicles
 	r1, r2 := randomIndices(len(newSolution))
@@ -26,8 +28,8 @@ func TwoExchange(data models.INF273Data, solution [][]*models.Call) [][]*models.
 	*newSolution[r1][r3], *newSolution[r2][r4] = *newSolution[r2][r4], *newSolution[r1][r3]
 
 	// 4. align delivery alongside pickup
-	alignPickupAndDelivery(newSolution[r1], newSolution[r1][r3])
-	alignPickupAndDelivery(newSolution[r2], newSolution[r2][r4])
+	// alignPickupAndDelivery(&newSolution[r1], newSolution[r1][r3])
+	// alignPickupAndDelivery(&newSolution[r2], newSolution[r2][r4])
 
 	// 5. find optimal placement of delivery
 	return newSolution
@@ -42,16 +44,16 @@ func randomIndices(max int) (int, int) {
 	return r1, r2
 }
 
-func alignPickupAndDelivery(calls []*models.Call, call *models.Call) (int, int) {
-	ca, cb := 0, len(calls)-1
+func alignPickupAndDelivery(calls *[]*models.Call, call *models.Call) (int, int) {
+	ca, cb := 0, len(*calls)-1
 	ia, ib := -1, -1
 	for ca < cb {
 		// pickup call
-		if calls[ca] == call {
+		if (*calls)[ca] == call {
 			ia = ca
 		}
 		// delivery call
-		if calls[cb] == call {
+		if (*calls)[cb] == call {
 			ib = cb
 		}
 		if ia < 0 {
@@ -64,7 +66,8 @@ func alignPickupAndDelivery(calls []*models.Call, call *models.Call) (int, int) 
 			break
 		}
 	}
-	calls[ia+1], calls[ib] = calls[ib], calls[ia+1]
+	fmt.Println(ia, ib)
+	(*calls)[ia+1], (*calls)[ib] = (*calls)[ib], (*calls)[ia+1]
 	return ia, ib
 }
 

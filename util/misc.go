@@ -41,6 +41,40 @@ func PrintRowInSolution(solution [][]*models.Call, row int) {
 	fmt.Println()
 }
 
+// DeepCopy is used if we want to make a separate copy of the solution
+func DeepCopy(solution [][]*models.Call) [][]*models.Call {
+	cp := make([][]*models.Call, len(solution))
+	for i := range solution {
+		cp[i] = make([]*models.Call, len(solution[i]))
+		for j := range solution[i] {
+			ptr := new(models.Call)
+			*ptr = *solution[i][j]
+			cp[i][j] = ptr
+		}
+	}
+	return cp
+}
+
+// CopySolution copies a given solution (new pointers to calls are also created)
+// not the prettiest solution but required for keeping the order of pointers
+func CopySolution(solution [][]*models.Call) [][]*models.Call {
+	copied := make([][]*models.Call, len(solution))
+	for row := range solution {
+		copied[row] = make([]*models.Call, len(solution[row]))
+		dict := make(map[int]*models.Call)
+		for col, c := range solution[row] {
+			ptr := dict[c.Index]
+			if ptr == nil {
+				ptr = new(models.Call)
+				*ptr = *c
+				dict[c.Index] = ptr
+			}
+			copied[row][col] = ptr
+		}
+	}
+	return copied
+}
+
 // FeasibleTestSolution returns a feasible (but not optimal) solution (used for testing only)
 func FeasibleTestSolution() [][]*models.Call {
 
