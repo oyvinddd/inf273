@@ -18,7 +18,8 @@ func LocalSearch(data models.INF273Data, solution [][]*models.Call) [][]*models.
 		if random < p1 {
 			current = operators.TwoExchange(data, best)
 		} else if random < p1+p2 {
-			current = operators.ThreeExchange(data, best)
+			//current = operators.ThreeExchange(data, best)
+			current = operators.TwoExchange(data, best)
 		} else {
 			current = operators.OneReinsert(data, best)
 		}

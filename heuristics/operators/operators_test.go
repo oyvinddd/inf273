@@ -1,7 +1,6 @@
 package operators
 
 import (
-	"fmt"
 	"os"
 	"testing"
 
@@ -40,23 +39,12 @@ func TestInsertCall(t *testing.T) {
 
 	solution := util.FeasibleTestSolution()
 	callCount := noOfCallsInSolution(solution)
-	insertCall(data, data.Vehicles[0], &solution[0], &models.Call{})
+	insertCall(data, data.Vehicles[0], &solution[0], &models.Call{Index: 1})
 	newCallCount := noOfCallsInSolution(solution)
 
 	if newCallCount != callCount+2 {
 		t.Errorf("Wrong number of calls in solution: %v (should be %v)", newCallCount, callCount+2)
 	}
-}
-
-func TestFindOptimalDelivery(t *testing.T) {
-	solution := util.FeasibleTestSolution()
-	vehicle := data.Vehicles[1]
-	vehicleCalls := solution[1]
-
-	findOptimalDelivery(data, vehicle, &vehicleCalls, 1)
-
-	fmt.Println(vehicleCalls)
-	// TODO:
 }
 
 func TestRandomIndices(t *testing.T) {
