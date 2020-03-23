@@ -12,8 +12,8 @@ import (
 func LocalSearch(data models.INF273Data, solution [][]*models.Call) ([][]*models.Call, int) {
 	current, best := solution, solution
 	obj := a2.CalcTotalObjective(data, best)
-	var p1 float32 = 1.0 / 5.0
-	var p2 float32 = 1.0 / 4.0
+	var p1 float32 = 0.2
+	var p2 float32 = 0.2
 	for i := 0; i < maxIterations; i++ {
 		random := rand.Float32()
 		if random < p1 {

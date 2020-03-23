@@ -9,13 +9,13 @@ import (
 
 // OneReinsert operator performs a 1-reinsert on the given solution
 func OneReinsert(data models.INF273Data, solution [][]*models.Call) [][]*models.Call {
-	copiedSolution := util.CopySolution(solution)
-	random := rand.Intn(len(copiedSolution))
-	if removedCall := removeCall(&copiedSolution[random]); removedCall != nil {
-		random := rand.Intn(len(copiedSolution))
-		insertCall(data, data.Vehicles[random], &copiedSolution[random], removedCall)
+	newSolution := util.CopySolution(solution)
+	random := rand.Intn(len(newSolution))
+	if removedCall := removeCall(&newSolution[random]); removedCall != nil {
+		random := rand.Intn(len(newSolution))
+		insertCall(data, data.Vehicles[random], &newSolution[random], removedCall)
 	}
-	return copiedSolution
+	return newSolution
 }
 
 // ------- PRIVATE HELPER FUNCTIONS -------
@@ -47,7 +47,7 @@ func insertCall(data models.INF273Data, vehicle models.Vehicle, vehicleCalls *[]
 		copy((*vehicleCalls)[index+2:], (*vehicleCalls)[index:])
 		(*vehicleCalls)[index] = call
 		(*vehicleCalls)[index+1] = call
-		// don't bother finding the optimal destination if vehicle is dummy
+		// don't bother finding the optimal delivery if vehicle is dummy
 		if !vehicle.IsDummy() {
 			optIndex := indexOfOptimalDelivery(data, vehicle, *vehicleCalls, index)
 			rightShiftAndInsert(*vehicleCalls, optIndex)

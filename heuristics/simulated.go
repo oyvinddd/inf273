@@ -13,37 +13,37 @@ import (
 
 // SA (Simulated Annealing) iteratively searches for a better solution
 func SA(data models.INF273Data, solution [][]*models.Call) [][]*models.Call {
-	incumbent, bestSolution := solution, solution
+	incumbent, best := solution, solution
 	var temp float64 = 100
 	var a float64 = 0.85
-	var p1 float32 = 1.0 / 4.0
-	var p2 float32 = 1.0 / 4.0
+	var p1 float32 = 1.0 / 5.0
+	var p2 float32 = 1.0 / 5.0
 	for i := 0; i < maxIterations; i++ {
 
 		var random float32 = rand.Float32()
-		var newSolution [][]*models.Call = nil
+		var current [][]*models.Call = nil
 
 		if random < p1 {
-			newSolution = operators.TwoExchange(data, incumbent)
+			current = operators.TwoExchange(data, incumbent)
 		} else if random < p1+p2 {
-			newSolution = operators.ThreeExchange(data, incumbent)
+			current = operators.ThreeExchange(data, incumbent)
 		} else {
-			newSolution = operators.OneReinsert(data, solution)
+			current = operators.OneReinsert(data, solution)
 		}
 
-		fNewSolution := a2.CalcTotalObjective(data, newSolution)
+		fNewSolution := a2.CalcTotalObjective(data, current)
 		fIncumbent := a2.CalcTotalObjective(data, incumbent)
 		deltaE := float64(fNewSolution - fIncumbent)
 
-		if newSolution != nil && isFeasible(data, newSolution) && deltaE < 0 {
-			incumbent = newSolution
-			if fIncumbent < a2.CalcTotalObjective(data, bestSolution) {
-				bestSolution = incumbent
+		if current != nil && isFeasible(data, current) && deltaE < 0 {
+			incumbent = current
+			if fIncumbent < a2.CalcTotalObjective(data, best) {
+				best = incumbent
 			}
-		} else if newSolution != nil && isFeasible(data, newSolution) && rand.Float64() < math.Exp(-deltaE/temp) {
-			incumbent = newSolution
+		} else if current != nil && isFeasible(data, current) && rand.Float64() < math.Exp(-deltaE/temp) {
+			incumbent = current
 		}
 		temp = temp * a
 	}
-	return bestSolution
+	return best
 }
