@@ -1,13 +1,10 @@
 package main
 
 import (
-	"fmt"
 	"math/rand"
 	"time"
 
-	"github.com/oyvinddd/inf273/heuristics"
-
-	"github.com/oyvinddd/inf273/assignment2"
+	"github.com/oyvinddd/inf273/heuristics/operators"
 
 	"github.com/oyvinddd/inf273/util"
 )
@@ -24,9 +21,15 @@ func main() {
 	defer util.NewTimer().PrintElapsed()
 
 	// load data from file
-	data := util.LoadDataFile(util.Call7Vehicle3)
-	solution := assignment2.CreateOutsourcedSolution(data)
-	s := heuristics.LocalSearch(data, solution)
-	fmt.Printf("OBJ: %v\n", assignment2.CalcTotalObjective(data, s))
+	data := util.LoadDataFile(util.Call80Vehicle20)
+	solution := util.FeasibleTestSolution() //assignment2.CreateOutsourcedSolution(data)
+	// s := heuristics.SA(data, solution)
+	// for i := 0; i < 10; i++ {
+	// 	// _, obj := heuristics.RandomSearch(data, solution)
+	// 	_, obj := heuristics.LocalSearch(data, solution)
+	// 	fmt.Println(obj)
+	// }
+	s := operators.ThreeExchange(data, solution)
+	util.PrintSolution(solution)
 	util.PrintSolution(s)
 }

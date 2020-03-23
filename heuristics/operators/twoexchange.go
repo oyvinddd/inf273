@@ -11,46 +11,37 @@ import (
 // TwoExchange operator performs a 2-exchange on the given solution
 func TwoExchange(data models.INF273Data, solution [][]*models.Call) [][]*models.Call {
 	// 1. copy existing solution
-	copiedSolution := util.CopySolution(solution)
+	newSolution := util.CopySolution(solution)
 
 	// 2. chose two random vehicle routes
-	r1, r2 := randomIndices(len(copiedSolution))
+	r1, r2 := util.TwoRandomIndices(len(newSolution))
 
-	if len(copiedSolution[r1]) == 0 || len(copiedSolution[r2]) == 0 {
+	if len(newSolution[r1]) == 0 || len(newSolution[r2]) == 0 {
 		return nil
 	}
 
-	r3 := rand.Intn(len(copiedSolution[r1]))
-	r4 := rand.Intn(len(copiedSolution[r2]))
+	r3 := rand.Intn(len(newSolution[r1]))
+	r4 := rand.Intn(len(newSolution[r2]))
 
 	// 3. swap calls
-	*copiedSolution[r1][r3], *copiedSolution[r2][r4] = *copiedSolution[r2][r4], *copiedSolution[r1][r3]
+	*newSolution[r1][r3], *newSolution[r2][r4] = *newSolution[r2][r4], *newSolution[r1][r3]
 
 	// 4. align delivery alongside pickup
-	p1, _ := alignPickupAndDelivery(copiedSolution[r1], copiedSolution[r1][r3])
-	p2, _ := alignPickupAndDelivery(copiedSolution[r2], copiedSolution[r2][r4])
+	p1, _ := alignPickupAndDelivery(newSolution[r1], newSolution[r1][r3])
+	p2, _ := alignPickupAndDelivery(newSolution[r2], newSolution[r2][r4])
 
 	// 5. find optimal position of delivery
 	v1 := data.Vehicles[r1]
 	v2 := data.Vehicles[r2]
-	i1 := indexOfOptimalDelivery(data, v1, copiedSolution[r1], p1)
-	i2 := indexOfOptimalDelivery(data, v2, copiedSolution[r2], p2)
-	rightShiftAndInsert(copiedSolution[r1], i1)
-	rightShiftAndInsert(copiedSolution[r2], i2)
+	i1 := indexOfOptimalDelivery(data, v1, newSolution[r1], p1)
+	i2 := indexOfOptimalDelivery(data, v2, newSolution[r2], p2)
+	rightShiftAndInsert(newSolution[r1], i1)
+	rightShiftAndInsert(newSolution[r2], i2)
 
-	return copiedSolution
+	return newSolution
 }
 
 // -------- PRIVATE HELPERS FUNCTIONS --------
-
-func randomIndices(max int) (int, int) {
-	r1 := rand.Intn(max - 1)
-	r2 := rand.Intn(max - 1)
-	if r2 >= r1 {
-		r2++
-	}
-	return r1, r2
-}
 
 func alignPickupAndDelivery(calls []*models.Call, call *models.Call) (int, int) {
 	ca, cb := 0, len(calls)-1

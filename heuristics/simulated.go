@@ -12,12 +12,12 @@ import (
 )
 
 // SA (Simulated Annealing) iteratively searches for a better solution
-func SA(data models.INF273Data, solution [][]*models.Call) {
+func SA(data models.INF273Data, solution [][]*models.Call) [][]*models.Call {
 	incumbent, bestSolution := solution, solution
 	var temp float64 = 100
-	var a float64 = 0.8
-	var p1 float32 = 1 / 3
-	var p2 float32 = 1 / 3
+	var a float64 = 0.85
+	var p1 float32 = 1.0 / 4.0
+	var p2 float32 = 1.0 / 4.0
 	for i := 0; i < maxIterations; i++ {
 
 		var random float32 = rand.Float32()
@@ -45,4 +45,5 @@ func SA(data models.INF273Data, solution [][]*models.Call) {
 		}
 		temp = temp * a
 	}
+	return bestSolution
 }
