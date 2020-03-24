@@ -23,6 +23,9 @@ func RandomSearch(data models.INF273Data, solution [][]*models.Call) ([][]*model
 }
 
 func isFeasible(data models.INF273Data, solution [][]*models.Call) bool {
+	if solution == nil {
+		return false
+	}
 	if err := a2.CheckFeasibility(data, solution); err != nil {
 		return false
 	}

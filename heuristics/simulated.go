@@ -1,6 +1,7 @@
 package heuristics
 
 import (
+	"fmt"
 	"math"
 	"math/rand"
 
@@ -12,17 +13,22 @@ import (
 )
 
 // SA (Simulated Annealing) iteratively searches for a better solution
-func SA(data models.INF273Data, solution [][]*models.Call) ([][]*models.Call, int) {
+func SA(data models.INF273Data, solution [][]*models.Call) ([][]*models.Call, int, []float64, []float64, []float64) {
 	incumbent := solution
 	best := solution
 	bestObj := a2.CalcTotalObjective(data, best)
 
-	var temp float64 = 1000
-	var a float64 = 0.998
-	var p1 float32 = 0.2
-	var p2 float32 = 0.3
+	var temp float64 = 1000 // temperature
+	var a float64 = 0.9985  // cooling factor
+	var p1 float32 = 0.1    // probability of using 2-exchange
+	var p2 float32 = 0.05   // probability of using 3-exchange
 
-	for i := 0; i < maxIterations; i++ {
+	var x []float64 = make([]float64, 50000)
+	var y []float64 = make([]float64, 50000)
+	var pp []float64 = make([]float64, 50000)
+
+	for i := 0; i < 50000; i++ {
+		x[i] = float64(i)
 
 		var random float32 = rand.Float32()
 		var newSolution [][]*models.Call = nil
@@ -35,22 +41,36 @@ func SA(data models.INF273Data, solution [][]*models.Call) ([][]*models.Call, in
 			newSolution = operators.OneReinsert(data, incumbent)
 		}
 
-		fNewSolution := a2.CalcTotalObjective(data, newSolution)
-		fIncumbent := a2.CalcTotalObjective(data, incumbent)
-		deltaE := float64(fNewSolution - fIncumbent)
-		p := math.Exp(-deltaE / temp)
-		math.Exp(-(2200 - 2000) / 50)
+		deltaE := float64(a2.CalcTotalObjective(data, newSolution) - a2.CalcTotalObjective(data, incumbent))
+		feasible := isFeasible(data, newSolution)
 
-		if newSolution != nil && isFeasible(data, newSolution) && deltaE < 0 {
+		if feasible && deltaE < 0 {
+			//fmt.Printf("LESS than 0, better solution found! %v\n", deltaE)
 			incumbent = newSolution
-			if fIncumbent < a2.CalcTotalObjective(data, best) {
+			if newObj := a2.CalcTotalObjective(data, incumbent); newObj < a2.CalcTotalObjective(data, best) {
 				best = incumbent
-				bestObj = fIncumbent
+				bestObj = newObj
 			}
-		} else if newSolution != nil && isFeasible(data, newSolution) && rand.Float64() < p {
+		} else if feasible && rand.Float64() < math.Exp(-deltaE/temp) {
 			incumbent = newSolution
+			//p := math.Exp(-deltaE / temp)
+			//fmt.Printf("Temp: %v, DeltaE: %v, Probability: %v\n", temp, deltaE, p)
 		}
 		temp = temp * a
+		y[i] = temp
 	}
-	return best, bestObj
+
+	return best, bestObj, x, y, pp
+}
+
+func wrongstate(solution [][]*models.Call) bool {
+	for row := range solution {
+		for col := range solution[row] {
+			if solution[row][col].PickedUp == true {
+				fmt.Println(solution[row][col])
+				return true
+			}
+		}
+	}
+	return false
 }
