@@ -1,6 +1,7 @@
 package assignment2
 
 import (
+	"log"
 	"os"
 	"testing"
 
@@ -130,23 +131,67 @@ func TestCheckFeasibility(t *testing.T) {
 
 func TestCalculateObjective(t *testing.T) {
 
-	solution := util.FeasibleTestSolution()
-	expObj := 1940470
+	s1 := util.FeasibleTestSolution()
+	expObj1 := 1940470
 
-	objective := CalcTotalObjective(data, solution)
-	if objective != expObj {
-		t.Errorf("Objective function is wrong: %v (should be %v)", objective, expObj)
+	obj := CalcTotalObjective(data, s1)
+	if obj != expObj1 {
+		t.Errorf("Objective value is wrong: %v (should be %v)", obj, expObj1)
+	}
+
+	s2 := util.FeasibleTestSolution2()
+	expObj2 := 1477429
+
+	obj = CalcTotalObjective(data, s2)
+	if obj != expObj2 {
+		t.Errorf("Objective value is wrong: %v (should be %v)", obj, expObj2)
+	}
+
+	s3 := util.FeasibleTestSolution3()
+	expObj3 := 1476444
+
+	obj = CalcTotalObjective(data, s3)
+	if obj != expObj3 {
+		t.Errorf("Objective value is wrong: %v (should be %v)", obj, expObj3)
+	}
+}
+
+func TestIsPickedUpStateReset(t *testing.T) {
+
+	// TODO: do some testing here maybe????
+	solution := util.FeasibleTestSolution()
+	if !isPickedUpStateFalse(solution) {
+		log.Fatal("Picked up state should be reset after obj. calulation and feasibility check")
+	}
+	CalcTotalObjective(data, solution)
+	if !isPickedUpStateFalse(solution) {
+		log.Fatal("Picked up state should be reset after obj. calulation and feasibility check")
+	}
+	CheckFeasibility(data, solution)
+	if !isPickedUpStateFalse(solution) {
+		log.Fatal("Picked up state should be reset after obj. calulation and feasibility check")
+	}
+	solution = util.FeasibleTestSolution()
+	CheckFeasibility(data, solution)
+	if !isPickedUpStateFalse(solution) {
+		log.Fatal("Picked up state should be reset after obj. calulation and feasibility check")
+	}
+	CheckFeasibility(data, solution)
+	if !isPickedUpStateFalse(solution) {
+		log.Fatal("Picked up state should be reset after obj. calulation and feasibility check")
 	}
 }
 
 func TestOutsourcedSolution(t *testing.T) {
-	solution := CreateOutsourcedSolution(data)
+	solution := GenerateOutsourcedSolution(data)
 	obj := CalcTotalObjective(data, solution)
 	expObj := 3286422
 	if obj != expObj {
 		t.Errorf("Objective function is wrong: %v (should be %v)", obj, expObj)
 	}
 }
+
+// --------- PRIVATE HELPER FUNCTIONS ---------
 
 func solutionContainsCall(solution [][]*models.Call, call *models.Call) bool {
 	var count int = 0
@@ -158,4 +203,15 @@ func solutionContainsCall(solution [][]*models.Call, call *models.Call) bool {
 		}
 	}
 	return count == 2
+}
+
+func isPickedUpStateFalse(solution [][]*models.Call) bool {
+	for row := range solution {
+		for col := range solution[row] {
+			if solution[row][col].PickedUp == true {
+				return false
+			}
+		}
+	}
+	return true
 }
