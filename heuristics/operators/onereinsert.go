@@ -54,3 +54,12 @@ func insertCall(data models.INF273Data, vehicle models.Vehicle, vehicleCalls *[]
 		}
 	}
 }
+
+func weights(count int) []float32 {
+	w := make([]float32, count)
+	for i := 0; i < count; i++ {
+		w[i] = 1.0
+	}
+	w[len(w)-1] = 0.2
+	return w
+}

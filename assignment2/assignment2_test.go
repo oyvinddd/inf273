@@ -102,8 +102,27 @@ func TestDataSet(t *testing.T) {
 	}
 }
 
+func TestGenerateSolution(t *testing.T) {
+
+	solution := GenerateSolution(data)
+
+	for row := range solution {
+		for col := range solution[row] {
+			if solution[row][col].PickedUp == true {
+				t.Errorf("Generated solution should have no picked up calls")
+			}
+		}
+	}
+
+	for _, call := range data.Calls {
+		if !solutionContainsCall(solution, &call) {
+			t.Errorf("Not the correct amount of calls in solution")
+		}
+	}
+}
+
 func TestCheckFeasibility(t *testing.T) {
-	err := CheckFeasibility(data, util.FeasibleSolution())
+	err := CheckFeasibility(data, util.FeasibleTestSolution())
 	if err != nil {
 		t.Errorf("Infeasible solution: %v", err)
 	}
@@ -111,7 +130,7 @@ func TestCheckFeasibility(t *testing.T) {
 
 func TestCalculateObjective(t *testing.T) {
 
-	solution := util.FeasibleSolution()
+	solution := util.FeasibleTestSolution()
 	expObj := 1940470
 
 	objective := CalcTotalObjective(data, solution)
@@ -127,4 +146,16 @@ func TestOutsourcedSolution(t *testing.T) {
 	if obj != expObj {
 		t.Errorf("Objective function is wrong: %v (should be %v)", obj, expObj)
 	}
+}
+
+func solutionContainsCall(solution [][]*models.Call, call *models.Call) bool {
+	var count int = 0
+	for row := range solution {
+		for col := range solution[row] {
+			if solution[row][col].Index == call.Index {
+				count++
+			}
+		}
+	}
+	return count == 2
 }

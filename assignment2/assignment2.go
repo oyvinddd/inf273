@@ -149,8 +149,8 @@ func CalcVehicleObjective(data models.INF273Data, vehicle models.Vehicle, calls 
 	return obj
 }
 
-// CreateOutsourcedSolution creates a solution where all calls are handled by the dummy vehicle
-func CreateOutsourcedSolution(data models.INF273Data) [][]*models.Call {
+// GenerateOutsourcedSolution creates a solution where all calls are handled by the dummy vehicle
+func GenerateOutsourcedSolution(data models.INF273Data) [][]*models.Call {
 	solution := make([][]*models.Call, data.NoOfVehicles)
 	dummyVehicle := solution[data.NoOfVehicles-1]
 	for _, call := range data.Calls {
