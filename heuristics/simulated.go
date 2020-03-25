@@ -1,7 +1,6 @@
 package heuristics
 
 import (
-	"fmt"
 	"math"
 	"math/rand"
 
@@ -45,7 +44,6 @@ func SA(data models.INF273Data, solution [][]*models.Call) ([][]*models.Call, in
 		feasible := isFeasible(data, newSolution)
 
 		if feasible && deltaE < 0 {
-			//fmt.Printf("LESS than 0, better solution found! %v\n", deltaE)
 			incumbent = newSolution
 			if newObj := a2.CalcTotalObjective(data, incumbent); newObj < a2.CalcTotalObjective(data, best) {
 				best = incumbent
@@ -53,24 +51,10 @@ func SA(data models.INF273Data, solution [][]*models.Call) ([][]*models.Call, in
 			}
 		} else if feasible && rand.Float64() < math.Exp(-deltaE/temp) {
 			incumbent = newSolution
-			//p := math.Exp(-deltaE / temp)
-			//fmt.Printf("Temp: %v, DeltaE: %v, Probability: %v\n", temp, deltaE, p)
 		}
 		temp = temp * a
 		y[i] = temp
 	}
 
 	return best, bestObj, x, y, pp
-}
-
-func wrongstate(solution [][]*models.Call) bool {
-	for row := range solution {
-		for col := range solution[row] {
-			if solution[row][col].PickedUp == true {
-				fmt.Println(solution[row][col])
-				return true
-			}
-		}
-	}
-	return false
 }

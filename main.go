@@ -29,15 +29,4 @@ func main() {
 	s1, obj, _, _, _ := heuristics.SA(data, s0)
 
 	util.PrintSolutionAndObj(s1, obj)
-
-	t1 := util.NewTimer()
-	for i := 0; i < 1000; i++ {
-		a2.CheckFeasibility(data, s1)
-	}
-	t1.PrintElapsed()
-	t2 := util.NewTimer()
-	for i := 0; i < 1000; i++ {
-		a2.CheckTotalTimeFeasibility(data, s1)
-	}
-	t2.PrintElapsed()
 }
