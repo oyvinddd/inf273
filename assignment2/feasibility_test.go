@@ -9,11 +9,13 @@ import (
 func TestCheckTimeFeasibility(t *testing.T) {
 
 	s1 := util.FeasibleTestSolution()
+	s2 := util.FeasibleTestSolution2()
+	s3 := util.FeasibleTestSolution3()
 
-	for i, call := range s1 {
-		vehicle := data.Vehicles[i]
-		if err := CheckTimeFeasibility(data, vehicle, call); err != nil {
-			t.Error(err)
-		}
+	err := CheckTotalTimeFeasibility(data, s1)
+	err = CheckTotalTimeFeasibility(data, s2)
+	err = CheckTotalTimeFeasibility(data, s3)
+	if err != nil {
+		t.Error(err)
 	}
 }

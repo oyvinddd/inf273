@@ -38,8 +38,10 @@ func TestRemoveCall(t *testing.T) {
 func TestInsertCall(t *testing.T) {
 
 	solution := util.FeasibleTestSolution()
+	removedCall := removeCall(&solution[0])
+
 	callCount := noOfCallsInSolution(solution)
-	insertCall(data, data.Vehicles[0], &solution[0], &models.Call{Index: 1})
+	insertCall(data, data.Vehicles[1], &solution[1], removedCall)
 	newCallCount := noOfCallsInSolution(solution)
 
 	if newCallCount != callCount+2 {
