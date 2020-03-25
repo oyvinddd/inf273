@@ -1,4 +1,4 @@
-package assignment2
+package a2
 
 import (
 	"fmt"
@@ -38,7 +38,7 @@ func CheckFeasibility(data models.INF273Data, solution [][]*models.Call) error {
 
 			if col == 0 {
 				// make sure to add travel time from home node to first call
-				currentTime += data.GetTravelTimeAndCost(vehicle.Home, call.Origin, vehicle.Index).Time
+				currentTime += data.GetTravelTimeAndCost(vehicle.Home, call.Origin, vehicle.Index).Time + vehicle.StartTime
 			}
 
 			ntac := data.GetNodeTimeAndCost(vehicle.Index, call.Index)
