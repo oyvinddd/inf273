@@ -31,6 +31,7 @@ func TwoRandomIndices(max int) (int, int) {
 	return r1, r2
 }
 
+// ThreeRandomIndices returns three unique random indices in range [0, max)
 func ThreeRandomIndices(max int) (int, int, int) {
 	if max <= 0 {
 		return 0, 0, 0

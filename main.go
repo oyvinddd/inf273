@@ -31,20 +31,7 @@ func main() {
 	s, o, _, _, _ := heuristics.SA(data, s0)
 	util.PrintSolutionAndObj(s, o)
 	util.PrintFlatSolution(s)
-	// g1 := chart.Chart{
-	// 	Series: []chart.Series{
-	// 		chart.ContinuousSeries{
-	// 			XValues: x,
-	// 			YValues: y,
-	// 		},
-	// 	},
-	// }
-	// f, _ := os.Create("temperature.png")
-	// defer f.Close()
-	// err := g1.Render(chart.PNG, f)
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
+
 
 	// util.PrintSolutionAndObj(s1, obj)
 }
