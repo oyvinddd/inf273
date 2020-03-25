@@ -3,6 +3,7 @@ package util
 import (
 	"fmt"
 
+	datafiles "github.com/oyvinddd/inf273/data"
 	"github.com/oyvinddd/inf273/models"
 )
 
@@ -57,6 +58,24 @@ func PrintRowInSolution(solution [][]*models.Call, row int) {
 		fmt.Printf("[%v]", call.Index)
 	}
 	fmt.Println()
+}
+
+// PrintResult prints the result to console
+func PrintResult(r []int, obj0 int) {
+	fmt.Printf("INITIAL: %v\n", obj0)
+	fmt.Println("ALL RESULTS:")
+	best := r[0]
+	sum := 0
+	for i := range r {
+		if r[i] < best {
+			best = r[i]
+		}
+		sum += r[i]
+		fmt.Println(r[i])
+	}
+	fmt.Printf("AVG. OBJ: %v\n", sum/10.0)
+	fmt.Printf("BEST: %v\n", best)
+	fmt.Printf("IMPR.: %v\n", (100.0 * (float32(obj0) - float32(best)) / float32(obj0)))
 }
 
 // CopySolution copies a given solution (new pointers to calls are also created)
@@ -135,5 +154,10 @@ func FeasibleTestSolution3() [][]*models.Call {
 
 // TestData returns a test data set from file
 func TestData() models.INF273Data {
-	return LoadDataFile(Call7Vehicle3)
+	return LoadDataFile(datafiles.Call7Vehicle3)
+}
+
+// TestDataBig returns a test data set from file
+func TestDataBig() models.INF273Data {
+	return LoadDataFile(datafiles.Call130Vehicle40)
 }

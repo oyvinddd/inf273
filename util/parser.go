@@ -11,19 +11,11 @@ import (
 	"strconv"
 	"strings"
 
+	datafiles "github.com/oyvinddd/inf273/data"
 	"github.com/oyvinddd/inf273/models"
 )
 
 type step int
-type dataFile string
-
-const (
-	Call7Vehicle3    dataFile = "Call_7_Vehicle_3.txt"
-	Call18Vehicle5   dataFile = "Call_18_Vehicle_5.txt"
-	Call35Vehicle7   dataFile = "Call_035_Vehicle_07.txt"
-	Call80Vehicle20  dataFile = "Call_080_Vehicle_20.txt"
-	Call130Vehicle40 dataFile = "Call_130_Vehicle_40.txt"
-)
 
 const (
 	step1 step = 1 // # of nodes
@@ -43,7 +35,7 @@ var (
 )
 
 // LoadDataFile loads a given data file in the data directory
-func LoadDataFile(instance dataFile) models.INF273Data {
+func LoadDataFile(instance datafiles.INF273Instance) models.INF273Data {
 	data, err := ParseFile(string(instance), true)
 	if err != nil {
 		log.Fatal(err)
