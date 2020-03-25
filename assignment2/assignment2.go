@@ -91,6 +91,17 @@ func CheckFeasibility(data models.INF273Data, solution [][]*models.Call) error {
 	return nil
 }
 
+// IsFeasible returns true if a given solution is feasible, otherwise false
+func IsFeasible(data models.INF273Data, solution [][]*models.Call) bool {
+	if solution == nil {
+		return false
+	}
+	if err := CheckFeasibility(data, solution); err != nil {
+		return false
+	}
+	return true
+}
+
 // CalcTotalObjective takes a solution as input and returns an objective value
 func CalcTotalObjective(data models.INF273Data, solution [][]*models.Call) int {
 	var obj int = 0

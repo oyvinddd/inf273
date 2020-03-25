@@ -41,7 +41,7 @@ func SA(data models.INF273Data, solution [][]*models.Call) ([][]*models.Call, in
 		}
 
 		deltaE := float64(a2.CalcTotalObjective(data, newSolution) - a2.CalcTotalObjective(data, incumbent))
-		feasible := isFeasible(data, newSolution)
+		feasible := a2.IsFeasible(data, newSolution)
 
 		if feasible && deltaE < 0 {
 			incumbent = newSolution

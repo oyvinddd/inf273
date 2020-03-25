@@ -20,7 +20,7 @@ func init() {
 func main() {
 
 	// // benchmark program exection
-	//defer util.NewTimer().PrintElapsed()
+	defer util.NewTimer().PrintElapsed()
 
 	// // load data file and generate outsourced solution
 	data := util.LoadDataFile(datafiles.Call130Vehicle40)

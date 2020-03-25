@@ -12,7 +12,7 @@ func RandomSearch(data models.INF273Data, solution [][]*models.Call) ([][]*model
 	best := solution
 	obj := a2.CalcTotalObjective(data, best)
 	for i := 0; i < maxIterations; i++ {
-		if current := a2.GenerateSolution(data); isFeasible(data, current) {
+		if current := a2.GenerateSolution(data); a2.IsFeasible(data, current) {
 			if currentObj := a2.CalcTotalObjective(data, current); currentObj < obj {
 				best = current
 				obj = currentObj
@@ -20,14 +20,4 @@ func RandomSearch(data models.INF273Data, solution [][]*models.Call) ([][]*model
 		}
 	}
 	return best, obj
-}
-
-func isFeasible(data models.INF273Data, solution [][]*models.Call) bool {
-	if solution == nil {
-		return false
-	}
-	if err := a2.CheckFeasibility(data, solution); err != nil {
-		return false
-	}
-	return true
 }
