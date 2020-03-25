@@ -18,7 +18,7 @@ func SA(data models.INF273Data, solution [][]*models.Call) ([][]*models.Call, in
 	bestObj := a2.CalcTotalObjective(data, best)
 
 	var temp float64 = 1000 // temperature
-	var a float64 = 0.9985  // cooling factor
+	var a float64 = 0.99985 // cooling factor
 	var p1 float32 = 0.1    // probability of using 2-exchange
 	var p2 float32 = 0.05   // probability of using 3-exchange
 
