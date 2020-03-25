@@ -6,19 +6,19 @@ import (
 	"github.com/oyvinddd/inf273/models"
 )
 
-// CheckTotalTimeFeasibility checks time feasibility of all routes in a given solution
-func CheckTotalTimeFeasibility(data models.INF273Data, solution [][]*models.Call) error {
+// CheckTotalTimeWindows checks time feasibility of all routes in a given solution
+func CheckTotalTimeWindows(data models.INF273Data, solution [][]*models.Call) error {
 	for index, calls := range solution {
 		vehicle := data.Vehicles[index]
-		if err := CheckTimeFeasibility(data, vehicle, calls); err != nil {
+		if err := CheckTimeWindows(data, vehicle, calls); err != nil {
 			return err
 		}
 	}
 	return nil
 }
 
-// CheckTimeFeasibility checks if time windows for a given call is feasible
-func CheckTimeFeasibility(data models.INF273Data, vehicle models.Vehicle, calls []*models.Call) error {
+// CheckTimeWindows checks if time windows for a given call is feasible
+func CheckTimeWindows(data models.INF273Data, vehicle models.Vehicle, calls []*models.Call) error {
 	if noOfCalls := len(calls); noOfCalls > 1 && !vehicle.IsDummy() {
 
 		visited := make(map[int]bool)
@@ -60,6 +60,37 @@ func CheckTimeFeasibility(data models.INF273Data, vehicle models.Vehicle, calls 
 		c1 := calls[noOfCalls-1]
 		if time > c1.UpperDW {
 			return fmt.Errorf("Infeasible! Arrival time at %v (destination of %v) is %v, but time window is [%v, %v]", c1.Destination, c1.Index, time, c1.LowerDW, c1.UpperDW)
+		}
+	}
+	return nil
+}
+
+// CheckCapacity checks the capacity for a given vehicle
+func CheckCapacity(data models.INF273Data, vehicle models.Vehicle, calls []*models.Call) error {
+	if !vehicle.IsDummy() {
+		visited, vehicleLoad := make(map[int]bool), 0
+		for _, call := range calls {
+			if !visited[call.Index] {
+				visited[call.Index] = true
+				vehicleLoad += call.Size
+				if vehicleLoad > vehicle.Capacity {
+					return fmt.Errorf("Infeasible! vehicle %v capacity is %d but load is %d", vehicle.Index, vehicle.Capacity, vehicleLoad)
+				}
+			} else {
+				vehicleLoad -= call.Size
+			}
+		}
+	}
+	return nil
+}
+
+// CheckCompatibility checks if a vehicle can transport a given call
+func CheckCompatibility(data models.INF273Data, vehicle models.Vehicle, calls []*models.Call) error {
+	if !vehicle.IsDummy() {
+		for _, call := range calls {
+			if !data.VehicleAndCallIsCompatible(vehicle.Index, call.Index) {
+				return fmt.Errorf("Infeasible! vehicle %d not compatible with call %d", vehicle.Index, call.Index)
+			}
 		}
 	}
 	return nil

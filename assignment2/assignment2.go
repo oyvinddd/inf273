@@ -1,7 +1,6 @@
 package a2
 
 import (
-	"fmt"
 	"math/rand"
 
 	"github.com/oyvinddd/inf273/models"
@@ -29,65 +28,22 @@ func GenerateSolution(data models.INF273Data) [][]*models.Call {
 // CheckFeasibility checks the feasibility of a given solution
 func CheckFeasibility(data models.INF273Data, solution [][]*models.Call) error {
 	for row := range solution {
-		vehicle, vehicleLoad, currentTime := data.Vehicles[row], 0, 0
-		// skip feasibility checks for dummy vehicle
-		if vehicle.IsDummy() {
-			continue
+
+		vehicle := data.Vehicles[row]
+		calls := solution[row]
+
+		if e1 := CheckTimeWindows(data, vehicle, calls); e1 != nil {
+			return e1
 		}
-		for col, call := range solution[row] {
 
-			if col == 0 {
-				// make sure to add travel time from home node to first call
-				currentTime += data.GetTravelTimeAndCost(vehicle.Home, call.Origin, vehicle.Index).Time + vehicle.StartTime
-			}
+		if e2 := CheckCapacity(data, vehicle, calls); e2 != nil {
+			return e2
+		}
 
-			ntac := data.GetNodeTimeAndCost(vehicle.Index, call.Index)
-			// add loading (or unloading) time to current time
-			time, err := calculateLoadingOrUnloadingTime(currentTime, vehicle.Index, ntac, call)
-			if err != nil {
-				return err
-			}
-			currentTime += time
-
-			// vehicle capacity
-			if !call.PickedUp {
-				vehicleLoad += call.Size
-				if vehicleLoad > vehicle.Capacity {
-					return fmt.Errorf("Infeasible: vehicle capacity is %d, load is %d", vehicle.Capacity, vehicleLoad)
-				}
-			} else {
-				vehicleLoad -= call.Size
-			}
-
-			// calls and vehicle compatibility
-			if !data.VehicleAndCallIsCompatible(vehicle.Index, call.Index) {
-				return fmt.Errorf("Infeasible: vehicle %d not compatible with call %d", vehicle.Index, call.Index)
-			}
-
-			if col < len(solution[row])-1 {
-
-				nextCall := solution[row][col+1]
-				from, to := 0, 0
-
-				if !call.PickedUp {
-					call.PickedUp = true
-					from = call.Origin
-				} else {
-					from = call.Destination
-				}
-
-				if !nextCall.PickedUp {
-					to = nextCall.Origin
-				} else {
-					to = nextCall.Destination
-				}
-
-				// add travel time from current node to next node
-				currentTime += data.GetTravelTimeAndCost(from, to, vehicle.Index).Time
-			}
+		if e3 := CheckCompatibility(data, vehicle, calls); e3 != nil {
+			return e3
 		}
 	}
-	resetPickedUpState(solution)
 	return nil
 }
 
@@ -179,32 +135,6 @@ func shuffleSlice(a []*models.Call) {
 	rand.Shuffle(len(a), func(i int, j int) {
 		a[i], a[j] = a[j], a[i]
 	})
-}
-
-func calculateLoadingOrUnloadingTime(currentTime int, vehicleIndex int, ntac models.NodeTimeAndCost, call *models.Call) (int, error) {
-
-	var time int = 0
-
-	if !call.PickedUp {
-		if currentTime < call.LowerPW {
-			// vehicle arrived early at pickup, add waiting time
-			time += call.LowerPW - currentTime
-		} else if currentTime > call.UpperPW {
-			// vehicle arrived too late at pickup, infeasible
-			return 0, fmt.Errorf("Infeasible: vehicle %d arrived at pickup node %d too late", vehicleIndex, call.Origin)
-		}
-		time += ntac.OriginTime
-	} else {
-		if currentTime < call.LowerDW {
-			// vehicle arrived early at destination, add waiting time
-			time += call.LowerDW - currentTime
-		} else if currentTime > call.UpperDW {
-			// vehicle arrived too late at destination, infeasible
-			return 0, fmt.Errorf("Infeasible: vehicle %d arrived at destination node %d too late", vehicleIndex, call.Destination)
-		}
-		time += ntac.DestinationTime
-	}
-	return time, nil
 }
 
 func resetPickedUpState(solution [][]*models.Call) {
