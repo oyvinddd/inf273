@@ -9,6 +9,12 @@ import (
 
 // --------------- MISC HELPER FUNCTIONS ---------------
 
+// PrintSolutionAndObj prints both the solution and the objective
+func PrintSolutionAndObj(s [][]*models.Call, obj int) {
+	PrintSolution(s)
+	fmt.Printf("Objective: %v\n", obj)
+}
+
 // PrintSolution prints a given solution to standard output
 func PrintSolution(solution [][]*models.Call) {
 	fmt.Println()

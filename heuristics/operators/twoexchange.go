@@ -3,7 +3,7 @@ package operators
 import (
 	"math/rand"
 
-	"github.com/oyvinddd/inf273/assignment2"
+	a2 "github.com/oyvinddd/inf273/assignment2"
 	"github.com/oyvinddd/inf273/models"
 	"github.com/oyvinddd/inf273/util"
 )
@@ -70,14 +70,14 @@ func alignPickupAndDelivery(calls []*models.Call, call *models.Call) (int, int) 
 }
 
 func indexOfOptimalDelivery(data models.INF273Data, vehicle models.Vehicle, calls []*models.Call, startingIndex int) int {
-	var obj = assignment2.CalcVehicleObjective(data, vehicle, calls)
+	var obj = a2.CalcVehicleObjective(data, vehicle, calls)
 	var index = startingIndex + 1
 	var optimalIndex = index
 	if len(calls) > 2 {
 		// find the optimal index
 		for i := index; i < len(calls); i++ {
 			calls[i-1], calls[i] = calls[i], calls[i-1]
-			if newObj := assignment2.CalcVehicleObjective(data, vehicle, calls); newObj < obj {
+			if newObj := a2.CalcVehicleObjective(data, vehicle, calls); newObj < obj {
 				optimalIndex = i
 				obj = newObj
 			}
