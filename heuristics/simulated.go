@@ -15,13 +15,12 @@ import (
 func SA(data models.INF273Data, s0 [][]*models.Call) ([][]*models.Call, []float64, []float64, []float64) {
 	incumbent, best := s0, s0
 
-	var T float64 = 1000    // temperature
-	var a float64 = 0.99887 // cooling factor
-	var p float64 = 0.8     // probability of accepting worse solution
-	var p1 float32 = 0.25   // probability of using 2-exchange
-	var p2 float32 = 0.17   // probability of using 3-exchange
-
 	var avg float64 = 0
+	var T float64 = 2000       // temperature
+	var a float64 = 0.99983654 // cooling factor
+	var p float64 = 0.8        // probability of accepting worse solution
+	var p1 float32 = 0.39      // probability of using 2-exchange
+	var p2 float32 = 0.2       // probability of using 3-exchange
 
 	var x []float64 = make([]float64, maxIterations)
 	var y []float64 = make([]float64, maxIterations)
@@ -43,13 +42,11 @@ func SA(data models.INF273Data, s0 [][]*models.Call) ([][]*models.Call, []float6
 
 		deltaE := float64(a2.TotalObjective(data, newSolution) - a2.TotalObjective(data, incumbent))
 		if i < 100 && deltaE >= 0 {
-			//fmt.Println(deltaE)
 			avg += deltaE
 		} else if i == 100 {
 			T = -(avg / 100) / math.Log(0.8)
 		} else {
 			p = math.Exp(-deltaE / T)
-			//fmt.Println(T)
 		}
 
 		isFeasible := a2.IsFeasible(data, newSolution)
