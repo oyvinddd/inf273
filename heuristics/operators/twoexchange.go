@@ -1,7 +1,6 @@
 package operators
 
 import (
-	"fmt"
 	"math/rand"
 
 	a2 "github.com/oyvinddd/inf273/assignment2"
@@ -16,9 +15,9 @@ var dd int = 0
 // TwoExchange operator performs a 2-exchange on the given solution
 func TwoExchange(data models.INF273Data, solution [][]*models.Call) [][]*models.Call {
 	cc++
-	fmt.Printf("T.E. Called %v times\n", cc)
-	fmt.Printf("Empty row count %v\n", dd)
-	fmt.Printf("Swapped %v times\n", cd)
+	// fmt.Printf("T.E. Called %v times\n", cc)
+	// fmt.Printf("Empty row count %v\n", dd)
+	// fmt.Printf("Swapped %v times\n", cd)
 
 	// 1. copy existing solution
 	newSolution := util.CopySolution(solution)
@@ -27,13 +26,13 @@ func TwoExchange(data models.INF273Data, solution [][]*models.Call) [][]*models.
 	r1, r2 := twoRandomVehicleIndices(newSolution)
 	if r1 < 0 || r2 < 0 {
 		dd++
-		return nil
+		return newSolution
 	}
 
 	r3 := rand.Intn(len(newSolution[r1]))
 	r4 := rand.Intn(len(newSolution[r2]))
 	if !data.VehicleAndCallIsCompatible(data.Vehicles[r1].Index, solution[r2][r4].Index) || !data.VehicleAndCallIsCompatible(data.Vehicles[r2].Index, solution[r1][r3].Index) {
-		return nil
+		return newSolution
 	}
 
 	// 3. swap calls

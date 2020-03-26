@@ -1,7 +1,6 @@
 package operators
 
 import (
-	"fmt"
 	"math/rand"
 
 	"github.com/oyvinddd/inf273/models"
@@ -15,9 +14,8 @@ func ThreeExchange(data models.INF273Data, solution [][]*models.Call) [][]*model
 
 	// 2. generate random indices
 	r1, r2, r3 := threeRandomVehicleIndices(newSolution)
-	fmt.Println(r1, r2, r3)
 	if r1 < 0 || r2 < 0 || r3 < 0 {
-		return nil
+		return newSolution
 	}
 
 	r4 := rand.Intn(len(newSolution[r1]))

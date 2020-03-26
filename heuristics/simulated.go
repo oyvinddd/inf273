@@ -12,10 +12,9 @@ import (
 )
 
 // SA (Simulated Annealing) iteratively searches for a better solution
-func SA(data models.INF273Data, solution [][]*models.Call) ([][]*models.Call, int, []float64, []float64, []float64) {
+func SA(data models.INF273Data, solution [][]*models.Call) ([][]*models.Call, []float64, []float64, []float64) {
 	incumbent := solution
 	best := solution
-	bestObj := a2.TotalObjective(data, best)
 
 	var temp float64 = 1000 // temperature
 	var a float64 = 0.99985 // cooling factor
@@ -47,7 +46,6 @@ func SA(data models.INF273Data, solution [][]*models.Call) ([][]*models.Call, in
 			incumbent = newSolution
 			if newObj := a2.TotalObjective(data, incumbent); newObj < a2.TotalObjective(data, best) {
 				best = incumbent
-				bestObj = newObj
 			}
 		} else if feasible && rand.Float64() < math.Exp(-deltaE/temp) {
 			incumbent = newSolution
@@ -56,5 +54,5 @@ func SA(data models.INF273Data, solution [][]*models.Call) ([][]*models.Call, in
 		y[i] = temp
 	}
 
-	return best, bestObj, x, y, pp
+	return best, x, y, pp
 }

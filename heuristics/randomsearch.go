@@ -8,16 +8,13 @@ import (
 const maxIterations int = 10000
 
 // RandomSearch randomly searches for a better solution
-func RandomSearch(data models.INF273Data, solution [][]*models.Call) ([][]*models.Call, int) {
-	best := solution
-	obj := a2.TotalObjective(data, best)
+func RandomSearch(data models.INF273Data, s0 [][]*models.Call) [][]*models.Call {
+	best := s0
 	for i := 0; i < maxIterations; i++ {
-		if current := a2.GenerateSolution(data); a2.IsFeasible(data, current) {
-			if currentObj := a2.TotalObjective(data, current); currentObj < obj {
-				best = current
-				obj = currentObj
-			}
+		current := a2.GenerateSolution(data)
+		if a2.IsFeasible(data, current) && a2.TotalObjective(data, current) < a2.TotalObjective(data, best) {
+			best = current
 		}
 	}
-	return best, obj
+	return best
 }

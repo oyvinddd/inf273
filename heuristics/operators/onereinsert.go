@@ -59,7 +59,7 @@ func insertCall(data models.INF273Data, vehicle models.Vehicle, vehicleCalls *[]
 }
 
 func randomCompatibleIndex(data models.INF273Data, call *models.Call) int {
-	index := rand.Intn(data.NoOfVehicles)
+	index := util.WeightedRandomNumber(weights(data.NoOfVehicles)) //rand.Intn(data.NoOfVehicles)
 	for !data.VehicleAndCallIsCompatible(data.Vehicles[index].Index, call.Index) {
 		index--
 		if index < 0 {

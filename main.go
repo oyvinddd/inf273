@@ -24,15 +24,16 @@ func main() {
 	defer util.NewTimer().PrintElapsed()
 
 	// load data file and generate outsourced solution
-	data := util.LoadDataFile(datafiles.Call130Vehicle40)
+	data := util.LoadDataFile(datafiles.Call18Vehicle5)
 	s0 := a2.GenerateOutsourcedSolution(data)
 	o0 := a2.TotalObjective(data, s0)
 
 	var s1 [][]*models.Call = nil
 	var result []int = make([]int, 10)
 	for i := 0; i < 10; i++ {
-		//_, obj, _, _, _ := heuristics.SA(data, s0)
-		s1 = heuristics.LocalSearch(data, s0)
+		// s1 := heuristics.RandomSearch(data, s0)
+		s1, _, _, _ := heuristics.SA(data, s0)
+		//s1 = heuristics.LocalSearch(data, s0)
 		result[i] = a2.TotalObjective(data, s1)
 	}
 	util.PrintSolution(s1)
