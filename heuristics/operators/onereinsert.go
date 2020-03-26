@@ -7,12 +7,15 @@ import (
 	"github.com/oyvinddd/inf273/util"
 )
 
+var totalIt int = 0
+
 // OneReinsert operator performs a 1-reinsert on the given solution
 func OneReinsert(data models.INF273Data, solution [][]*models.Call) [][]*models.Call {
+	totalIt++
 	newSolution := util.CopySolution(solution)
 	random := rand.Intn(len(newSolution))
 	if removedCall := removeCall(&newSolution[random]); removedCall != nil {
-		random := rand.Intn(len(newSolution))
+		random := randomCompatibleIndex(data, removedCall)
 		insertCall(data, data.Vehicles[random], &newSolution[random], removedCall)
 	}
 	return newSolution
@@ -53,6 +56,17 @@ func insertCall(data models.INF273Data, vehicle models.Vehicle, vehicleCalls *[]
 			rightShiftAndInsert(*vehicleCalls, optIndex)
 		}
 	}
+}
+
+func randomCompatibleIndex(data models.INF273Data, call *models.Call) int {
+	index := rand.Intn(data.NoOfVehicles)
+	for !data.VehicleAndCallIsCompatible(data.Vehicles[index].Index, call.Index) {
+		index++
+		if index == data.NoOfVehicles {
+			index = 0
+		}
+	}
+	return index
 }
 
 func weights(count int) []float32 {

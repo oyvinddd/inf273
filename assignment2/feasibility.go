@@ -86,11 +86,9 @@ func CheckCapacity(data models.INF273Data, vehicle models.Vehicle, calls []*mode
 
 // CheckCompatibility checks if a vehicle can transport a given call
 func CheckCompatibility(data models.INF273Data, vehicle models.Vehicle, calls []*models.Call) error {
-	if !vehicle.IsDummy() {
-		for _, call := range calls {
-			if !data.VehicleAndCallIsCompatible(vehicle.Index, call.Index) {
-				return fmt.Errorf("Infeasible! vehicle %d not compatible with call %d", vehicle.Index, call.Index)
-			}
+	for _, call := range calls {
+		if !data.VehicleAndCallIsCompatible(vehicle.Index, call.Index) {
+			return fmt.Errorf("Infeasible! vehicle %d not compatible with call %d", vehicle.Index, call.Index)
 		}
 	}
 	return nil

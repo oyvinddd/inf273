@@ -9,10 +9,9 @@ import (
 )
 
 // LocalSearch does a local search on a given solution
-func LocalSearch(data models.INF273Data, solution [][]*models.Call) ([][]*models.Call, int) {
-	current, best := solution, solution
-	obj := a2.CalcTotalObjective(data, best)
-	var p1 float32 = 0.1999
+func LocalSearch(data models.INF273Data, s0 [][]*models.Call) [][]*models.Call {
+	current, best := s0, s0
+	var p1 float32 = 0.2999
 	var p2 float32 = 0.216666
 	for i := 0; i < maxIterations; i++ {
 		random := rand.Float32()
@@ -23,12 +22,9 @@ func LocalSearch(data models.INF273Data, solution [][]*models.Call) ([][]*models
 		} else {
 			current = operators.OneReinsert(data, best)
 		}
-		if current != nil && a2.IsFeasible(data, current) {
-			if currentObj := a2.CalcTotalObjective(data, current); currentObj < obj {
-				best = current
-				obj = currentObj
-			}
+		if a2.IsFeasible(data, current) && a2.TotalObjective(data, current) < a2.TotalObjective(data, best) {
+			best = current
 		}
 	}
-	return best, obj
+	return best
 }

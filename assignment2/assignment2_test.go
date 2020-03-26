@@ -134,7 +134,7 @@ func TestCalculateObjective(t *testing.T) {
 	s1 := util.FeasibleTestSolution()
 	expObj1 := 1940470
 
-	obj := CalcTotalObjective(data, s1)
+	obj := TotalObjective(data, s1)
 	if obj != expObj1 {
 		t.Errorf("Objective value is wrong: %v (should be %v)", obj, expObj1)
 	}
@@ -142,7 +142,7 @@ func TestCalculateObjective(t *testing.T) {
 	s2 := util.FeasibleTestSolution2()
 	expObj2 := 1477429
 
-	obj = CalcTotalObjective(data, s2)
+	obj = TotalObjective(data, s2)
 	if obj != expObj2 {
 		t.Errorf("Objective value is wrong: %v (should be %v)", obj, expObj2)
 	}
@@ -150,7 +150,7 @@ func TestCalculateObjective(t *testing.T) {
 	s3 := util.FeasibleTestSolution3()
 	expObj3 := 1476444
 
-	obj = CalcTotalObjective(data, s3)
+	obj = TotalObjective(data, s3)
 	if obj != expObj3 {
 		t.Errorf("Objective value is wrong: %v (should be %v)", obj, expObj3)
 	}
@@ -158,12 +158,11 @@ func TestCalculateObjective(t *testing.T) {
 
 func TestIsPickedUpStateReset(t *testing.T) {
 
-	// TODO: do some testing here maybe????
 	solution := util.FeasibleTestSolution()
 	if !isPickedUpStateFalse(solution) {
 		log.Fatal("Picked up state should be reset after obj. calulation and feasibility check")
 	}
-	CalcTotalObjective(data, solution)
+	TotalObjective(data, solution)
 	if !isPickedUpStateFalse(solution) {
 		log.Fatal("Picked up state should be reset after obj. calulation and feasibility check")
 	}
@@ -184,7 +183,7 @@ func TestIsPickedUpStateReset(t *testing.T) {
 
 func TestOutsourcedSolution(t *testing.T) {
 	solution := GenerateOutsourcedSolution(data)
-	obj := CalcTotalObjective(data, solution)
+	obj := TotalObjective(data, solution)
 	expObj := 3286422
 	if obj != expObj {
 		t.Errorf("Objective function is wrong: %v (should be %v)", obj, expObj)

@@ -140,5 +140,9 @@ func (data *INF273Data) GetNodeTimeAndCost(vehicleIndex int, callIndex int) Node
 
 // VehicleAndCallIsCompatible returns true if vehicle can transport call, else false
 func (data *INF273Data) VehicleAndCallIsCompatible(vehicleIndex int, callIndex int) bool {
+	// dummy vehicle is compatible with every call
+	if vehicleIndex < 0 {
+		return true
+	}
 	return data.Compatibility[vehicleIndex-1][callIndex-1]
 }

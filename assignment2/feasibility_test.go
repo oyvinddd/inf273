@@ -66,4 +66,14 @@ func TestCheckCompatibility(t *testing.T) {
 			t.Error(err)
 		}
 	}
+
+	if !data.VehicleAndCallIsCompatible(1, 3) {
+		t.Errorf("Error in compatibility! Vehicle 1 and call 3 should be compatible")
+	}
+	if data.VehicleAndCallIsCompatible(1, 6) {
+		t.Errorf("Error in compatibility! Vehicle 1 and call 6 should not be compatible")
+	}
+	if !data.VehicleAndCallIsCompatible(-1, 7) {
+		t.Errorf("Error in compatibility! Dummy vehicle should be compatible with all calls")
+	}
 }

@@ -58,17 +58,17 @@ func IsFeasible(data models.INF273Data, solution [][]*models.Call) bool {
 	return true
 }
 
-// CalcTotalObjective takes a solution as input and returns an objective value
-func CalcTotalObjective(data models.INF273Data, solution [][]*models.Call) int {
+// TotalObjective takes a solution as input and returns an objective value
+func TotalObjective(data models.INF273Data, solution [][]*models.Call) int {
 	var obj int = 0
 	for row := range solution {
-		obj += CalcVehicleObjective(data, data.Vehicles[row], solution[row])
+		obj += VehicleObjective(data, data.Vehicles[row], solution[row])
 	}
 	return obj
 }
 
-// CalcVehicleObjective calculates objective function for a specific vehicle
-func CalcVehicleObjective(data models.INF273Data, vehicle models.Vehicle, calls []*models.Call) int {
+// VehicleObjective calculates objective function for a specific vehicle
+func VehicleObjective(data models.INF273Data, vehicle models.Vehicle, calls []*models.Call) int {
 	var obj = 0
 	for col, call := range calls {
 
