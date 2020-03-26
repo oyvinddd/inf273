@@ -1,6 +1,7 @@
 package operators
 
 import (
+	"fmt"
 	"math/rand"
 
 	"github.com/oyvinddd/inf273/models"
@@ -13,10 +14,12 @@ func ThreeExchange(data models.INF273Data, solution [][]*models.Call) [][]*model
 	newSolution := util.CopySolution(solution)
 
 	// 2. generate random indices
-	r1, r2, r3 := util.ThreeRandomIndices(len(newSolution))
-	if len(newSolution[r1]) == 0 || len(newSolution[r2]) == 0 || len(newSolution[r3]) == 0 {
+	r1, r2, r3 := threeRandomVehicleIndices(newSolution)
+	fmt.Println(r1, r2, r3)
+	if r1 < 0 || r2 < 0 || r3 < 0 {
 		return nil
 	}
+
 	r4 := rand.Intn(len(newSolution[r1]))
 	r5 := rand.Intn(len(newSolution[r2]))
 	r6 := rand.Intn(len(newSolution[r3]))
@@ -42,4 +45,30 @@ func ThreeExchange(data models.INF273Data, solution [][]*models.Call) [][]*model
 	rightShiftAndInsert(newSolution[r3], i3)
 
 	return newSolution
+}
+
+func threeRandomVehicleIndices(solution [][]*models.Call) (int, int, int) {
+	r1, r2, r3 := util.ThreeRandomIndices(len(solution))
+	for len(solution[r1]) == 0 {
+		r1++
+		if r1 == len(solution) {
+			r1 = 0
+		}
+	}
+	for len(solution[r2]) == 0 {
+		r2++
+		if r2 == len(solution) {
+			r2 = 0
+		}
+	}
+	for len(solution[r3]) == 0 {
+		r3++
+		if r3 == len(solution) {
+			r3 = 0
+		}
+	}
+	if r1 == r2 || r2 == r3 || r1 == r3 {
+		return -1, -1, -1
+	}
+	return r1, r2, r3
 }

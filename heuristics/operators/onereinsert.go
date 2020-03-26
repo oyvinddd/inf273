@@ -15,8 +15,8 @@ func OneReinsert(data models.INF273Data, solution [][]*models.Call) [][]*models.
 	newSolution := util.CopySolution(solution)
 	random := rand.Intn(len(newSolution))
 	if removedCall := removeCall(&newSolution[random]); removedCall != nil {
-		random := randomCompatibleIndex(data, removedCall)
-		insertCall(data, data.Vehicles[random], &newSolution[random], removedCall)
+		index := randomCompatibleIndex(data, removedCall)
+		insertCall(data, data.Vehicles[random], &newSolution[index], removedCall)
 	}
 	return newSolution
 }
@@ -61,9 +61,9 @@ func insertCall(data models.INF273Data, vehicle models.Vehicle, vehicleCalls *[]
 func randomCompatibleIndex(data models.INF273Data, call *models.Call) int {
 	index := rand.Intn(data.NoOfVehicles)
 	for !data.VehicleAndCallIsCompatible(data.Vehicles[index].Index, call.Index) {
-		index++
-		if index == data.NoOfVehicles {
-			index = 0
+		index--
+		if index < 0 {
+			index = data.NoOfVehicles - 1
 		}
 	}
 	return index

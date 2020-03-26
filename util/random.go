@@ -23,6 +23,9 @@ func WeightedRandomNumber(weights []float32) int {
 
 // TwoRandomIndices returns two unique random indices in range [0, max)
 func TwoRandomIndices(max int) (int, int) {
+	if max <= 0 {
+		return 0, 0
+	}
 	r1 := rand.Intn(max - 1)
 	r2 := rand.Intn(max - 1)
 	if r2 >= r1 {

@@ -120,6 +120,19 @@ func TestAlignPickupAndDelivery(t *testing.T) {
 	}
 }
 
+func TestTwoRandomVehicleIndices(t *testing.T) {
+	solution := util.FeasibleTestSolution()
+	for i := 0; i < 1000; i++ {
+		r1, r2 := twoRandomVehicleIndices(solution)
+		if r1 == r2 && r1 != -1 {
+			t.Errorf("Invalid indices produced: %v and %v", r1, r2)
+		}
+		if r1 >= len(solution) || r2 >= len(solution) {
+			t.Errorf("Indicaes cannot exceed length of solution: %v (r1 = %v, r2 = %v)", len(solution), r1, r2)
+		}
+	}
+}
+
 // ------- HELPER FUNCTIONS -------
 
 func noOfCallsInSolution(s [][]*models.Call) int {

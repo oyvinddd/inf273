@@ -24,7 +24,7 @@ func main() {
 	defer util.NewTimer().PrintElapsed()
 
 	// load data file and generate outsourced solution
-	data := util.LoadDataFile(datafiles.Call18Vehicle5)
+	data := util.LoadDataFile(datafiles.Call130Vehicle40)
 	s0 := a2.GenerateOutsourcedSolution(data)
 	o0 := a2.TotalObjective(data, s0)
 
