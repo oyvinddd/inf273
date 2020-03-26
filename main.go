@@ -28,15 +28,22 @@ func main() {
 	s0 := a2.GenerateOutsourcedSolution(data)
 	o0 := a2.TotalObjective(data, s0)
 
+	var x []float64
+	var y []float64
+	var z []float64
 	var s1 [][]*models.Call = nil
 	var result []int = make([]int, 10)
 	for i := 0; i < 10; i++ {
 		// s1 := heuristics.RandomSearch(data, s0)
-		s1, _, _, _ := heuristics.SA(data, s0)
+		s1, xx, yy, zz := heuristics.SA(data, s0)
+		x = xx
+		y = yy
+		z = zz
 		//s1 = heuristics.LocalSearch(data, s0)
 		result[i] = a2.TotalObjective(data, s1)
 	}
 	util.PrintSolution(s1)
 	util.PrintResult(result, o0)
-
+	util.GenerateGraph(x, y, "temp.png")
+	util.GenerateGraph(x, z, "p.png")
 }

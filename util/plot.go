@@ -8,7 +8,7 @@ import (
 )
 
 // GenerateGraph from the given x and y coordinates
-func GenerateGraph(x []float64, y []float64) {
+func GenerateGraph(x []float64, y []float64, filename string) {
 	g1 := chart.Chart{
 		Series: []chart.Series{
 			chart.ContinuousSeries{
@@ -17,7 +17,7 @@ func GenerateGraph(x []float64, y []float64) {
 			},
 		},
 	}
-	f, _ := os.Create("temperature.png")
+	f, _ := os.Create(filename)
 	defer f.Close()
 	err := g1.Render(chart.PNG, f)
 	if err != nil {
