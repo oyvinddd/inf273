@@ -1,7 +1,6 @@
 package heuristics
 
 import (
-	"fmt"
 	"math"
 	"math/rand"
 
@@ -50,7 +49,7 @@ func SA(data models.INF273Data, s0 [][]*models.Call) ([][]*models.Call, []float6
 			T = -(avg / 100) / math.Log(0.8)
 		} else {
 			p = math.Exp(-deltaE / T)
-			fmt.Println(T)
+			//fmt.Println(T)
 		}
 
 		isFeasible := a2.IsFeasible(data, newSolution)

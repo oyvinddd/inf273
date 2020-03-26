@@ -7,11 +7,8 @@ import (
 	"github.com/oyvinddd/inf273/util"
 )
 
-var totalIt int = 0
-
 // OneReinsert operator performs a 1-reinsert on the given solution
 func OneReinsert(data models.INF273Data, solution [][]*models.Call) [][]*models.Call {
-	totalIt++
 	newSolution := util.CopySolution(solution)
 	random := rand.Intn(len(newSolution))
 	if removedCall := removeCall(&newSolution[random]); removedCall != nil {
