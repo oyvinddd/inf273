@@ -1,6 +1,7 @@
 package heuristics
 
 import (
+	"fmt"
 	"math"
 	"math/rand"
 
@@ -15,7 +16,9 @@ import (
 func SA(data models.INF273Data, s0 [][]*models.Call) [][]*models.Call {
 	incumbent, best := s0, s0
 
-	var deltaSum float64 = 0
+	var deSum float64 = 0
+	var deNum float64 = 0
+
 	var T float64 = 1000     // temperature
 	var a float64 = 0.998765 // cooling factor
 	var p float64 = 0.8      // probability of accepting worse solution
@@ -38,10 +41,12 @@ func SA(data models.INF273Data, s0 [][]*models.Call) [][]*models.Call {
 		deltaE := float64(a2.TotalObjective(data, newSolution) - a2.TotalObjective(data, incumbent))
 
 		if i < 100 && deltaE >= 0 {
-			deltaSum += deltaE
-			// TODO: divide it by the times it goes into the condtional
+			deSum += deltaE
+			deNum++
 		} else if i == 100 {
-			T = -(deltaSum / 100) / math.Log(0.8)
+			avgDeltas := deSum / deNum
+			T = -avgDeltas / math.Log(0.8)
+			fmt.Printf("Avg delta: %v\n", avgDeltas)
 		} else {
 			p = math.Exp(-deltaE / T)
 		}

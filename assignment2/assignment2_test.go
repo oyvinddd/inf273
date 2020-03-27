@@ -156,6 +156,49 @@ func TestCalculateObjective(t *testing.T) {
 	}
 }
 
+func TestCalculateObjectiveMedium(t *testing.T) {
+	// 11 6 11 6
+	// 15 5 5 15 14 14 3 3
+	// 18 4 1 18 1 10 10 4
+	// 12 12
+	// 8 7 7 8 2 2
+	// 16 16 9 13 13 9 17 17
+
+	//data := util.TestDataMedium()
+	c1 := data.GetCall(1)
+	c2 := data.GetCall(2)
+	c3 := data.GetCall(3)
+	c4 := data.GetCall(4)
+	c5 := data.GetCall(5)
+	c6 := data.GetCall(6)
+	c7 := data.GetCall(7)
+	c8 := data.GetCall(8)
+	c9 := data.GetCall(9)
+	c10 := data.GetCall(10)
+	c11 := data.GetCall(11)
+	c12 := data.GetCall(12)
+	c13 := data.GetCall(13)
+	c14 := data.GetCall(14)
+	c15 := data.GetCall(15)
+	c16 := data.GetCall(16)
+	c17 := data.GetCall(17)
+	c18 := data.GetCall(18)
+
+	s1 := [][]*models.Call{
+		{c11, c6, c11, c6},
+		{c15, c5, c5, c15, c14, c14, c3, c3},
+		{c18, c4, c1, c18, c1, c10, c10, c4},
+		{c12, c12},
+		{c8, c7, c7, c8, c2, c2},
+		{c16, c16, c9, c13, c13, c9, c17, c17},
+	}
+
+	obj := TotalObjective(data, s1)
+	if obj != 3578904 {
+		t.Errorf("Objective value is wrong: %v (should be %v)", obj, 3578904)
+	}
+}
+
 func TestIsPickedUpStateReset(t *testing.T) {
 
 	solution := util.FeasibleTestSolution()
@@ -187,6 +230,23 @@ func TestOutsourcedSolution(t *testing.T) {
 	expObj := 3286422
 	if obj != expObj {
 		t.Errorf("Objective function is wrong: %v (should be %v)", obj, expObj)
+	}
+}
+
+func TestGetCall(t *testing.T) {
+	c1 := data.GetCall(1)
+	if c1 == nil {
+		t.Error("Call cannot be nil")
+	}
+	if c1.Index != 1 {
+		t.Errorf("Wrong call index: %v (should be %v)", c1.Index, 1)
+	}
+	c2 := data.GetCall(7)
+	if c2 == nil {
+		t.Error("Call cannot be nil")
+	}
+	if c2.Index != 7 {
+		t.Errorf("Wrong call index: %v (should be %v)", c2.Index, 7)
 	}
 }
 

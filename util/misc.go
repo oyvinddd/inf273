@@ -67,14 +67,16 @@ func PrintRowInSolution(solution [][]*models.Call, row int) {
 }
 
 // PrintResult prints the result to console
-func PrintResult(r []int, obj0 int) {
+func PrintResult(r []int, s [][][]*models.Call, obj0 int) {
 	fmt.Printf("INITIAL: %v\n", obj0)
 	fmt.Println("ALL RESULTS:")
 	best := r[0]
+	var s1 [][]*models.Call = nil
 	sum := 0
 	for i := range r {
 		if r[i] < best {
 			best = r[i]
+			s1 = s[i]
 		}
 		sum += r[i]
 		fmt.Println(r[i])
@@ -82,6 +84,8 @@ func PrintResult(r []int, obj0 int) {
 	fmt.Printf("AVG. OBJ: %v\n", sum/10.0)
 	fmt.Printf("BEST: %v\n", best)
 	fmt.Printf("IMPR.: %v\n", (100.0 * (float32(obj0) - float32(best)) / float32(obj0)))
+	PrintSolution(s1)
+	PrintFlatSolution(s1)
 }
 
 // CopySolution copies a given solution (new pointers to calls are also created)
@@ -161,6 +165,11 @@ func FeasibleTestSolution3() [][]*models.Call {
 // TestData returns a test data set from file
 func TestData() models.INF273Data {
 	return LoadDataFile(datafiles.Call7Vehicle3)
+}
+
+// TestDataMedium returns a test data set from file
+func TestDataMedium() models.INF273Data {
+	return LoadDataFile(datafiles.Call18Vehicle5)
 }
 
 // TestDataBig returns a test data set from file

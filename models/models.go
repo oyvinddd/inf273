@@ -126,6 +126,15 @@ type INF273Data struct {
 
 // --------- HELPER FUNCTIONS ---------
 
+// GetCall gets a call with a given index from the data set
+func (data *INF273Data) GetCall(index int) *Call {
+	index--
+	if index < 0 || index >= len(data.Calls) {
+		return nil
+	}
+	return &data.Calls[index]
+}
+
 // GetTravelTimeAndCost returns a struct from the matrix of travel times and cost
 func (data *INF273Data) GetTravelTimeAndCost(origin int, destination int, vehicleIndex int) TravelTimeAndCost {
 	dictionary := data.TravelTAC[origin-1][destination-1]
