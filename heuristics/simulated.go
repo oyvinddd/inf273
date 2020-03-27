@@ -12,22 +12,17 @@ import (
 )
 
 // SA (Simulated Annealing) iteratively searches for a better solution
-func SA(data models.INF273Data, s0 [][]*models.Call) ([][]*models.Call, []float64, []float64, []float64) {
+func SA(data models.INF273Data, s0 [][]*models.Call) [][]*models.Call {
 	incumbent, best := s0, s0
 
-	var avg float64 = 0
+	var deltaSum float64 = 0
 	var T float64 = 1000     // temperature
 	var a float64 = 0.998765 // cooling factor
 	var p float64 = 0.8      // probability of accepting worse solution
 	var p1 float32 = 0.14    // probability of using 2-exchange
 	var p2 float32 = 0.15    // probability of using 3-exchange
 
-	var x []float64 = make([]float64, maxIterations)
-	var y []float64 = make([]float64, maxIterations)
-	var z []float64 = make([]float64, maxIterations)
-
 	for i := 0; i < maxIterations; i++ {
-		x[i] = float64(i)
 
 		var random float32 = rand.Float32()
 		var newSolution [][]*models.Call = nil
@@ -41,13 +36,14 @@ func SA(data models.INF273Data, s0 [][]*models.Call) ([][]*models.Call, []float6
 		}
 
 		deltaE := float64(a2.TotalObjective(data, newSolution) - a2.TotalObjective(data, incumbent))
+
 		if i < 100 && deltaE >= 0 {
-			avg += deltaE
+			deltaSum += deltaE
+			// TODO: divide it by the times it goes into the condtional
 		} else if i == 100 {
-			T = -(avg / 100) / math.Log(0.8)
+			T = -(deltaSum / 100) / math.Log(0.8)
 		} else {
 			p = math.Exp(-deltaE / T)
-			z[0] = 0
 		}
 
 		isFeasible := a2.IsFeasible(data, newSolution)
@@ -61,7 +57,6 @@ func SA(data models.INF273Data, s0 [][]*models.Call) ([][]*models.Call, []float6
 			incumbent = newSolution
 		}
 		T *= a
-		y[i] = T
 	}
-	return best, x, y, z
+	return best
 }

@@ -36,14 +36,14 @@ func main() {
 	var result []int = make([]int, 10)
 	for i := 0; i < 10; i++ {
 		// s1 = heuristics.RandomSearch(data, s0)
-		// s1, x, y, _ = heuristics.SA(data, s0)
+		s1 = heuristics.SA(data, s0)
 		// z = zz
-		s1 = heuristics.LocalSearch(data, s0)
+		// s1 = heuristics.LocalSearch(data, s0)
 		result[i] = a2.TotalObjective(data, s1)
 	}
 	util.PrintSolution(s1)
 	util.PrintFlatSolution(s1)
 	util.PrintResult(result, o0)
-	// util.GenerateGraph(x, y, "temp.png")
+	//util.GenerateGraph(x, y, "temp.png")
 	// util.GenerateGraph(x, z, "p.png")
 }
