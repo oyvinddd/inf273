@@ -12,6 +12,9 @@ func WeightedReinsert(data models.INF273Data, solution [][]*models.Call) [][]*mo
 	removeIndex := util.WeightedRandomNumber(w1)
 	if removedCall := removeCall(&newSolution[removeIndex]); removedCall != nil {
 		insertIndex := util.WeightedRandomNumber(w2)
+		if !data.VehicleAndCallIsCompatible(data.Vehicles[insertIndex].Index, removedCall.Index) {
+			insertIndex = randomCompatibleIndex(data, removedCall)
+		}
 		insertCall(data, data.Vehicles[insertIndex], &newSolution[insertIndex], removedCall)
 	}
 	return newSolution
