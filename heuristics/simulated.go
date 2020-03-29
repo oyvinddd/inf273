@@ -22,8 +22,8 @@ func SA(data models.INF273Data, s0 [][]*models.Call) [][]*models.Call {
 	var T float64 = 1000     // temperature
 	var a float64 = 0.998765 // cooling factor
 	var p float64 = 0.8      // probability of accepting worse solution
-	var p1 float32 = 0.14    // probability of using 2-exchange
-	var p2 float32 = 0.15    // probability of using 3-exchange
+	var p1 float32 = 0.34    // probability of using 2-exchange
+	var p2 float32 = 0.35    // probability of using 3-exchange
 
 	for i := 0; i < maxIterations; i++ {
 
@@ -35,7 +35,8 @@ func SA(data models.INF273Data, s0 [][]*models.Call) [][]*models.Call {
 		} else if random < p1+p2 {
 			newSolution = operators.ThreeExchange(data, incumbent)
 		} else {
-			newSolution = operators.HomeClustering(data, incumbent) //operators.OneReinsert(data, incumbent)
+			newSolution = operators.HomeClustering(data, incumbent)
+			//newSolution = operators.OneReinsert(data, incumbent)
 		}
 
 		deltaE := float64(a2.TotalObjective(data, newSolution) - a2.TotalObjective(data, incumbent))
