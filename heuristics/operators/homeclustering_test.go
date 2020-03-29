@@ -34,15 +34,24 @@ func TestRandomNonEmptyRoute(t *testing.T) {
 
 func TestRemoveWorstCall(t *testing.T) {
 	s1 := util.FeasibleTestSolution()
-	worstCall, index := removeWorstCall(data, s1)
+	oldNoOfCalls := noOfCallsInSolution(s1)
+	worstCall, index := removeWorstCall(data, &s1)
 	vehicle := data.Vehicles[index]
 	calls := s1[index]
 	if solutionContainsCall(calls, worstCall) {
 		t.Errorf("Solution contains removed call %v", worstCall.Index)
+	}
+	if noOfCalls := noOfCallsInSolution(s1); noOfCalls != oldNoOfCalls-2 {
+		t.Errorf("Wrong number of calls in solution: %v (should be %v)", noOfCalls, oldNoOfCalls-2)
 	}
 	for _, call := range calls {
 		if distance(data, vehicle, call) > distance(data, vehicle, worstCall) {
 			t.Errorf("Call %v is not the worst. Distance of call %v is worse", worstCall.Index, call.Index)
 		}
 	}
+}
+
+func TestTotalDistance(t *testing.T) {
+	// s1 := util.FeasibleTestSolution()
+	// 66
 }

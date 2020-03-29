@@ -35,7 +35,7 @@ func SA(data models.INF273Data, s0 [][]*models.Call) [][]*models.Call {
 		} else if random < p1+p2 {
 			newSolution = operators.ThreeExchange(data, incumbent)
 		} else {
-			newSolution = operators.OneReinsert(data, incumbent)
+			newSolution = operators.HomeClustering(data, incumbent) //operators.OneReinsert(data, incumbent)
 		}
 
 		deltaE := float64(a2.TotalObjective(data, newSolution) - a2.TotalObjective(data, incumbent))
