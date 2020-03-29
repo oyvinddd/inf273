@@ -1,7 +1,7 @@
 package operators
 
 import (
-	"fmt"
+	"math"
 	"math/rand"
 
 	"github.com/oyvinddd/inf273/models"
@@ -13,21 +13,19 @@ func HomeClustering(data models.INF273Data, solution [][]*models.Call) [][]*mode
 	newSolution := util.CopySolution(solution)
 
 	// 1. choose a random call to be reinserted
-	if call := removeRandomCall(solution); call != nil {
+	if removedCall, _ := removeWorstCall(data, solution); removedCall != nil {
 
 		// 2. find nearest centroid among all home nodes
-		optIndex, minDistance := 999999999, -1
+		bestDist, bestIndex := math.MaxInt32, 0
 		for index, vehicle := range data.Vehicles {
-			dist := distance(data, vehicle, call)
-			if dist < minDistance {
-				minDistance = dist
-				optIndex = index
+			if newDist := distance(data, vehicle, removedCall); newDist < bestDist {
+				bestDist = newDist
+				bestIndex = index
 			}
 		}
-		fmt.Println(optIndex, minDistance)
 
 		// 3. insert call into the optimal vehicle route
-		// insertCall(data, )
+		insertCall(data, data.Vehicles[bestIndex], &newSolution[bestIndex], removedCall)
 	}
 	return newSolution
 }
@@ -42,27 +40,39 @@ func distance(data models.INF273Data, vehicle models.Vehicle, call *models.Call)
 		t2 := data.GetTravelTimeAndCost(vehicle.Home, call.Destination, vehicle.Index).Time
 		return t1 + t2
 	}
-	return 999999999999 // TODO: add constant here.. very big number
+	return math.MaxInt32
 }
 
-func removeRandomCall(solution [][]*models.Call) *models.Call {
-	var call *models.Call = nil
+func removeWorstCall(data models.INF273Data, solution [][]*models.Call) (*models.Call, int) {
+	calls, index := randomNonEmptyRoute(data, solution)
+	var vehicle models.Vehicle = data.Vehicles[index]
 	var excluded []*models.Call
-	if noOfCalls := len(solution); noOfCalls > 0 {
-		r1 := rand.Intn(noOfCalls)
-		calls := solution[r1]
-		if len(calls) > 0 {
-			r2 := rand.Intn(len(calls))
-			call = calls[r2]
-			for _, c := range calls {
-				if c != call {
-					excluded = append(excluded, c)
-				}
-			}
-			solution[r1] = excluded
+	var worstCall *models.Call = calls[0]
+	// find index of the worst call
+	for _, call := range calls {
+		if distance(data, vehicle, call) > distance(data, vehicle, worstCall) {
+			worstCall = call
 		}
 	}
-	return call
+	// remove the worst call from the slice
+	for _, call := range calls {
+		if call != worstCall {
+			excluded = append(excluded, call)
+		}
+	}
+	solution[index] = excluded
+	return worstCall, index
+}
+
+func randomNonEmptyRoute(data models.INF273Data, solution [][]*models.Call) ([]*models.Call, int) {
+	random := rand.Intn(data.NoOfVehicles)
+	for len(solution[random]) == 0 {
+		random++
+		if random >= data.NoOfVehicles {
+			random = 0
+		}
+	}
+	return solution[random], random
 }
 
 // https://www.youtube.com/watch?v=_aWzGGNrcic&t=3s
