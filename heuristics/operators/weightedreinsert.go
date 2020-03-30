@@ -5,7 +5,7 @@ import (
 	"github.com/oyvinddd/inf273/util"
 )
 
-// WeightedReinsert tries to even out the average calls in each route
+// WeightedReinsert tries to even out the average # of calls in each vehicle route
 func WeightedReinsert(data models.INF273Data, solution [][]*models.Call) [][]*models.Call {
 	newSolution := util.CopySolution(solution)
 	w1, w2 := generateWeights(newSolution, data.NoOfVehicles, data.NoOfCalls)
@@ -29,5 +29,7 @@ func generateWeights(solution [][]*models.Call, noOfVehicles int, noOfCalls int)
 		removeWeights[index] = float32(len(calls)/2) / float32(noOfCalls)
 		insertWeights[index] = 1 - float32(len(calls)/2)/float32(noOfCalls)
 	}
+	// setting weight for insertion to a fixed small percentage
+	insertWeights[noOfVehicles-1] = 0.4
 	return removeWeights, insertWeights
 }
