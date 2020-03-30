@@ -30,6 +30,23 @@ func HomeClustering(data models.INF273Data, solution [][]*models.Call) [][]*mode
 	return newSolution
 }
 
+// TotalDistance returns the total distance of the solution according to the distance function
+func TotalDistance(data models.INF273Data, solution [][]*models.Call) int {
+	dist := 0
+	checked := make(map[int]bool)
+	for row := range solution {
+		vehicle := data.Vehicles[row]
+		for col := range solution[row] {
+			call := solution[row][col]
+			if !checked[call.Index] {
+				checked[call.Index] = true
+				dist += distance(data, vehicle, call)
+			}
+		}
+	}
+	return dist
+}
+
 // -------- PRIVATE HELPER FUNCTIONS --------
 
 func distance(data models.INF273Data, vehicle models.Vehicle, call *models.Call) int {
@@ -46,7 +63,6 @@ func distance(data models.INF273Data, vehicle models.Vehicle, call *models.Call)
 func removeWorstCall(data models.INF273Data, solution *[][]*models.Call) (*models.Call, int) {
 	calls, index := randomNonEmptyRoute(data, *solution)
 	var vehicle models.Vehicle = data.Vehicles[index]
-	var excluded []*models.Call
 	var worstCall *models.Call = calls[0]
 	// find index of the worst call
 	for _, call := range calls {
@@ -54,6 +70,7 @@ func removeWorstCall(data models.INF273Data, solution *[][]*models.Call) (*model
 			worstCall = call
 		}
 	}
+	var excluded []*models.Call
 	// remove the worst call from the slice
 	for _, call := range calls {
 		if call != worstCall {
@@ -109,23 +126,6 @@ func randomNonEmptyRoute(data models.INF273Data, solution [][]*models.Call) ([]*
 		}
 	}
 	return solution[random], random
-}
-
-// TotalDistance returns the total distance of the solution according to the distance function
-func TotalDistance(data models.INF273Data, solution [][]*models.Call) int {
-	dist := 0
-	checked := make(map[int]bool)
-	for row := range solution {
-		vehicle := data.Vehicles[row]
-		for col := range solution[row] {
-			call := solution[row][col]
-			if !checked[call.Index] {
-				checked[call.Index] = true
-				dist += distance(data, vehicle, call)
-			}
-		}
-	}
-	return dist
 }
 
 // https://www.youtube.com/watch?v=_aWzGGNrcic&t=3s

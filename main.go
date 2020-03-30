@@ -31,7 +31,7 @@ func main() {
 	// }
 	// util.PrintSolution(s0)
 
-	data := util.LoadDataFile(datafiles.Call130Vehicle40)
+	data := util.LoadDataFile(datafiles.Call35Vehicle7)
 	s0 := a2.GenerateOutsourcedSolution(data)
 	o0 := a2.TotalObjective(data, s0)
 
