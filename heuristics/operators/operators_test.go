@@ -15,11 +15,11 @@ func TestMain(m *testing.M) {
 	os.Exit(m.Run())
 }
 
-func TestRemoveCall(t *testing.T) {
+func TestRemoveRandomCall(t *testing.T) {
 
 	solution := util.FeasibleTestSolution()
 	callCount := noOfCallsInSolution(solution)
-	removedCall := removeCall(&solution[0])
+	removedCall := removeRandomCall(&solution[0])
 	newCallCount := noOfCallsInSolution(solution)
 
 	if newCallCount != callCount-2 {
@@ -38,7 +38,7 @@ func TestRemoveCall(t *testing.T) {
 func TestInsertCall(t *testing.T) {
 
 	solution := util.FeasibleTestSolution()
-	removedCall := removeCall(&solution[0])
+	removedCall := removeRandomCall(&solution[0])
 
 	callCount := noOfCallsInSolution(solution)
 	insertCall(data, data.Vehicles[1], &solution[1], removedCall)

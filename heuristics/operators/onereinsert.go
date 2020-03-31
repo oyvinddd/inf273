@@ -11,7 +11,7 @@ import (
 func OneReinsert(data models.INF273Data, solution [][]*models.Call) [][]*models.Call {
 	newSolution := util.CopySolution(solution)
 	random := rand.Intn(len(newSolution))
-	if removedCall := removeCall(&newSolution[random]); removedCall != nil {
+	if removedCall := removeRandomCall(&newSolution[random]); removedCall != nil {
 		index := randomCompatibleIndex(data, removedCall)
 		insertCall(data, data.Vehicles[random], &newSolution[index], removedCall)
 	}
@@ -20,7 +20,7 @@ func OneReinsert(data models.INF273Data, solution [][]*models.Call) [][]*models.
 
 // ------- PRIVATE HELPER FUNCTIONS -------
 
-func removeCall(vehicleCalls *[]*models.Call) *models.Call {
+func removeRandomCall(vehicleCalls *[]*models.Call) *models.Call {
 	var removedCall *models.Call = nil
 	noOfCalls := len(*vehicleCalls)
 	if noOfCalls > 0 {

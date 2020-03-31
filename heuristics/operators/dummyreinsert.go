@@ -13,7 +13,7 @@ func DummyReinsert(data models.INF273Data, solution [][]*models.Call) [][]*model
 	newSolution := util.CopySolution(solution)
 	// if # of unhandled calls is larger than the avg. call per vehicle, then proceed
 	if len(newSolution[data.NoOfVehicles-1]) > data.NoOfCalls*2/data.NoOfVehicles {
-		if removedCall := removeCall(&newSolution[data.NoOfVehicles-1]); removedCall != nil {
+		if removedCall := removeRandomCall(&newSolution[data.NoOfVehicles-1]); removedCall != nil {
 			index := indexOfOptimalVehicle(data, removedCall)
 			vehicle := data.Vehicles[index]
 			insertCall(data, vehicle, &newSolution[index], removedCall)

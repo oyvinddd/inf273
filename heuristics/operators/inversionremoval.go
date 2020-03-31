@@ -1,6 +1,7 @@
 package operators
 
 import (
+	"fmt"
 	"math/rand"
 
 	"github.com/oyvinddd/inf273/models"
@@ -11,21 +12,54 @@ import (
 func InversionRemoval(data models.INF273Data, solution [][]*models.Call) [][]*models.Call {
 	newSolution := util.CopySolution(solution)
 
-	index := rand.Intn(data.NoOfVehicles)
-	vehicle := data.Vehicles[index]
+	for i := 0; i < 10; i++ {
+		index := rand.Intn(data.NoOfVehicles - 1)
+		vehicle := data.Vehicles[index]
 
-	if !vehicle.IsDummy() && len(newSolution[index]) > 2 {
-		//inversionIndex = indexOfInversion(data, newSolution[index])
+		if !vehicle.IsDummy() && len(newSolution[index]) > 2 {
+			if i1, i2, found := invertedIndices(data, newSolution[index]); found {
+				fmt.Printf("before: %v %v\n", newSolution[index][i1].Index, newSolution[index][i2].Index)
+				newSolution[index][i1], newSolution[index][i2] = newSolution[index][i2], newSolution[index][i1]
+				fmt.Printf("after: %v %v\n", newSolution[index][i1].Index, newSolution[index][i2].Index)
+			}
+		}
 	}
 	return newSolution
 }
 
 // --------- PRIVATE HELPER FUNCTIONS ---------
 
-func indexOfInversion(data models.INF273Data, solution []*models.Call, call *models.Call) int {
+func invertedIndices(data models.INF273Data, calls []*models.Call) (int, int, bool) {
+	if noOfCalls := len(calls); noOfCalls > 2 {
+		pickups := findPickups(calls)
+		start := rand.Intn(len(calls))
+		c1 := calls[start]
+		for i := start + 1; i < len(calls)-1; i++ {
+			c2 := calls[i]
+			ltwC1 := lowerTimeWindow(c1, start, pickups)
+			ltwC2 := lowerTimeWindow(c2, i, pickups)
+			if ltwC2 < ltwC1 {
+				return start, i, true
+			}
+		}
+	}
+	return -1, -1, false
+}
 
-	// pickups := make(map[int]int)
-	// for i := 0; i <
+func findPickups(calls []*models.Call) map[int]int {
+	pickups := make(map[int]int)
+	for index, call := range calls {
+		if _, ok := pickups[call.Index]; !ok {
+			pickups[call.Index] = index
+		}
+	}
+	return pickups
+}
 
-	return 0
+func lowerTimeWindow(call *models.Call, index int, pickups map[int]int) int {
+	if pickups[call.Index] == index { // call is pickup
+		return call.LowerPW
+	}
+	// call is destination
+	return call.LowerDW
 }

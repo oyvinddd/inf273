@@ -1,7 +1,6 @@
 package heuristics
 
 import (
-	"fmt"
 	"math"
 	"math/rand"
 
@@ -22,8 +21,8 @@ func SA(data models.INF273Data, s0 [][]*models.Call) [][]*models.Call {
 	var T float64 = 1000     // temperature
 	var a float64 = 0.998765 // cooling factor
 	var p float64 = 0.8      // probability of accepting worse solution
-	var p1 float32 = 0.3     // probability of using 2-exchange
-	var p2 float32 = 0.5     // probability of using 3-exchange
+	var p1 float32 = 0.1     // probability of using 2-exchange
+	var p2 float32 = 0.25    // probability of using 3-exchange
 
 	for i := 0; i < maxIterations; i++ {
 
@@ -32,7 +31,10 @@ func SA(data models.INF273Data, s0 [][]*models.Call) [][]*models.Call {
 
 		if random < p1 {
 			//newSolution = operators.WeightedReinsert(data, incumbent)
-			newSolution = operators.TwoExchange(data, incumbent)
+			//newSolution = operators.DummyReinsert(data, incumbent)
+			//newSolution = operators.TwoExchange(data, incumbent)
+			//newSolution = operators.InversionRemoval(data, incumbent)
+			newSolution = operators.OptExchange(data, incumbent)
 		} else if random < p1+p2 {
 			newSolution = operators.WeightedReinsert(data, incumbent)
 			//newSolution = operators.ThreeExchange(data, incumbent)
@@ -49,7 +51,6 @@ func SA(data models.INF273Data, s0 [][]*models.Call) [][]*models.Call {
 		} else if i == 100 {
 			avgDeltas := deSum / deNum
 			T = -avgDeltas / math.Log(0.8)
-			fmt.Printf("Avg delta: %v\n", avgDeltas)
 		} else {
 			p = math.Exp(-deltaE / T)
 		}

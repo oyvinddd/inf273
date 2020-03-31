@@ -1,6 +1,7 @@
 package a2
 
 import (
+	"fmt"
 	"math/rand"
 
 	"github.com/oyvinddd/inf273/models"
@@ -25,25 +26,35 @@ func GenerateSolution(data models.INF273Data) [][]*models.Call {
 	return solution
 }
 
+var t int = 0
+var a int = 0
+var b int = 0
+var c int = 0
+
 // CheckFeasibility checks the feasibility of a given solution
 func CheckFeasibility(data models.INF273Data, solution [][]*models.Call) error {
+	t++
 	for row := range solution {
 
 		vehicle := data.Vehicles[row]
 		calls := solution[row]
 
 		if e1 := CheckTimeWindows(data, vehicle, calls); e1 != nil {
+			a++
 			return e1
 		}
 
 		if e2 := CheckCapacity(data, vehicle, calls); e2 != nil {
+			b++
 			return e2
 		}
 
 		if e3 := CheckCompatibility(data, vehicle, calls); e3 != nil {
+			c++
 			return e3
 		}
 	}
+	fmt.Printf("Total times checked: %v, time window fails: %v, cap fails: %v, comp fails: %v\n", t, a, b, c)
 	return nil
 }
 
