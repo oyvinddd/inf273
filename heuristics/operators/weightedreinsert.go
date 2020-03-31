@@ -30,6 +30,6 @@ func generateWeights(solution [][]*models.Call, noOfVehicles int, noOfCalls int)
 		insertWeights[index] = 1 - float32(len(calls)/2)/float32(noOfCalls)
 	}
 	// setting weight for insertion to a fixed small percentage
-	insertWeights[noOfVehicles-1] = 0.2
+	insertWeights[noOfVehicles-1] = 0.1
 	return removeWeights, insertWeights
 }

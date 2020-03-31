@@ -21,8 +21,8 @@ func SA(data models.INF273Data, s0 [][]*models.Call) [][]*models.Call {
 	var T float64 = 1000     // temperature
 	var a float64 = 0.998765 // cooling factor
 	var p float64 = 0.8      // probability of accepting worse solution
-	var p1 float32 = 0.07    // probability of using 2-exchange
-	var p2 float32 = 0.45    // probability of using 3-exchange
+	var p1 float32 = 0.39    // probability of using 2-exchange
+	var p2 float32 = 0.13    // probability of using 3-exchange
 
 	for i := 0; i < maxIterations; i++ {
 

@@ -21,11 +21,11 @@ func OptExchange(data models.INF273Data, solution [][]*models.Call) [][]*models.
 			removedCall1 := removeCall(&newSolution[i1], newSolution[i1][i3])
 			removedCall2 := removeCall(&newSolution[i2], newSolution[i2][i4])
 
-			insertCall(data, vehicle1, &newSolution[i1], removedCall2)
-			insertCall(data, vehicle2, &newSolution[i2], removedCall1)
+			// insertCall(data, vehicle1, &newSolution[i1], removedCall2)
+			// insertCall(data, vehicle2, &newSolution[i2], removedCall1)
 
-			// insertCallAtBestTime(data, vehicle1, &newSolution[i1], removedCall2)
-			// insertCallAtBestTime(data, vehicle2, &newSolution[i2], removedCall1)
+			insertCallAtBestTime(data, vehicle1, &newSolution[i1], removedCall2)
+			insertCallAtBestTime(data, vehicle2, &newSolution[i2], removedCall1)
 		}
 	}
 	return newSolution

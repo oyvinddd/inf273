@@ -19,6 +19,7 @@ func PrintSolutionAndObj(s [][]*models.Call, obj int) {
 func PrintSolution(solution [][]*models.Call) {
 	fmt.Println()
 	fmt.Println("-------- SOLUTION REPRESENTATION --------")
+
 	for i := range solution {
 		row := solution[i]
 		if len(row) == 0 {
@@ -67,11 +68,11 @@ func PrintRowInSolution(solution [][]*models.Call, row int) {
 }
 
 // PrintResult prints the result to console
-func PrintResult(r []int, s [][][]*models.Call, obj0 int) {
+func PrintResult(r []int, s [][][]*models.Call, obj0 int) (int, [][]*models.Call) {
 	fmt.Printf("INITIAL: %v\n", obj0)
 	fmt.Println("ALL RESULTS:")
 	best := r[0]
-	var s1 [][]*models.Call = nil
+	var s1 [][]*models.Call = s[0]
 	sum := 0
 	for i := range r {
 		if r[i] < best {
@@ -84,8 +85,10 @@ func PrintResult(r []int, s [][][]*models.Call, obj0 int) {
 	fmt.Printf("AVG. OBJ: %v\n", sum/10.0)
 	fmt.Printf("BEST: %v\n", best)
 	fmt.Printf("IMPR.: %v\n", (100.0 * (float32(obj0) - float32(best)) / float32(obj0)))
+
 	PrintSolution(s1)
 	PrintFlatSolution(s1)
+	return best, s1
 }
 
 // CopySolution copies a given solution (new pointers to calls are also created)
