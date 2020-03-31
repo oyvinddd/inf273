@@ -1,7 +1,6 @@
 package operators
 
 import (
-	"fmt"
 	"math/rand"
 
 	"github.com/oyvinddd/inf273/models"
@@ -18,9 +17,7 @@ func InversionRemoval(data models.INF273Data, solution [][]*models.Call) [][]*mo
 
 		if !vehicle.IsDummy() && len(newSolution[index]) > 2 {
 			if i1, i2, found := invertedIndices(data, newSolution[index]); found {
-				fmt.Printf("before: %v %v\n", newSolution[index][i1].Index, newSolution[index][i2].Index)
 				newSolution[index][i1], newSolution[index][i2] = newSolution[index][i2], newSolution[index][i1]
-				fmt.Printf("after: %v %v\n", newSolution[index][i1].Index, newSolution[index][i2].Index)
 			}
 		}
 	}

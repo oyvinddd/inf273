@@ -22,16 +22,7 @@ func main() {
 	// benchmark program exection
 	defer util.NewTimer().PrintElapsed()
 
-	// load data file and generate outsourced solution
-	// data := util.LoadDataFile(datafiles.Call7Vehicle3)
-	// s0 := a2.GenerateOutsourcedSolution(data)
-	// for i := 0; i < 1000; i++ {
-	// 	s0 = operators.WeightedReinsert(data, s0)
-
-	// }
-	// util.PrintSolution(s0)
-
-	data := util.LoadDataFile(datafiles.Call130Vehicle40)
+	data := util.LoadDataFile(datafiles.Call80Vehicle20)
 	s0 := a2.GenerateOutsourcedSolution(data)
 	o0 := a2.TotalObjective(data, s0)
 

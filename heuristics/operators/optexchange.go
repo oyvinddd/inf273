@@ -1,18 +1,12 @@
 package operators
 
 import (
-	"fmt"
-
 	"github.com/oyvinddd/inf273/models"
 	"github.com/oyvinddd/inf273/util"
 )
 
-var aa int = 0
-var bb int = 0
-
 // OptExchange takes two non-optimal calls in different routes, swaps them and tries to insert them into optimal positions
 func OptExchange(data models.INF273Data, solution [][]*models.Call) [][]*models.Call {
-	bb++
 	newSolution := util.CopySolution(solution)
 
 	i1, i2 := twoRandomVehicleIndices(solution)
@@ -27,19 +21,13 @@ func OptExchange(data models.INF273Data, solution [][]*models.Call) [][]*models.
 			removedCall1 := removeCall(&newSolution[i1], newSolution[i1][i3])
 			removedCall2 := removeCall(&newSolution[i2], newSolution[i2][i4])
 
-			insertCallAtBestTime(data, vehicle1, &newSolution[i1], removedCall2)
-			insertCallAtBestTime(data, vehicle2, &newSolution[i2], removedCall1)
-			//optIndex1 := indexOfOptimalTimeWindow(data, newSolution[i1], removedCall2)
-			//optIndex2 := indexOfOptimalTimeWindow(data, newSolution[i2], removedCall1)
+			insertCall(data, vehicle1, &newSolution[i1], removedCall2)
+			insertCall(data, vehicle2, &newSolution[i2], removedCall1)
 
-			// insertAtOptimalTimeWindow(data, &newSolution[i2], call1)
-			// insertAtOptimalTimeWindow(data, &newSolution[i1], call2)
-			//insertCall(data, vehicle1, &newSolution[i1], removedCall2)
-			//insertCall(data, vehicle2, &newSolution[i2], removedCall1)
-			aa++
+			// insertCallAtBestTime(data, vehicle1, &newSolution[i1], removedCall2)
+			// insertCallAtBestTime(data, vehicle2, &newSolution[i2], removedCall1)
 		}
 	}
-	fmt.Printf("no of times opt exch called: %v and no of times OK! %v\n", bb, aa)
 	return newSolution
 }
 
