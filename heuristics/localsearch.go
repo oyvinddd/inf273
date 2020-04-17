@@ -13,7 +13,7 @@ func LocalSearch(data models.INF273Data, s0 [][]*models.Call) [][]*models.Call {
 	current, best := s0, s0
 	var p1 float32 = 0.15
 	var p2 float32 = 0.1666
-	for i := 0; i < maxIterations; i++ {
+	for i := 0; i < siMaxIterations; i++ {
 		random := rand.Float32()
 		if random < p1 {
 			current = operators.TwoExchange(data, best)

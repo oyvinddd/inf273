@@ -24,23 +24,17 @@ func SA(data models.INF273Data, s0 [][]*models.Call) [][]*models.Call {
 	var p1 float32 = 0.39    // probability of using 2-exchange
 	var p2 float32 = 0.13    // probability of using 3-exchange
 
-	for i := 0; i < maxIterations; i++ {
+	for i := 0; i < siMaxIterations; i++ {
 
 		var random float32 = rand.Float32()
 		var newSolution [][]*models.Call = nil
 
 		if random < p1 {
-			//newSolution = operators.WeightedReinsert(data, incumbent)
-			//newSolution = operators.DummyReinsert(data, incumbent)
-			//newSolution = operators.TwoExchange(data, incumbent)
-			//newSolution = operators.InversionRemoval(data, incumbent)
 			newSolution = operators.OptExchange(data, incumbent)
 		} else if random < p1+p2 {
 			newSolution = operators.WeightedReinsert(data, incumbent)
-			//newSolution = operators.ThreeExchange(data, incumbent)
 		} else {
 			newSolution = operators.HomeClustering(data, incumbent)
-			//newSolution = operators.OneReinsert(data, incumbent)
 		}
 
 		deltaE := float64(a2.TotalObjective(data, newSolution) - a2.TotalObjective(data, incumbent))
