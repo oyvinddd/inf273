@@ -1,11 +1,10 @@
 package heuristics
 
 import (
-	"math/rand"
-
 	a2 "github.com/oyvinddd/inf273/assignment2"
 	"github.com/oyvinddd/inf273/heuristics/operators"
 	"github.com/oyvinddd/inf273/models"
+	"github.com/oyvinddd/inf273/util"
 )
 
 type operator func(models.INF273Data, [][]*models.Call) [][]*models.Call
@@ -19,7 +18,7 @@ func Adaptive(data models.INF273Data, s0 [][]*models.Call) [][]*models.Call {
 		// TODO: escape condition to get out of local optima
 		// Select a heuristic based on selection parameters
 
-		current = ops[rand.Intn(3)](data, current)
+		newSolution = ops[randomNumber()](data, current)
 		// TODO: apply heuristic to best
 		if a2.TotalObjective(data, current) < a2.TotalObjective(data, best) {
 			best = current
@@ -35,4 +34,9 @@ func ops() []operator {
 		operators.WeightedReinsert,
 		operators.HomeClustering,
 	}
+}
+
+func randomNumber() int {
+	weights := []float32{1, 1, 1}
+	return util.WeightedRandomNumber(weights)
 }

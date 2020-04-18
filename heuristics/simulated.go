@@ -5,9 +5,7 @@ import (
 	"math/rand"
 
 	a2 "github.com/oyvinddd/inf273/assignment2"
-
 	"github.com/oyvinddd/inf273/heuristics/operators"
-
 	"github.com/oyvinddd/inf273/models"
 )
 
