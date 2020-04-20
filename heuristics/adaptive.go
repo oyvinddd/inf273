@@ -24,7 +24,6 @@ func Adaptive(data models.INF273Data, s0 [][]*models.Call) [][]*models.Call {
 	var ops []operator = ops()
 	var seg = newSegment()
 
-	var iterationsSinceBest = 0
 	var deSum float64 = 0
 	var deNum float64 = 0
 
@@ -37,18 +36,10 @@ func Adaptive(data models.INF273Data, s0 [][]*models.Call) [][]*models.Call {
 	var u3 int = 0
 	var u4 int = 0
 
-	for i := 0; i < adMaxIterations; i++ {
-
-		if iterationsSinceBest >= 500 {
-			// for i := 0; i < 5; i++ {
-			// 	incumbent = operators.WeightedReinsert(data, incumbent)
-			// }
-			iterationsSinceBest = 0
-		}
+	for i := 0; i < 500000; i++ {
 
 		// this condition will pass at the start of each segment
 		if i%100 == 0 && i > 0 {
-			fmt.Println(seg)
 			// calculate the new weights based on the previous weights
 			seg.calculateWeights()
 			// reset scores and # times used at each segment
@@ -89,16 +80,14 @@ func Adaptive(data models.INF273Data, s0 [][]*models.Call) [][]*models.Call {
 			if a2.TotalObjective(data, incumbent) < a2.TotalObjective(data, best) {
 				best = incumbent
 				seg.addScore(index, highScore)
-				iterationsSinceBest = 0
 			}
 		} else if isFeasible && rand.Float64() < p {
 			incumbent = newSolution
 			seg.addScore(index, smallScore)
 		}
 		T *= a
-		iterationsSinceBest++
 	}
-	fmt.Println(u1, u2, u3, u4)
+	// fmt.Println(u1, u2, u3, u4)
 	return best
 }
 

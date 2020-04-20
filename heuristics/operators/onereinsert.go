@@ -3,6 +3,7 @@ package operators
 import (
 	"math/rand"
 
+	a2 "github.com/oyvinddd/inf273/assignment2"
 	"github.com/oyvinddd/inf273/models"
 	"github.com/oyvinddd/inf273/util"
 )
@@ -19,6 +20,20 @@ func OneReinsert(data models.INF273Data, solution [][]*models.Call) [][]*models.
 }
 
 // ------- PRIVATE HELPER FUNCTIONS -------
+
+func indexOfMostExpensiveRoute(data models.INF273Data, solution [][]*models.Call) int {
+	var idx int = -1
+	var obj int = 0
+	for i := 0; i < data.NoOfVehicles-1; i++ {
+		vehicle := data.Vehicles[i]
+		currObj := a2.VehicleObjective(data, vehicle, solution[i])
+		if currObj > obj {
+			obj = currObj
+			idx = i
+		}
+	}
+	return idx
+}
 
 func removeRandomCall(vehicleCalls *[]*models.Call) *models.Call {
 	var removedCall *models.Call = nil

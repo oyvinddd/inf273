@@ -8,6 +8,8 @@ import (
 	"github.com/oyvinddd/inf273/util"
 )
 
+var ds int = 0
+
 // TwoExchange operator performs a 2-exchange on the given solution
 func TwoExchange(data models.INF273Data, solution [][]*models.Call) [][]*models.Call {
 
@@ -20,12 +22,16 @@ func TwoExchange(data models.INF273Data, solution [][]*models.Call) [][]*models.
 		return newSolution
 	}
 
+	// a2.VehicleObjective()
+
 	r3 := rand.Intn(len(newSolution[r1]))
 	r4 := rand.Intn(len(newSolution[r2]))
-	for !data.VehicleAndCallIsCompatible(data.Vehicles[r1].Index, solution[r2][r4].Index) ||
+	if !data.VehicleAndCallIsCompatible(data.Vehicles[r1].Index, solution[r2][r4].Index) ||
 		!data.VehicleAndCallIsCompatible(data.Vehicles[r2].Index, solution[r1][r3].Index) {
 		return newSolution
 	}
+
+	// if
 
 	// 3. swap calls
 	*newSolution[r1][r3], *newSolution[r2][r4] = *newSolution[r2][r4], *newSolution[r1][r3]
