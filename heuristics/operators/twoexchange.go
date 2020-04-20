@@ -22,7 +22,7 @@ func TwoExchange(data models.INF273Data, solution [][]*models.Call) [][]*models.
 
 	r3 := rand.Intn(len(newSolution[r1]))
 	r4 := rand.Intn(len(newSolution[r2]))
-	if !data.VehicleAndCallIsCompatible(data.Vehicles[r1].Index, solution[r2][r4].Index) ||
+	for !data.VehicleAndCallIsCompatible(data.Vehicles[r1].Index, solution[r2][r4].Index) ||
 		!data.VehicleAndCallIsCompatible(data.Vehicles[r2].Index, solution[r1][r3].Index) {
 		return newSolution
 	}
@@ -41,7 +41,6 @@ func TwoExchange(data models.INF273Data, solution [][]*models.Call) [][]*models.
 	i2 := indexOfOptimalDelivery(data, v2, newSolution[r2], p2)
 	rightShiftAndInsert(newSolution[r1], i1)
 	rightShiftAndInsert(newSolution[r2], i2)
-
 	return newSolution
 }
 

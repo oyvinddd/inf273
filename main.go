@@ -22,7 +22,7 @@ func main() {
 	// benchmark program exection
 	defer util.NewTimer().PrintElapsed()
 
-	data := util.LoadDataFile(datafiles.Call130Vehicle40)
+	data := util.LoadDataFile(datafiles.Call35Vehicle7)
 	s0 := a2.GenerateOutsourcedSolution(data)
 	o0 := a2.TotalObjective(data, s0)
 
@@ -32,7 +32,6 @@ func main() {
 		s1 := heuristics.Adaptive(data, s0)
 		solutions[i] = s1
 		result[i] = a2.TotalObjective(data, s1)
-
 	}
 	util.PrintResult(result, solutions, o0)
 }

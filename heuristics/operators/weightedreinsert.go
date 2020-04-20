@@ -10,6 +10,10 @@ func WeightedReinsert(data models.INF273Data, solution [][]*models.Call) [][]*mo
 	newSolution := util.CopySolution(solution)
 	w1, w2 := generateWeights(newSolution, data.NoOfVehicles, data.NoOfCalls)
 	removeIndex := util.WeightedRandomNumber(w1)
+	// if # of calls in dummy vehicle is more than 1/4 of all calls, force remove from dummy
+	if len(newSolution[data.NoOfVehicles-1]) > data.NoOfCalls/5 {
+		removeIndex = data.NoOfVehicles - 1
+	}
 	if removedCall := removeRandomCall(&newSolution[removeIndex]); removedCall != nil {
 		insertIndex := util.WeightedRandomNumber(w2)
 		if !data.VehicleAndCallIsCompatible(data.Vehicles[insertIndex].Index, removedCall.Index) {
@@ -30,6 +34,6 @@ func generateWeights(solution [][]*models.Call, noOfVehicles int, noOfCalls int)
 		insertWeights[index] = 1 - float32(len(calls)/2)/float32(noOfCalls)
 	}
 	// setting weight for insertion to a fixed small percentage
-	insertWeights[noOfVehicles-1] = 0.1
+	insertWeights[noOfVehicles-1] = 0
 	return removeWeights, insertWeights
 }

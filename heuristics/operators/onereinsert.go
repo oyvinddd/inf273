@@ -37,6 +37,92 @@ func removeRandomCall(vehicleCalls *[]*models.Call) *models.Call {
 	return removedCall
 }
 
+// WIP
+func removeSuboptimalCall(data models.INF273Data, vehicle models.Vehicle, calls *[]*models.Call) *models.Call {
+	var callToRemove *models.Call = nil
+	noOfCalls := len(*calls)
+	if noOfCalls > 0 {
+		var excluded []*models.Call
+		// removing incompiatible calls is no 1 priority
+		//callToRemove = incompatibleCall(data, vehicle, calls)
+		callToRemove = mostExpensiveCall(data, vehicle, *calls)
+		if callToRemove == nil {
+			randomIndex := rand.Intn(noOfCalls)
+			callToRemove = (*calls)[randomIndex]
+		}
+		for _, c := range *calls {
+			if c != callToRemove {
+				excluded = append(excluded, c)
+			}
+		}
+		*calls = excluded
+	}
+	return callToRemove
+}
+
+// WIP (untested)
+func mostExpensiveCall(data models.INF273Data, vehicle models.Vehicle, calls []*models.Call) *models.Call {
+	if !vehicle.IsDummy() && len(calls) != 0 {
+
+		pickup := make(map[int]int)
+		cost := make(map[int]int)
+
+		for _, call := range calls {
+			if index, ok := pickup[call.Index]; !ok {
+				pickup[call.Index] = index
+			}
+		}
+
+		c := data.GetTravelTimeAndCost(vehicle.Home, calls[0].Origin, vehicle.Index).Cost
+		cost[calls[0].Index] += c
+		for i := 0; i < len(calls)-1; i++ {
+
+			c1 := calls[i]
+			c2 := calls[i+1]
+
+			if c1 == c2 {
+				c := data.GetTravelTimeAndCost(c1.Origin, c2.Destination, vehicle.Index).Cost
+				cost[c1.Index] += c
+			} else {
+				start, end := 0, 0
+				if pickup[c1.Index] == i {
+					start = c1.Origin
+				} else {
+					start = c1.Destination
+				}
+				if pickup[c2.Index] == i+1 {
+					end = c2.Origin
+				} else {
+					end = c2.Destination
+				}
+				c := data.GetTravelTimeAndCost(start, end, vehicle.Index).Cost
+				cost[c1.Index] += c
+				cost[c2.Index] += c
+			}
+		}
+
+		// find the most expensive call by looking at the costs
+		idx, cst := 0, 0
+		for k, v := range cost {
+			if v > cst {
+				cst = v
+				idx = k
+			}
+		}
+		return data.GetCall(idx)
+	}
+	return nil
+}
+
+func incompatibleCall(data models.INF273Data, vehicle models.Vehicle, calls *[]*models.Call) *models.Call {
+	for i := 0; i < len(*calls); i++ {
+		if !data.VehicleAndCallIsCompatible(vehicle.Index, (*calls)[i].Index) {
+			return (*calls)[i]
+		}
+	}
+	return nil
+}
+
 func insertCall(data models.INF273Data, vehicle models.Vehicle, vehicleCalls *[]*models.Call, call *models.Call) {
 	noOfCalls := len(*vehicleCalls)
 	if noOfCalls == 0 {
@@ -56,7 +142,7 @@ func insertCall(data models.INF273Data, vehicle models.Vehicle, vehicleCalls *[]
 }
 
 func randomCompatibleIndex(data models.INF273Data, call *models.Call) int {
-	index := util.WeightedRandomNumber(weights(data.NoOfVehicles)) //rand.Intn(data.NoOfVehicles)
+	index := util.WeightedRandomNumber(weights(data.NoOfVehicles))
 	for !data.VehicleAndCallIsCompatible(data.Vehicles[index].Index, call.Index) {
 		index--
 		if index < 0 {

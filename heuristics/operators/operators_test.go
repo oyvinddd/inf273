@@ -1,6 +1,7 @@
 package operators
 
 import (
+	"fmt"
 	"os"
 	"testing"
 
@@ -131,6 +132,14 @@ func TestTwoRandomVehicleIndices(t *testing.T) {
 			t.Errorf("Indicaes cannot exceed length of solution: %v (r1 = %v, r2 = %v)", len(solution), r1, r2)
 		}
 	}
+}
+
+func TestMostExpensiveCall(t *testing.T) {
+	solution := util.FeasibleTestSolution()
+	calls := solution[1]
+	vehicle := data.Vehicles[1]
+	call := mostExpensiveCall(data, vehicle, calls)
+	fmt.Println(call)
 }
 
 // ------- HELPER FUNCTIONS -------

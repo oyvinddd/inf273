@@ -40,11 +40,10 @@ func Adaptive(data models.INF273Data, s0 [][]*models.Call) [][]*models.Call {
 	for i := 0; i < adMaxIterations; i++ {
 
 		if iterationsSinceBest >= 500 {
-			for i := 0; i < 3; i++ {
-				incumbent = operators.WeightedReinsert(data, incumbent)
-			}
+			// for i := 0; i < 5; i++ {
+			// 	incumbent = operators.WeightedReinsert(data, incumbent)
+			// }
 			iterationsSinceBest = 0
-			u4++
 		}
 
 		// this condition will pass at the start of each segment
@@ -54,8 +53,8 @@ func Adaptive(data models.INF273Data, s0 [][]*models.Call) [][]*models.Call {
 			seg.calculateWeights()
 			// reset scores and # times used at each segment
 			//seg.reset()
-			seg.scores = []float32{0, 0, 0}
-			seg.usage = []float32{0, 0, 0}
+			seg.scores = []float32{0, 0, 0, 0}
+			seg.usage = []float32{0, 0, 0, 0}
 		}
 
 		index := randomOperatorIndex(seg)
@@ -65,6 +64,8 @@ func Adaptive(data models.INF273Data, s0 [][]*models.Call) [][]*models.Call {
 			u2++
 		} else if index == 2 {
 			u3++
+		} else if index == 3 {
+			u4++
 		}
 		newSolution := ops[index](data, incumbent)
 		seg.incrementTimesUsed(index)
@@ -113,15 +114,15 @@ type segment struct {
 func newSegment() segment {
 	return segment{
 		weights: []float32{
-			100, 100, 100,
+			100, 100, 100, 100,
 		},
 		scores: []float32{
-			0, 0, 0,
+			0, 0, 0, 0,
 		},
 		usage: []float32{
-			0, 0, 0,
+			0, 0, 0, 0,
 		},
-		r: 0.2,
+		r: 0.1,
 	}
 }
 
@@ -167,8 +168,9 @@ func (s segment) String() string {
 func ops() []operator {
 	return []operator{
 		operators.TwoExchange,
-		operators.ThreeExchange,
+		operators.OptOrdering,
 		operators.OneReinsert,
+		operators.WeightedReinsert,
 	}
 }
 
