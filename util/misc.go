@@ -11,14 +11,14 @@ import (
 
 // PrintSolutionAndObj prints both the solution and the objective
 func PrintSolutionAndObj(s [][]*models.Call, obj int) {
-	PrintSolution(s)
+	PrintFlatSolution(s) //PrintSolution(s)
+	fmt.Println()
 	fmt.Printf("Objective: %v\n", obj)
 }
 
 // PrintSolution prints a given solution to standard output
 func PrintSolution(solution [][]*models.Call) {
 	fmt.Println()
-	fmt.Println("-------- SOLUTION REPRESENTATION --------")
 
 	for i := range solution {
 		row := solution[i]

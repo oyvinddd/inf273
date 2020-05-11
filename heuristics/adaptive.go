@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math"
 	"math/rand"
+	"time"
 
 	a2 "github.com/oyvinddd/inf273/assignment2"
 	"github.com/oyvinddd/inf273/heuristics/operators"
@@ -19,27 +20,22 @@ const (
 type operator func(models.INF273Data, [][]*models.Call) [][]*models.Call
 
 // Adaptive is an adaptive meta-heuristic framework
-func Adaptive(data models.INF273Data, s0 [][]*models.Call) [][]*models.Call {
+func Adaptive(data models.INF273Data, s0 [][]*models.Call, runningTime float64) [][]*models.Call {
 	incumbent, best := s0, s0
 	var ops []operator = ops()
 	var seg = newSegment()
 
+	var counter int = 0
 	var deSum float64 = 0
 	var deNum float64 = 0
-
 	var T float64 = 1000     // temperature
 	var a float64 = 0.998765 // cooling factor
 	var p float64 = 0.8      // probability of accepting worse solution
 
-	var u1 int = 0
-	var u2 int = 0
-	var u3 int = 0
-	var u4 int = 0
-
-	for i := 0; i < 500000; i++ {
-
+	startTime := time.Now()
+	for time.Since(startTime).Seconds() <= runningTime {
 		// this condition will pass at the start of each segment
-		if i%100 == 0 && i > 0 {
+		if counter%100 == 0 && counter > 0 {
 			// calculate the new weights based on the previous weights
 			seg.calculateWeights()
 			// reset scores and # times used at each segment
@@ -49,24 +45,15 @@ func Adaptive(data models.INF273Data, s0 [][]*models.Call) [][]*models.Call {
 		}
 
 		index := randomOperatorIndex(seg)
-		if index == 0 {
-			u1++
-		} else if index == 1 {
-			u2++
-		} else if index == 2 {
-			u3++
-		} else if index == 3 {
-			u4++
-		}
 		newSolution := ops[index](data, incumbent)
 		seg.incrementTimesUsed(index)
 
 		deltaE := float64(a2.TotalObjective(data, newSolution) - a2.TotalObjective(data, incumbent))
 
-		if i < 100 && deltaE >= 0 {
+		if counter < 100 && deltaE >= 0 {
 			deSum += deltaE
 			deNum++
-		} else if i == 100 {
+		} else if counter == 100 {
 			avgDeltas := deSum / deNum
 			T = -avgDeltas / math.Log(0.8)
 		} else {
@@ -86,8 +73,8 @@ func Adaptive(data models.INF273Data, s0 [][]*models.Call) [][]*models.Call {
 			seg.addScore(index, smallScore)
 		}
 		T *= a
+		counter++
 	}
-	// fmt.Println(u1, u2, u3, u4)
 	return best
 }
 
@@ -155,6 +142,7 @@ func (s segment) String() string {
 // -------- HELPER FUNCTIONS --------
 
 func ops() []operator {
+	// list of operators to be used
 	return []operator{
 		operators.TwoExchange,
 		operators.OptOrdering,

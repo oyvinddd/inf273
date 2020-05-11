@@ -29,13 +29,13 @@ const (
 )
 
 var (
-	_, b, _, _       = runtime.Caller(0)
-	basepath         = filepath.Dir(b)
-	currentStep step = 0
+	_, b, _, _ = runtime.Caller(0)
+	basepath   = filepath.Dir(b)
 )
 
 // LoadDataFile loads a given data file in the data directory
 func LoadDataFile(instance datafiles.INF273Instance) models.INF273Data {
+	//fmt.Printf("Parsing file: %v\n", string(instance))
 	data, err := ParseFile(string(instance), true)
 	if err != nil {
 		log.Fatal(err)
@@ -49,7 +49,6 @@ func ParseFile(filename string, addDummyVehicle bool) (models.INF273Data, error)
 	if err != nil {
 		return models.INF273Data{}, err
 	}
-	defer file.Close()
 
 	var noOfNodes int
 	var noOfVehicles int
@@ -59,6 +58,7 @@ func ParseFile(filename string, addDummyVehicle bool) (models.INF273Data, error)
 	var compatibility [][]bool
 	var travelTAC [][]map[int]models.TravelTimeAndCost
 	var nodeTAC [][]models.NodeTimeAndCost
+	var currentStep step = 0
 
 	// scan each line in the file
 	scanner := bufio.NewScanner(file)
@@ -112,6 +112,7 @@ func ParseFile(filename string, addDummyVehicle bool) (models.INF273Data, error)
 	if err := scanner.Err(); err != nil {
 		return models.INF273Data{}, err
 	}
+	file.Close()
 
 	if addDummyVehicle {
 		// add dummy vehicle to the end of vehicle list
