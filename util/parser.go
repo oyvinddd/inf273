@@ -29,9 +29,8 @@ const (
 )
 
 var (
-	_, b, _, _       = runtime.Caller(0)
-	basepath         = filepath.Dir(b)
-	currentStep step = 0
+	_, b, _, _ = runtime.Caller(0)
+	basepath   = filepath.Dir(b)
 )
 
 // LoadDataFile loads a given data file in the data directory
@@ -59,6 +58,7 @@ func ParseFile(filename string, addDummyVehicle bool) (models.INF273Data, error)
 	var compatibility [][]bool
 	var travelTAC [][]map[int]models.TravelTimeAndCost
 	var nodeTAC [][]models.NodeTimeAndCost
+	var currentStep step = 0
 
 	// scan each line in the file
 	scanner := bufio.NewScanner(file)

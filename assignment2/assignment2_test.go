@@ -10,9 +10,11 @@ import (
 )
 
 var data models.INF273Data
+var d2 models.INF273Data
 
 func TestMain(m *testing.M) {
 	data = util.TestData()
+	d2 = util.TestDataMedium()
 	os.Exit(m.Run())
 }
 
@@ -136,7 +138,7 @@ func TestCalculateObjective(t *testing.T) {
 
 	obj := TotalObjective(data, s1)
 	if obj != expObj1 {
-		t.Errorf("Objective value is wrong: %v (should be %v)", obj, expObj1)
+		t.Errorf("1 - Objective value is wrong: %v (should be %v)", obj, expObj1)
 	}
 
 	s2 := util.FeasibleTestSolution2()
@@ -144,7 +146,7 @@ func TestCalculateObjective(t *testing.T) {
 
 	obj = TotalObjective(data, s2)
 	if obj != expObj2 {
-		t.Errorf("Objective value is wrong: %v (should be %v)", obj, expObj2)
+		t.Errorf("2 - Objective value is wrong: %v (should be %v)", obj, expObj2)
 	}
 
 	s3 := util.FeasibleTestSolution3()
@@ -152,7 +154,15 @@ func TestCalculateObjective(t *testing.T) {
 
 	obj = TotalObjective(data, s3)
 	if obj != expObj3 {
-		t.Errorf("Objective value is wrong: %v (should be %v)", obj, expObj3)
+		t.Errorf("3 - Objective value is wrong: %v (should be %v)", obj, expObj3)
+	}
+
+	s4 := util.FeasibleTestSolution4()
+	expObj4 := 2826533
+
+	obj = TotalObjective(d2, s4)
+	if obj != expObj4 {
+		t.Errorf("4 - Objective value is wrong: %v (should be %v)", obj, expObj4)
 	}
 }
 
