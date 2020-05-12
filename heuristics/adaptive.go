@@ -38,7 +38,6 @@ func Adaptive(data models.INF273Data, s0 [][]*models.Call) [][]*models.Call {
 			// calculate the new weights based on the previous weights
 			seg.calculateWeights()
 			// reset scores and # times used at each segment
-			//seg.reset()
 			seg.scores = []float32{0, 0, 0, 0}
 			seg.usage = []float32{0, 0, 0, 0}
 		}
