@@ -31,12 +31,7 @@ func Adaptive(data models.INF273Data, s0 [][]*models.Call) [][]*models.Call {
 	var a float64 = 0.998765 // cooling factor
 	var p float64 = 0.8      // probability of accepting worse solution
 
-	var u1 int = 0
-	var u2 int = 0
-	var u3 int = 0
-	var u4 int = 0
-
-	for i := 0; i < 500000; i++ {
+	for i := 0; i < 100000; i++ {
 
 		// this condition will pass at the start of each segment
 		if i%100 == 0 && i > 0 {
@@ -49,15 +44,6 @@ func Adaptive(data models.INF273Data, s0 [][]*models.Call) [][]*models.Call {
 		}
 
 		index := randomOperatorIndex(seg)
-		if index == 0 {
-			u1++
-		} else if index == 1 {
-			u2++
-		} else if index == 2 {
-			u3++
-		} else if index == 3 {
-			u4++
-		}
 		newSolution := ops[index](data, incumbent)
 		seg.incrementTimesUsed(index)
 
@@ -87,7 +73,6 @@ func Adaptive(data models.INF273Data, s0 [][]*models.Call) [][]*models.Call {
 		}
 		T *= a
 	}
-	// fmt.Println(u1, u2, u3, u4)
 	return best
 }
 

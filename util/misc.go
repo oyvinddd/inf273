@@ -70,7 +70,6 @@ func PrintRowInSolution(solution [][]*models.Call, row int) {
 // PrintResult prints the result to console
 func PrintResult(r []int, s [][][]*models.Call, obj0 int) (int, [][]*models.Call) {
 	fmt.Printf("INITIAL: %v\n", obj0)
-	fmt.Println("ALL RESULTS:")
 	best := r[0]
 	var s1 [][]*models.Call = s[0]
 	sum := 0
@@ -80,7 +79,6 @@ func PrintResult(r []int, s [][][]*models.Call, obj0 int) (int, [][]*models.Call
 			s1 = s[i]
 		}
 		sum += r[i]
-		fmt.Println(r[i])
 	}
 	fmt.Printf("AVG. OBJ: %v\n", sum/10.0)
 	fmt.Printf("BEST: %v\n", best)
