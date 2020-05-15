@@ -10,9 +10,13 @@ import (
 )
 
 var data models.INF273Data
+var data2 models.INF273Data
+var data3 models.INF273Data
 
 func TestMain(m *testing.M) {
 	data = util.TestData()
+	data2 = util.TestDataMedium()
+	data3 = util.TestDataBig()
 	os.Exit(m.Run())
 }
 
@@ -153,6 +157,22 @@ func TestCalculateObjective(t *testing.T) {
 	obj = TotalObjective(data, s3)
 	if obj != expObj3 {
 		t.Errorf("Objective value is wrong: %v (should be %v)", obj, expObj3)
+	}
+
+	s4 := util.FeasibleTestSolution4()
+	expObj4 := 3278316
+
+	obj = TotalObjective(data2, s4)
+	if obj != expObj4 {
+		t.Errorf("Objective value is wrong: %v (should be %v)", obj, expObj4)
+	}
+
+	s5 := util.FeasibleTestSolution5()
+	expObj5 := 16158263
+
+	obj = TotalObjective(data3, s5)
+	if obj != expObj5 {
+		t.Errorf("Objective value is wrong: %v (should be %v)", obj, expObj5)
 	}
 }
 
