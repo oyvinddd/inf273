@@ -307,6 +307,45 @@ func FeasibleTestSolution5() [][]*models.Call {
 	}
 }
 
+// FeasibleTestSolution6 returns a feasible (but not optimal) solution (used for testing only)
+func FeasibleTestSolution6() [][]*models.Call {
+	// 4 6 6 4 3 3 0
+	// 15 15 16 1 16 1 0
+	// 11 17 11 10 17 9 10 9 0
+	// 12 14 12 14 0
+	// 18 5 5 18 8 7 7 8 2 2 0
+	// 13 13
+	// Obj: 2567041
+	data := TestDataMedium()
+	c1 := data.GetCall(1)
+	c2 := data.GetCall(2)
+	c3 := data.GetCall(3)
+	c4 := data.GetCall(4)
+	c5 := data.GetCall(5)
+	c6 := data.GetCall(6)
+	c7 := data.GetCall(7)
+	c8 := data.GetCall(8)
+	c9 := data.GetCall(9)
+	c10 := data.GetCall(10)
+	c11 := data.GetCall(11)
+	c12 := data.GetCall(12)
+	c13 := data.GetCall(13)
+	c14 := data.GetCall(14)
+	c15 := data.GetCall(15)
+	c16 := data.GetCall(16)
+	c17 := data.GetCall(17)
+	c18 := data.GetCall(18)
+
+	return [][]*models.Call{
+		{c4, c6, c6, c4, c3, c3},
+		{c15, c15, c16, c1, c16, c1},
+		{c11, c17, c11, c10, c17, c9, c10, c9},
+		{c12, c14, c12, c14},
+		{c18, c5, c5, c18, c8, c7, c7, c8, c2, c2},
+		{c13, c13},
+	}
+}
+
 // TestData returns a test data set from file
 func TestData() models.INF273Data {
 	return LoadDataFile(datafiles.Call7Vehicle3)

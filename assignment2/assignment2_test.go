@@ -174,6 +174,14 @@ func TestCalculateObjective(t *testing.T) {
 	if obj != expObj5 {
 		t.Errorf("Objective value is wrong: %v (should be %v)", obj, expObj5)
 	}
+
+	s6 := util.FeasibleTestSolution6()
+	expObj6 := 2567041
+
+	obj = TotalObjective(data2, s6)
+	if obj != expObj6 {
+		t.Errorf("Objective value is wrong: %v (should be %v)", obj, expObj6)
+	}
 }
 
 func TestIsPickedUpStateReset(t *testing.T) {
