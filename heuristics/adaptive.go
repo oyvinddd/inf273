@@ -31,7 +31,7 @@ func Adaptive(data models.INF273Data, s0 [][]*models.Call) [][]*models.Call {
 	var a float64 = 0.998765 // cooling factor
 	var p float64 = 0.8      // probability of accepting worse solution
 
-	for i := 0; i < 100000; i++ {
+	for i := 0; i < 70000; i++ {
 
 		// this condition will pass at the start of each segment
 		if i%100 == 0 && i > 0 {
