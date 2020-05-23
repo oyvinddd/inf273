@@ -40,9 +40,9 @@ func main() {
 	// benchmark total program exection time
 	defer util.NewTimer().PrintElapsed()
 
-	runInstance(datafiles.Call7Vehicle3, 10)
-	runInstance(datafiles.Call18Vehicle5, 20)
-	runInstance(datafiles.Call35Vehicle7, 50)
-	runInstance(datafiles.Call80Vehicle20, 120)
-	runInstance(datafiles.Call130Vehicle40, 400)
+	// runInstance(datafiles.NewCall7, 10)
+	// runInstance(datafiles.NewCall18, 20)
+	// runInstance(datafiles.NewCall35, 50)
+	// runInstance(datafiles.NewCall80, 120)
+	runInstance(datafiles.NewCall130, 400)
 }
