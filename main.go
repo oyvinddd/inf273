@@ -21,7 +21,7 @@ func init() {
 
 func main() {
 
-	// benchmark program exection
+	// benchmark program execution
 	defer util.NewTimer().PrintElapsed()
 
 	data := util.LoadDataFile(datafiles.Call7Vehicle3)
